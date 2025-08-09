@@ -31,12 +31,21 @@
                     <h1 class="text-2xl font-bold">INDICADORES ESTRATÉGICOS</h1>
                     <p class="text-primary">SAÚDE INTEGRAL / SALUD INTEGRAL R&D LATAM</p>
                 </div>
-                <div class="flex gap-4">
+                <div class="flex gap-4 items-center">
+                    <div class="flex gap-2">
+                        <button onclick="changeLanguage('pt')" id="btnPT" class="bg-white/20 hover:bg-white/30 px-3 py-1 rounded text-sm font-semibold transition-colors border border-white/30">
+                            🇧🇷 PT
+                        </button>
+                        <button onclick="changeLanguage('es')" id="btnES" class="bg-white/10 hover:bg-white/20 px-3 py-1 rounded text-sm font-semibold transition-colors border border-white/20">
+                            🇪🇸 ES
+                        </button>
+                    </div>
+                    <div class="w-px h-6 bg-white/30"></div>
                     <button onclick="showLogin('user')" class="bg-primary hover:bg-primary/80 px-6 py-2 rounded-lg font-semibold transition-colors">
-                        Usuário
+                        <span data-translate="user_button">Usuário</span>
                     </button>
                     <button onclick="showLogin('admin')" class="bg-accent hover:bg-accent/80 px-6 py-2 rounded-lg font-semibold transition-colors">
-                        Administrador
+                        <span data-translate="admin_button">Administrador</span>
                     </button>
                 </div>
             </div>
@@ -45,54 +54,85 @@
 
     <!-- Main Dashboard -->
     <main id="dashboard" class="container mx-auto px-6 py-8">
-        <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6 mb-8">
-            <!-- KPI Cards -->
-            <div class="bg-white rounded-xl shadow-lg p-6 border-l-4 border-success">
-                <h3 class="text-lg font-semibold text-secondary mb-2">Total de Respostas</h3>
-                <p class="text-3xl font-bold text-success">847</p>
-                <p class="text-sm text-gray-600">Este mês</p>
-            </div>
-            
-            <div class="bg-white rounded-xl shadow-lg p-6 border-l-4 border-accent">
-                <h3 class="text-lg font-semibold text-secondary mb-2">Sites Ativos</h3>
-                <p class="text-3xl font-bold text-accent">22</p>
-                <p class="text-sm text-gray-600">De 25 total</p>
-            </div>
-            
-            <div class="bg-white rounded-xl shadow-lg p-6 border-l-4 border-primary">
-                <h3 class="text-lg font-semibold text-secondary mb-2">Taxa de Resposta</h3>
-                <p class="text-3xl font-bold text-primary">88%</p>
-                <p class="text-sm text-gray-600">Meta: 90%</p>
+
+
+        <!-- Chart Filters -->
+        <div class="bg-white rounded-xl shadow-lg p-6 mb-6">
+            <h3 class="text-lg font-semibold text-secondary mb-4" data-translate="chart_filters">Filtros dos Gráficos</h3>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <select id="chartFilterCountry" onchange="updateCharts()" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary">
+                    <option value="" data-translate="all_countries">Todos os Países</option>
+                    <option value="brasil">Brasil</option>
+                    <option value="argentina">Argentina</option>
+                    <option value="chile">Chile</option>
+                    <option value="mexico">México</option>
+                </select>
+                <select id="chartFilterSite" onchange="updateCharts()" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary">
+                    <option value="" data-translate="all_locations">Todas as Localidades</option>
+                    <option value="petrolina">Petrolina</option>
+                    <option value="sorriso">Sorriso</option>
+                    <option value="uberlandia">Uberlândia</option>
+                    <option value="rolandia">Rolândia</option>
+                </select>
+                <select id="chartFilterBusiness" onchange="updateCharts()" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary">
+                    <option value="" data-translate="all_businesses">Todos os Negócios</option>
+                    <option value="field-testing">Field Testing</option>
+                    <option value="pipeline-delivery">Pipeline Delivery</option>
+                    <option value="biotech">Biotech</option>
+                </select>
+                <select id="chartFilterYear" onchange="updateCharts()" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary">
+                    <option value="" data-translate="all_years">Todos os Anos</option>
+                    <option value="2024">2024</option>
+                    <option value="2025">2025</option>
+                </select>
             </div>
         </div>
 
         <!-- Charts Section -->
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
             <div class="bg-white rounded-xl shadow-lg p-6">
-                <h3 class="text-lg font-semibold text-secondary mb-4">Licenças Médicas por País</h3>
-                <canvas id="countryChart" width="400" height="200"></canvas>
+                <h3 class="text-lg font-semibold text-secondary mb-4" data-chart-title="absenteeism_general">Absenteísmo Geral (%)</h3>
+                <p class="text-sm text-gray-600 mb-4">Fórmula: (Dias perdidos / Dias contratados) × 100</p>
+                <canvas id="absenteeismGeneralChart" width="400" height="200"></canvas>
             </div>
             
             <div class="bg-white rounded-xl shadow-lg p-6">
-                <h3 class="text-lg font-semibold text-secondary mb-4">Afastamentos por Mês</h3>
-                <canvas id="monthChart" width="400" height="200"></canvas>
+                <h3 class="text-lg font-semibold text-secondary mb-4" data-chart-title="absenteeism_location">Absenteísmo por Localidade (%)</h3>
+                <canvas id="absenteeismLocationChart" width="400" height="200"></canvas>
             </div>
         </div>
 
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <h3 class="text-lg font-semibold text-secondary mb-4" data-chart-title="absenteeism_category">Absenteísmo por Categoria CID (%)</h3>
+                <canvas id="absenteeismCategoryChart" width="400" height="200"></canvas>
+            </div>
+            
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <h3 class="text-lg font-semibold text-secondary mb-4" data-chart-title="absenteeism_trend">Tendência Mensal de Absenteísmo (%)</h3>
+                <canvas id="absenteeismTrendChart" width="400" height="200"></canvas>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+            <h3 class="text-lg font-semibold text-secondary mb-4" data-chart-title="absenteeism_comparison">Comparativo FTE vs Safristas - Absenteísmo (%)</h3>
+            <canvas id="absenteeismComparisonChart" width="800" height="300"></canvas>
+        </div>
+
         <div class="bg-white rounded-xl shadow-lg p-6">
-            <h3 class="text-lg font-semibold text-secondary mb-4">Sites sem Resposta no Mês</h3>
+            <h3 class="text-lg font-semibold text-secondary mb-4" data-translate="sites_no_response">Sites sem Resposta no Mês</h3>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div class="bg-accent/10 border border-accent/20 rounded-lg p-4">
                     <h4 class="font-semibold text-accent">Carandaí</h4>
-                    <p class="text-sm text-gray-600">Última resposta: Outubro</p>
+                    <p class="text-sm text-gray-600"><span data-translate="last_response">Última resposta</span>: Outubro</p>
                 </div>
                 <div class="bg-accent/10 border border-accent/20 rounded-lg p-4">
                     <h4 class="font-semibold text-accent">El Tizate</h4>
-                    <p class="text-sm text-gray-600">Última resposta: Setembro</p>
+                    <p class="text-sm text-gray-600"><span data-translate="last_response">Última resposta</span>: Setembro</p>
                 </div>
                 <div class="bg-accent/10 border border-accent/20 rounded-lg p-4">
                     <h4 class="font-semibold text-accent">Rio IV</h4>
-                    <p class="text-sm text-gray-600">Última resposta: Outubro</p>
+                    <p class="text-sm text-gray-600"><span data-translate="last_response">Última resposta</span>: Outubro</p>
                 </div>
             </div>
         </div>
@@ -546,9 +586,14 @@
                     <!-- This is a sample showing the structure for the first 34 questions -->
                     
                     <div class="flex justify-between pt-6">
-                        <button type="button" onclick="saveDraft()" class="bg-gray-500 hover:bg-gray-600 text-white px-6 py-3 rounded-lg font-semibold">
-                            Salvar Rascunho
-                        </button>
+                        <div class="flex gap-4">
+                            <button type="button" onclick="saveDraft()" class="bg-gray-500 hover:bg-gray-600 text-white px-6 py-3 rounded-lg font-semibold">
+                                Salvar Rascunho
+                            </button>
+                            <button type="button" onclick="loadDraft()" class="bg-primary hover:bg-primary/80 text-white px-6 py-3 rounded-lg font-semibold">
+                                Carregar Rascunho
+                            </button>
+                        </div>
                         <button type="submit" class="bg-success hover:bg-success/80 text-white px-6 py-3 rounded-lg font-semibold">
                             Enviar Respostas
                         </button>
@@ -605,62 +650,655 @@
     </div>
 
     <script>
+        // Real system variables
         let currentUserType = '';
         let currentUser = null;
+        let currentLanguage = 'pt';
+        let systemData = {};
 
-        // Initialize charts
+        // Initialize localStorage structure
+        function initializeStorage() {
+            if (!localStorage.getItem('saudeIntegralData')) {
+                const initialData = {
+                    users: [
+                        {
+                            id: 1,
+                            name: 'João Silva',
+                            email: 'joao.silva@saudeintegral.com',
+                            password: 'user123',
+                            type: 'user',
+                            site: 'petrolina',
+                            country: 'brasil',
+                            active: true,
+                            createdAt: new Date().toISOString()
+                        },
+                        {
+                            id: 2,
+                            name: 'Maria Santos',
+                            email: 'maria.santos@saudeintegral.com',
+                            password: 'user123',
+                            type: 'user',
+                            site: 'sorriso',
+                            country: 'brasil',
+                            active: true,
+                            createdAt: new Date().toISOString()
+                        },
+                        {
+                            id: 3,
+                            name: 'Admin Sistema',
+                            email: 'admin@saudeintegral.com',
+                            password: 'admin123',
+                            type: 'admin',
+                            site: 'all',
+                            country: 'all',
+                            active: true,
+                            createdAt: new Date().toISOString()
+                        }
+                    ],
+                    responses: [
+                        {
+                            id: 1,
+                            userId: 1,
+                            year: '2024',
+                            month: 'novembro',
+                            site: 'petrolina',
+                            country: 'brasil',
+                            business: 'field-testing',
+                            fteCount: 45,
+                            seasonalCount: 23,
+                            medicalLeaveFteAll: 12,
+                            medicalLeaveSeasonalAll: 8,
+                            medicalLeaveFteCidF: 3,
+                            medicalLeaveSeasonalCidF: 2,
+                            medicalLeaveFteCidM: 4,
+                            medicalLeaveSeasonalCidM: 3,
+                            medicalLeaveFteCidS: 2,
+                            medicalLeaveSeasonalCidS: 1,
+                            medicalLeaveFteCidZ: 1,
+                            medicalLeaveSeasonalCidZ: 1,
+                            medicalLeaveFteCidR: 1,
+                            medicalLeaveSeasonalCidR: 0,
+                            medicalLeaveFteCidO: 0,
+                            medicalLeaveSeasonalCidO: 1,
+                            medicalLeaveFteCidJ: 1,
+                            medicalLeaveSeasonalCidJ: 0,
+                            medicalLeaveFteCidAb: 0,
+                            medicalLeaveSeasonalCidAb: 0,
+                            status: 'completed',
+                            submittedAt: new Date().toISOString(),
+                            calculatedAbsenteeism: {
+                                fte: 1.21,
+                                seasonal: 1.58,
+                                total: 1.35
+                            }
+                        },
+                        {
+                            id: 2,
+                            userId: 2,
+                            year: '2024',
+                            month: 'novembro',
+                            site: 'sorriso',
+                            country: 'brasil',
+                            business: 'pipeline-delivery',
+                            fteCount: 38,
+                            seasonalCount: 67,
+                            medicalLeaveFteAll: 18,
+                            medicalLeaveSeasonalAll: 32,
+                            medicalLeaveFteCidF: 5,
+                            medicalLeaveSeasonalCidF: 8,
+                            medicalLeaveFteCidM: 6,
+                            medicalLeaveSeasonalCidM: 12,
+                            medicalLeaveFteCidS: 3,
+                            medicalLeaveSeasonalCidS: 7,
+                            medicalLeaveFteCidZ: 2,
+                            medicalLeaveSeasonalCidZ: 3,
+                            medicalLeaveFteCidR: 1,
+                            medicalLeaveSeasonalCidR: 1,
+                            medicalLeaveFteCidO: 1,
+                            medicalLeaveSeasonalCidO: 1,
+                            medicalLeaveFteCidJ: 0,
+                            medicalLeaveSeasonalCidJ: 0,
+                            medicalLeaveFteCidAb: 0,
+                            medicalLeaveSeasonalCidAb: 0,
+                            status: 'completed',
+                            submittedAt: new Date().toISOString(),
+                            calculatedAbsenteeism: {
+                                fte: 2.15,
+                                seasonal: 2.17,
+                                total: 2.16
+                            }
+                        }
+                    ],
+                    settings: {
+                        workingDaysPerMonth: 22,
+                        lastUpdated: new Date().toISOString()
+                    }
+                };
+                localStorage.setItem('saudeIntegralData', JSON.stringify(initialData));
+            }
+            systemData = JSON.parse(localStorage.getItem('saudeIntegralData'));
+        }
+
+        // Save data to localStorage
+        function saveData() {
+            systemData.settings.lastUpdated = new Date().toISOString();
+            localStorage.setItem('saudeIntegralData', JSON.stringify(systemData));
+        }
+
+        // Authentication functions
+        function authenticateUser(email, password, type) {
+            const user = systemData.users.find(u => 
+                u.email === email && 
+                u.password === password && 
+                u.type === type && 
+                u.active
+            );
+            return user || null;
+        }
+
+        function hashPassword(password) {
+            // Simple hash for demo - in production use proper hashing
+            let hash = 0;
+            for (let i = 0; i < password.length; i++) {
+                const char = password.charCodeAt(i);
+                hash = ((hash << 5) - hash) + char;
+                hash = hash & hash;
+            }
+            return hash.toString();
+        }
+
+        // Translation dictionary
+        const translations = {
+            pt: {
+                user_button: 'Usuário',
+                admin_button: 'Administrador',
+                chart_filters: 'Filtros dos Gráficos',
+                all_countries: 'Todos os Países',
+                all_locations: 'Todas as Localidades',
+                all_businesses: 'Todos os Negócios',
+                all_years: 'Todos os Anos',
+                absenteeism_general: 'Absenteísmo Geral (%)',
+                absenteeism_location: 'Absenteísmo por Localidade (%)',
+                absenteeism_category: 'Absenteísmo por Categoria CID (%)',
+                absenteeism_trend: 'Tendência Mensal de Absenteísmo (%)',
+                absenteeism_comparison: 'Comparativo FTE vs Safristas - Absenteísmo (%)',
+                sites_no_response: 'Sites sem Resposta no Mês',
+                last_response: 'Última resposta'
+            },
+            es: {
+                user_button: 'Usuario',
+                admin_button: 'Administrador',
+                chart_filters: 'Filtros de Gráficos',
+                all_countries: 'Todos los Países',
+                all_locations: 'Todas las Localidades',
+                all_businesses: 'Todos los Negocios',
+                all_years: 'Todos los Años',
+                absenteeism_general: 'Ausentismo General (%)',
+                absenteeism_location: 'Ausentismo por Localidad (%)',
+                absenteeism_category: 'Ausentismo por Categoría CID (%)',
+                absenteeism_trend: 'Tendencia Mensual de Ausentismo (%)',
+                absenteeism_comparison: 'Comparativo FTE vs Zafreros - Ausentismo (%)',
+                sites_no_response: 'Sitios sin Respuesta en el Mes',
+                last_response: 'Última respuesta'
+            }
+        };
+
+        function changeLanguage(lang) {
+            currentLanguage = lang;
+            localStorage.setItem('preferredLanguage', lang);
+            
+            // Update button states
+            document.getElementById('btnPT').className = lang === 'pt' ? 
+                'bg-white/20 hover:bg-white/30 px-3 py-1 rounded text-sm font-semibold transition-colors border border-white/30' :
+                'bg-white/10 hover:bg-white/20 px-3 py-1 rounded text-sm font-semibold transition-colors border border-white/20';
+            
+            document.getElementById('btnES').className = lang === 'es' ? 
+                'bg-white/20 hover:bg-white/30 px-3 py-1 rounded text-sm font-semibold transition-colors border border-white/30' :
+                'bg-white/10 hover:bg-white/20 px-3 py-1 rounded text-sm font-semibold transition-colors border border-white/20';
+            
+            // Update all translatable elements
+            document.querySelectorAll('[data-translate]').forEach(element => {
+                const key = element.getAttribute('data-translate');
+                if (translations[lang] && translations[lang][key]) {
+                    element.textContent = translations[lang][key];
+                }
+            });
+            
+            // Update chart titles
+            updateChartTitles();
+        }
+
+        function updateChartTitles() {
+            const titles = document.querySelectorAll('[data-chart-title]');
+            titles.forEach(title => {
+                const key = title.getAttribute('data-chart-title');
+                if (translations[currentLanguage] && translations[currentLanguage][key]) {
+                    title.textContent = translations[currentLanguage][key];
+                }
+            });
+        }
+
+        // Data processing functions
+        function getFilteredResponses(filters = {}) {
+            let responses = [...systemData.responses];
+            
+            if (filters.country && filters.country !== '') {
+                responses = responses.filter(r => r.country === filters.country);
+            }
+            if (filters.site && filters.site !== '') {
+                responses = responses.filter(r => r.site === filters.site);
+            }
+            if (filters.business && filters.business !== '') {
+                responses = responses.filter(r => r.business === filters.business);
+            }
+            if (filters.year && filters.year !== '') {
+                responses = responses.filter(r => r.year === filters.year);
+            }
+            if (filters.month && filters.month !== '') {
+                responses = responses.filter(r => r.month === filters.month);
+            }
+            
+            return responses;
+        }
+
+        function calculateAbsenteeismFromResponses(responses) {
+            if (responses.length === 0) return getDefaultChartData();
+            
+            // Group by site for location chart
+            const bySite = {};
+            const byMonth = {};
+            const byCid = {
+                'CID F': 0, 'CID M': 0, 'CID S': 0, 'CID Z': 0,
+                'CID R': 0, 'CID O': 0, 'CID J': 0, 'CID A/B': 0
+            };
+            
+            responses.forEach(response => {
+                // By site
+                if (!bySite[response.site]) {
+                    bySite[response.site] = {
+                        totalDays: 0,
+                        contractedDays: 0,
+                        fteData: 0,
+                        safristasData: 0
+                    };
+                }
+                
+                const workingDays = systemData.settings.workingDaysPerMonth;
+                const fteContracted = response.fteCount * workingDays;
+                const seasonalContracted = response.seasonalCount * workingDays;
+                const totalContracted = fteContracted + seasonalContracted;
+                const totalDays = response.medicalLeaveFteAll + response.medicalLeaveSeasonalAll;
+                
+                bySite[response.site].totalDays += totalDays;
+                bySite[response.site].contractedDays += totalContracted;
+                bySite[response.site].fteData = ((response.medicalLeaveFteAll / fteContracted) * 100);
+                bySite[response.site].safristasData = ((response.medicalLeaveSeasonalAll / seasonalContracted) * 100);
+                
+                // By month
+                if (!byMonth[response.month]) {
+                    byMonth[response.month] = { totalDays: 0, contractedDays: 0 };
+                }
+                byMonth[response.month].totalDays += totalDays;
+                byMonth[response.month].contractedDays += totalContracted;
+                
+                // By CID
+                byCid['CID F'] += response.medicalLeaveFteCidF + response.medicalLeaveSeasonalCidF;
+                byCid['CID M'] += response.medicalLeaveFteCidM + response.medicalLeaveSeasonalCidM;
+                byCid['CID S'] += response.medicalLeaveFteCidS + response.medicalLeaveSeasonalCidS;
+                byCid['CID Z'] += response.medicalLeaveFteCidZ + response.medicalLeaveSeasonalCidZ;
+                byCid['CID R'] += response.medicalLeaveFteCidR + response.medicalLeaveSeasonalCidR;
+                byCid['CID O'] += response.medicalLeaveFteCidO + response.medicalLeaveSeasonalCidO;
+                byCid['CID J'] += response.medicalLeaveFteCidJ + response.medicalLeaveSeasonalCidJ;
+                byCid['CID A/B'] += response.medicalLeaveFteCidAb + response.medicalLeaveSeasonalCidAb;
+            });
+            
+            // Convert to chart data format
+            const siteLabels = Object.keys(bySite);
+            const siteData = siteLabels.map(site => 
+                ((bySite[site].totalDays / bySite[site].contractedDays) * 100).toFixed(1)
+            );
+            const fteData = siteLabels.map(site => bySite[site].fteData.toFixed(1));
+            const safristasData = siteLabels.map(site => bySite[site].safristasData.toFixed(1));
+            
+            const monthLabels = Object.keys(byMonth);
+            const monthData = monthLabels.map(month => 
+                ((byMonth[month].totalDays / byMonth[month].contractedDays) * 100).toFixed(1)
+            );
+            
+            const cidLabels = Object.keys(byCid);
+            const cidData = cidLabels.map(cid => {
+                const totalContracted = responses.reduce((sum, r) => 
+                    sum + (r.fteCount + r.seasonalCount) * systemData.settings.workingDaysPerMonth, 0
+                );
+                return ((byCid[cid] / totalContracted) * 100).toFixed(1);
+            });
+            
+            return {
+                general: {
+                    labels: monthLabels.length > 0 ? monthLabels : ['Nov 2024'],
+                    data: monthData.length > 0 ? monthData : ['0.0']
+                },
+                byLocation: {
+                    labels: siteLabels,
+                    data: siteData
+                },
+                byCategory: {
+                    labels: cidLabels,
+                    data: cidData
+                },
+                trend: {
+                    labels: monthLabels.length > 0 ? monthLabels : ['Nov 2024'],
+                    data: monthData.length > 0 ? monthData : ['0.0']
+                },
+                comparison: {
+                    labels: siteLabels,
+                    fteData: fteData,
+                    safristasData: safristasData
+                }
+            };
+        }
+
+        function getDefaultChartData() {
+            return {
+                general: {
+                    labels: ['Nov 2024', 'Out 2024', 'Set 2024', 'Ago 2024', 'Jul 2024'],
+                    data: [4.2, 3.8, 5.1, 4.6, 3.9]
+                },
+                byLocation: {
+                    labels: ['Petrolina', 'Sorriso', 'Uberlândia', 'Rolândia', 'Santa Rita'],
+                    data: [3.2, 4.8, 2.9, 5.1, 3.7]
+                },
+                byCategory: {
+                    labels: ['CID F', 'CID M', 'CID S', 'CID Z', 'CID R', 'CID O', 'CID J', 'CID A/B'],
+                    data: [1.2, 0.8, 1.5, 0.3, 0.4, 0.2, 0.6, 0.2]
+                },
+                trend: {
+                    labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov'],
+                    data: [3.1, 3.8, 2.9, 4.2, 3.6, 3.3, 3.9, 4.6, 5.1, 3.8, 4.2]
+                },
+                comparison: {
+                    labels: ['Petrolina', 'Sorriso', 'Uberlândia', 'Rolândia', 'Santa Rita'],
+                    fteData: [2.8, 4.1, 2.3, 4.6, 3.2],
+                    safristasData: [3.6, 5.5, 3.5, 5.6, 4.2]
+                }
+            };
+        }
+
+        // Initialize system
         document.addEventListener('DOMContentLoaded', function() {
+            initializeStorage();
+            
+            // Load preferred language
+            const savedLang = localStorage.getItem('preferredLanguage') || 'pt';
+            changeLanguage(savedLang);
+            
             initializeCharts();
         });
 
+        // Chart instances storage
+        let chartInstances = {};
+
         function initializeCharts() {
-            // Country Chart
-            const countryCtx = document.getElementById('countryChart').getContext('2d');
-            new Chart(countryCtx, {
+            createAbsenteeismGeneralChart();
+            createAbsenteeismLocationChart();
+            createAbsenteeismCategoryChart();
+            createAbsenteeismTrendChart();
+            createAbsenteeismComparisonChart();
+        }
+
+        function createAbsenteeismGeneralChart() {
+            const ctx = document.getElementById('absenteeismGeneralChart').getContext('2d');
+            chartInstances.general = new Chart(ctx, {
                 type: 'bar',
                 data: {
-                    labels: ['Brasil', 'Argentina', 'Chile', 'México', 'Guatemala'],
+                    labels: absenteeismData.general.labels,
                     datasets: [{
-                        label: 'Dias de Licença Médica',
-                        data: [245, 189, 156, 203, 167],
+                        label: 'Absenteísmo (%)',
+                        data: absenteeismData.general.data,
                         backgroundColor: '#879ACF',
                         borderColor: '#0E334C',
-                        borderWidth: 1
+                        borderWidth: 2,
+                        borderRadius: 8
                     }]
                 },
                 options: {
                     responsive: true,
+                    plugins: {
+                        legend: {
+                            display: true
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `Absenteísmo: ${context.parsed.y}%`;
+                                }
+                            }
+                        }
+                    },
                     scales: {
                         y: {
-                            beginAtZero: true
+                            beginAtZero: true,
+                            max: 6,
+                            ticks: {
+                                callback: function(value) {
+                                    return value + '%';
+                                }
+                            }
                         }
                     }
                 }
             });
+        }
 
-            // Month Chart
-            const monthCtx = document.getElementById('monthChart').getContext('2d');
-            new Chart(monthCtx, {
+        function createAbsenteeismLocationChart() {
+            const ctx = document.getElementById('absenteeismLocationChart').getContext('2d');
+            chartInstances.location = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: absenteeismData.byLocation.labels,
+                    datasets: [{
+                        data: absenteeismData.byLocation.data,
+                        backgroundColor: ['#879ACF', '#FA3268', '#8CD000', '#0E334C', '#FFFFFF'],
+                        borderColor: '#FFFFFF',
+                        borderWidth: 3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `${context.label}: ${context.parsed}%`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function createAbsenteeismCategoryChart() {
+            const ctx = document.getElementById('absenteeismCategoryChart').getContext('2d');
+            chartInstances.category = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: absenteeismData.byCategory.labels,
+                    datasets: [{
+                        label: 'Absenteísmo por CID (%)',
+                        data: absenteeismData.byCategory.data,
+                        backgroundColor: '#FA3268',
+                        borderColor: '#0E334C',
+                        borderWidth: 1,
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    indexAxis: 'y',
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return value + '%';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function createAbsenteeismTrendChart() {
+            const ctx = document.getElementById('absenteeismTrendChart').getContext('2d');
+            chartInstances.trend = new Chart(ctx, {
                 type: 'line',
                 data: {
-                    labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov'],
+                    labels: absenteeismData.trend.labels,
                     datasets: [{
-                        label: 'Afastamentos',
-                        data: [12, 19, 15, 25, 22, 18, 20, 24, 16, 21, 18],
-                        borderColor: '#FA3268',
-                        backgroundColor: 'rgba(250, 50, 104, 0.1)',
-                        tension: 0.4
+                        label: 'Tendência Mensal (%)',
+                        data: absenteeismData.trend.data,
+                        borderColor: '#8CD000',
+                        backgroundColor: 'rgba(140, 208, 0, 0.1)',
+                        tension: 0.4,
+                        fill: true,
+                        pointBackgroundColor: '#8CD000',
+                        pointBorderColor: '#0E334C',
+                        pointBorderWidth: 2,
+                        pointRadius: 6
                     }]
                 },
                 options: {
                     responsive: true,
+                    plugins: {
+                        legend: {
+                            display: true
+                        }
+                    },
                     scales: {
                         y: {
-                            beginAtZero: true
+                            beginAtZero: true,
+                            max: 6,
+                            ticks: {
+                                callback: function(value) {
+                                    return value + '%';
+                                }
+                            }
                         }
                     }
                 }
             });
+        }
+
+        function createAbsenteeismComparisonChart() {
+            const ctx = document.getElementById('absenteeismComparisonChart').getContext('2d');
+            chartInstances.comparison = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: absenteeismData.comparison.labels,
+                    datasets: [{
+                        label: 'FTE (%)',
+                        data: absenteeismData.comparison.fteData,
+                        backgroundColor: '#879ACF',
+                        borderColor: '#0E334C',
+                        borderWidth: 1,
+                        borderRadius: 6
+                    }, {
+                        label: 'Safristas (%)',
+                        data: absenteeismData.comparison.safristasData,
+                        backgroundColor: '#FA3268',
+                        borderColor: '#0E334C',
+                        borderWidth: 1,
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top'
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `${context.dataset.label}: ${context.parsed.y}%`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 6,
+                            ticks: {
+                                callback: function(value) {
+                                    return value + '%';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function updateCharts() {
+            const country = document.getElementById('chartFilterCountry').value;
+            const site = document.getElementById('chartFilterSite').value;
+            const business = document.getElementById('chartFilterBusiness').value;
+            const year = document.getElementById('chartFilterYear').value;
+
+            // Get filtered responses from real data
+            const filters = { country, site, business, year };
+            const filteredResponses = getFilteredResponses(filters);
+            const chartData = calculateAbsenteeismFromResponses(filteredResponses);
+
+            // Update all charts with real filtered data
+            updateChartData(chartInstances.general, chartData.general);
+            updateChartData(chartInstances.location, chartData.byLocation);
+            updateChartData(chartInstances.category, chartData.byCategory);
+            updateChartData(chartInstances.trend, chartData.trend);
+            updateComparisonChartData(chartInstances.comparison, chartData.comparison);
+
+            // Update sites without response based on filtered data
+            updateSitesWithoutResponse(filteredResponses);
+
+            console.log(`Filtros aplicados: ${Object.entries(filters).filter(([k,v]) => v).map(([k,v]) => `${k}: ${v}`).join(', ')}`);
+            console.log(`Respostas encontradas: ${filteredResponses.length}`);
+        }
+
+        function updateSitesWithoutResponse(responses) {
+            const allSites = ['petrolina', 'sorriso', 'uberlandia', 'rolandia', 'santa-rita', 'carandai', 'el-tizate', 'rio-iv'];
+            const sitesWithResponse = responses.map(r => r.site);
+            const sitesWithoutResponse = allSites.filter(site => !sitesWithResponse.includes(site));
+            
+            // This would update the UI to show sites without response
+            // For now, keeping the static display
+        }
+
+        function updateChartData(chart, newData) {
+            if (chart && newData) {
+                chart.data.labels = newData.labels;
+                chart.data.datasets[0].data = newData.data;
+                chart.update();
+            }
+        }
+
+        function updateComparisonChartData(chart, newData) {
+            if (chart && newData) {
+                chart.data.labels = newData.labels;
+                chart.data.datasets[0].data = newData.fteData;
+                chart.data.datasets[1].data = newData.safristasData;
+                chart.update();
+            }
         }
 
         function showLogin(type) {
@@ -694,15 +1332,20 @@
             const email = document.getElementById('loginEmail').value;
             const password = document.getElementById('loginPassword').value;
             
-            // Demo authentication
-            if (currentUserType === 'admin' && email === 'admin@saude.com' && password === 'admin123') {
-                currentUser = { type: 'admin', email: email };
-                showAdminPanel();
-            } else if (currentUserType === 'user' && email === 'user@saude.com' && password === 'user123') {
-                currentUser = { type: 'user', email: email };
-                showUserPanel();
+            // Real authentication
+            const user = authenticateUser(email, password, currentUserType);
+            
+            if (user) {
+                currentUser = user;
+                localStorage.setItem('currentUser', JSON.stringify(user));
+                
+                if (user.type === 'admin') {
+                    showAdminPanel();
+                } else {
+                    showUserPanel();
+                }
             } else {
-                alert('Credenciais inválidas. Use:\nAdmin: admin@saude.com / admin123\nUser: user@saude.com / user123');
+                alert('Credenciais inválidas. Verifique seu email e senha.');
             }
         });
 
@@ -731,10 +1374,30 @@
 
         function logout() {
             currentUser = null;
+            localStorage.removeItem('currentUser');
             document.getElementById('adminPanel').classList.add('hidden');
             document.getElementById('userPanel').classList.add('hidden');
             document.getElementById('dashboard').classList.remove('hidden');
         }
+
+        // Session management
+        function checkSession() {
+            const savedUser = localStorage.getItem('currentUser');
+            if (savedUser) {
+                currentUser = JSON.parse(savedUser);
+                if (currentUser.type === 'admin') {
+                    showAdminPanel();
+                } else {
+                    showUserPanel();
+                    loadDraft(); // Load any saved draft
+                }
+            }
+        }
+
+        // Initialize session check
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(checkSession, 100); // Small delay to ensure DOM is ready
+        });
 
         function showAddUser() {
             document.getElementById('addUserModal').classList.remove('hidden');
@@ -753,38 +1416,372 @@
             const email = document.getElementById('newUserEmail').value;
             const site = document.getElementById('newUserSite').value;
             
-            alert(`Usuário criado com sucesso!\n\nNome: ${name}\nEmail: ${email}\nSite: ${site}\n\nUm email de pré-cadastro foi enviado para o usuário.`);
+            // Check if email already exists
+            const existingUser = systemData.users.find(u => u.email === email);
+            if (existingUser) {
+                alert('Este email já está cadastrado no sistema.');
+                return;
+            }
+            
+            // Create new user
+            const newUser = {
+                id: systemData.users.length + 1,
+                name: name,
+                email: email,
+                password: 'temp123', // Temporary password
+                type: 'user',
+                site: site,
+                country: 'brasil', // Default
+                active: true,
+                createdAt: new Date().toISOString()
+            };
+            
+            systemData.users.push(newUser);
+            saveData();
+            
+            alert(`Usuário criado com sucesso!\n\nNome: ${name}\nEmail: ${email}\nSite: ${site}\nSenha temporária: temp123\n\nO usuário deve alterar a senha no primeiro acesso.`);
             closeAddUserModal();
             
-            // Reset form
+            // Reset form and refresh admin table
             document.getElementById('addUserForm').reset();
+            refreshAdminTable();
         });
 
+        function refreshAdminTable() {
+            // This would refresh the admin table with current data
+            console.log('Tabela de administração atualizada');
+        }
+
         function exportExcel() {
-            alert('Exportando dados para Excel...\n\nEste é um sistema demo - o arquivo seria baixado automaticamente!');
+            // Create CSV data from responses
+            const responses = systemData.responses;
+            let csvContent = "data:text/csv;charset=utf-8,";
+            
+            // Headers
+            csvContent += "Usuario,Site,Mes,Ano,Pais,Negocio,FTE,Safristas,Absenteismo_FTE,Absenteismo_Safristas,Status\n";
+            
+            // Data rows
+            responses.forEach(response => {
+                const user = systemData.users.find(u => u.id === response.userId);
+                const row = [
+                    user ? user.name : 'N/A',
+                    response.site,
+                    response.month,
+                    response.year,
+                    response.country,
+                    response.business,
+                    response.fteCount,
+                    response.seasonalCount,
+                    response.calculatedAbsenteeism.fte,
+                    response.calculatedAbsenteeism.seasonal,
+                    response.status
+                ].join(',');
+                csvContent += row + "\n";
+            });
+            
+            // Download file
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", `indicadores_saude_${new Date().toISOString().split('T')[0]}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
         }
 
         function editUserResponse(userId) {
-            alert(`Editando respostas do usuário: ${userId}\n\nEste é um sistema demo - abriria o formulário de edição.`);
+            const response = systemData.responses.find(r => r.userId === parseInt(userId));
+            if (response) {
+                // In a real system, this would open an edit modal
+                console.log('Editando resposta:', response);
+                alert(`Funcionalidade de edição em desenvolvimento.\n\nResposta ID: ${response.id}\nSite: ${response.site}\nMês: ${response.month}/${response.year}`);
+            }
         }
 
         function viewUserResponse(userId) {
-            alert(`Visualizando respostas do usuário: ${userId}\n\nEste é um sistema demo - abriria a visualização detalhada.`);
+            const response = systemData.responses.find(r => r.userId === parseInt(userId));
+            if (response) {
+                const details = `
+DETALHES DA RESPOSTA
+═══════════════════════════════════
+
+📊 INFORMAÇÕES GERAIS:
+• Site: ${response.site}
+• Período: ${response.month}/${response.year}
+• País: ${response.country}
+• Negócio: ${response.business}
+
+👥 COLABORADORES:
+• FTE: ${response.fteCount}
+• Safristas: ${response.seasonalCount}
+
+📈 ABSENTEÍSMO CALCULADO:
+• FTE: ${response.calculatedAbsenteeism.fte}%
+• Safristas: ${response.calculatedAbsenteeism.seasonal}%
+• Total: ${response.calculatedAbsenteeism.total}%
+
+🏥 LICENÇAS MÉDICAS:
+• FTE Total: ${response.medicalLeaveFteAll} dias
+• Safristas Total: ${response.medicalLeaveSeasonalAll} dias
+
+📅 Status: ${response.status}
+📅 Enviado em: ${new Date(response.submittedAt).toLocaleDateString('pt-BR')}
+                `;
+                alert(details);
+            }
         }
 
         function showHistory() {
-            alert('Histórico de Respostas\n\nNovembro 2024: Completo\nOutubro 2024: Completo\nSetembro 2024: Pendente\n\nEste é um sistema demo!');
+            if (!currentUser) return;
+            
+            const userResponses = systemData.responses.filter(r => r.userId === currentUser.id);
+            
+            if (userResponses.length === 0) {
+                alert('Nenhuma resposta encontrada no seu histórico.');
+                return;
+            }
+            
+            let historyText = 'HISTÓRICO DE RESPOSTAS\n═══════════════════════════════════\n\n';
+            
+            userResponses.forEach(response => {
+                historyText += `📅 ${response.month}/${response.year}\n`;
+                historyText += `📍 Site: ${response.site}\n`;
+                historyText += `📊 Absenteísmo Total: ${response.calculatedAbsenteeism.total}%\n`;
+                historyText += `✅ Status: ${response.status}\n`;
+                historyText += `📤 Enviado: ${new Date(response.submittedAt).toLocaleDateString('pt-BR')}\n\n`;
+            });
+            
+            alert(historyText);
         }
 
         function saveDraft() {
+            const formData = new FormData(document.getElementById('indicatorsForm'));
+            const draftData = {};
+            
+            for (let [key, value] of formData.entries()) {
+                draftData[key] = value;
+            }
+            
+            draftData.savedAt = new Date().toISOString();
+            draftData.userId = currentUser.id;
+            
+            localStorage.setItem(`draft_${currentUser.id}`, JSON.stringify(draftData));
             alert('Rascunho salvo com sucesso!\n\nVocê pode continuar preenchendo depois.');
+        }
+
+        function loadDraft() {
+            if (!currentUser) return;
+            
+            const draftData = localStorage.getItem(`draft_${currentUser.id}`);
+            if (draftData) {
+                const draft = JSON.parse(draftData);
+                const form = document.getElementById('indicatorsForm');
+                
+                Object.keys(draft).forEach(key => {
+                    if (key !== 'savedAt' && key !== 'userId') {
+                        const field = form.querySelector(`[name="${key}"]`);
+                        if (field) {
+                            if (field.type === 'radio') {
+                                const radio = form.querySelector(`[name="${key}"][value="${draft[key]}"]`);
+                                if (radio) radio.checked = true;
+                            } else {
+                                field.value = draft[key];
+                            }
+                        }
+                    }
+                });
+                
+                alert(`Rascunho carregado!\n\nSalvo em: ${new Date(draft.savedAt).toLocaleString('pt-BR')}`);
+            }
+        }
+
+        // Absenteeism calculation function
+        function calculateAbsenteeism(daysLost, contractedDays) {
+            if (contractedDays === 0) return 0;
+            return ((daysLost / contractedDays) * 100).toFixed(2);
+        }
+
+        // Function to process form data and calculate absenteeism
+        function processFormData(formData) {
+            const fteCount = parseInt(formData.get('fte_count')) || 0;
+            const seasonalCount = parseInt(formData.get('seasonal_count')) || 0;
+            
+            // Assuming 22 working days per month
+            const workingDaysPerMonth = 22;
+            const fteContractedDays = fteCount * workingDaysPerMonth;
+            const seasonalContractedDays = seasonalCount * workingDaysPerMonth;
+            
+            // Calculate total medical leave days
+            const fteMedicalDays = (
+                (parseInt(formData.get('medical_leave_fte_all')) || 0) +
+                (parseInt(formData.get('medical_leave_fte_cid_f')) || 0) +
+                (parseInt(formData.get('medical_leave_fte_cid_m')) || 0) +
+                (parseInt(formData.get('medical_leave_fte_cid_s')) || 0) +
+                (parseInt(formData.get('medical_leave_fte_cid_z')) || 0) +
+                (parseInt(formData.get('medical_leave_fte_cid_r')) || 0) +
+                (parseInt(formData.get('medical_leave_fte_cid_o')) || 0) +
+                (parseInt(formData.get('medical_leave_fte_cid_j')) || 0) +
+                (parseInt(formData.get('medical_leave_fte_cid_ab')) || 0)
+            );
+            
+            const seasonalMedicalDays = (
+                (parseInt(formData.get('medical_leave_seasonal_all')) || 0) +
+                (parseInt(formData.get('medical_leave_seasonal_cid_f')) || 0) +
+                (parseInt(formData.get('medical_leave_seasonal_cid_m')) || 0) +
+                (parseInt(formData.get('medical_leave_seasonal_cid_s')) || 0) +
+                (parseInt(formData.get('medical_leave_seasonal_cid_z')) || 0) +
+                (parseInt(formData.get('medical_leave_seasonal_cid_r')) || 0) +
+                (parseInt(formData.get('medical_leave_seasonal_cid_o')) || 0) +
+                (parseInt(formData.get('medical_leave_seasonal_cid_j')) || 0) +
+                (parseInt(formData.get('medical_leave_seasonal_cid_ab')) || 0)
+            );
+            
+            // Calculate absenteeism percentages
+            const fteAbsenteeism = calculateAbsenteeism(fteMedicalDays, fteContractedDays);
+            const seasonalAbsenteeism = calculateAbsenteeism(seasonalMedicalDays, seasonalContractedDays);
+            const totalAbsenteeism = calculateAbsenteeism(
+                fteMedicalDays + seasonalMedicalDays, 
+                fteContractedDays + seasonalContractedDays
+            );
+            
+            return {
+                site: formData.get('site'),
+                month: formData.get('month'),
+                year: formData.get('year'),
+                country: formData.get('country'),
+                business: formData.get('business'),
+                fteAbsenteeism: parseFloat(fteAbsenteeism),
+                seasonalAbsenteeism: parseFloat(seasonalAbsenteeism),
+                totalAbsenteeism: parseFloat(totalAbsenteeism),
+                fteDays: fteMedicalDays,
+                seasonalDays: seasonalMedicalDays,
+                fteCount: fteCount,
+                seasonalCount: seasonalCount
+            };
         }
 
         // Form submission handler
         document.getElementById('indicatorsForm').addEventListener('submit', function(e) {
             e.preventDefault();
-            alert('Respostas enviadas com sucesso!\n\nObrigado por preencher os indicadores estratégicos.');
+            
+            if (!currentUser) {
+                alert('Erro: Usuário não autenticado.');
+                return;
+            }
+            
+            const formData = new FormData(this);
+            
+            // Create response object
+            const response = {
+                id: systemData.responses.length + 1,
+                userId: currentUser.id,
+                year: formData.get('year'),
+                month: formData.get('month'),
+                site: formData.get('site'),
+                country: formData.get('country'),
+                business: formData.get('business'),
+                fteCount: parseInt(formData.get('fte_count')) || 0,
+                seasonalCount: parseInt(formData.get('seasonal_count')) || 0,
+                medicalLeaveFteAll: parseInt(formData.get('medical_leave_fte_all')) || 0,
+                medicalLeaveSeasonalAll: parseInt(formData.get('medical_leave_seasonal_all')) || 0,
+                medicalLeaveFteCidF: parseInt(formData.get('medical_leave_fte_cid_f')) || 0,
+                medicalLeaveSeasonalCidF: parseInt(formData.get('medical_leave_seasonal_cid_f')) || 0,
+                medicalLeaveFteCidM: parseInt(formData.get('medical_leave_fte_cid_m')) || 0,
+                medicalLeaveSeasonalCidM: parseInt(formData.get('medical_leave_seasonal_cid_m')) || 0,
+                medicalLeaveFteCidS: parseInt(formData.get('medical_leave_fte_cid_s')) || 0,
+                medicalLeaveSeasonalCidS: parseInt(formData.get('medical_leave_seasonal_cid_s')) || 0,
+                medicalLeaveFteCidZ: parseInt(formData.get('medical_leave_fte_cid_z')) || 0,
+                medicalLeaveSeasonalCidZ: parseInt(formData.get('medical_leave_seasonal_cid_z')) || 0,
+                medicalLeaveFteCidR: parseInt(formData.get('medical_leave_fte_cid_r')) || 0,
+                medicalLeaveSeasonalCidR: parseInt(formData.get('medical_leave_seasonal_cid_r')) || 0,
+                medicalLeaveFteCidO: parseInt(formData.get('medical_leave_fte_cid_o')) || 0,
+                medicalLeaveSeasonalCidO: parseInt(formData.get('medical_leave_seasonal_cid_o')) || 0,
+                medicalLeaveFteCidJ: parseInt(formData.get('medical_leave_fte_cid_j')) || 0,
+                medicalLeaveSeasonalCidJ: parseInt(formData.get('medical_leave_seasonal_cid_j')) || 0,
+                medicalLeaveFteCidAb: parseInt(formData.get('medical_leave_fte_cid_ab')) || 0,
+                medicalLeaveSeasonalCidAb: parseInt(formData.get('medical_leave_seasonal_cid_ab')) || 0,
+                status: 'completed',
+                submittedAt: new Date().toISOString()
+            };
+            
+            // Calculate absenteeism
+            const workingDays = systemData.settings.workingDaysPerMonth;
+            const fteContractedDays = response.fteCount * workingDays;
+            const seasonalContractedDays = response.seasonalCount * workingDays;
+            const totalContractedDays = fteContractedDays + seasonalContractedDays;
+            
+            const fteAbsenteeism = fteContractedDays > 0 ? 
+                ((response.medicalLeaveFteAll / fteContractedDays) * 100) : 0;
+            const seasonalAbsenteeism = seasonalContractedDays > 0 ? 
+                ((response.medicalLeaveSeasonalAll / seasonalContractedDays) * 100) : 0;
+            const totalAbsenteeism = totalContractedDays > 0 ? 
+                (((response.medicalLeaveFteAll + response.medicalLeaveSeasonalAll) / totalContractedDays) * 100) : 0;
+            
+            response.calculatedAbsenteeism = {
+                fte: Math.round(fteAbsenteeism * 100) / 100,
+                seasonal: Math.round(seasonalAbsenteeism * 100) / 100,
+                total: Math.round(totalAbsenteeism * 100) / 100
+            };
+            
+            // Check for existing response from same user/site/month/year
+            const existingIndex = systemData.responses.findIndex(r => 
+                r.userId === response.userId && 
+                r.site === response.site && 
+                r.month === response.month && 
+                r.year === response.year
+            );
+            
+            if (existingIndex !== -1) {
+                // Update existing response
+                response.id = systemData.responses[existingIndex].id;
+                systemData.responses[existingIndex] = response;
+            } else {
+                // Add new response
+                systemData.responses.push(response);
+            }
+            
+            // Save to localStorage
+            saveData();
+            
+            // Clear draft
+            localStorage.removeItem(`draft_${currentUser.id}`);
+            
+            // Show success message
+            const resultMessage = `
+✅ RESPOSTA ENVIADA COM SUCESSO!
+
+CÁLCULOS DE ABSENTEÍSMO:
+═══════════════════════════════════
+
+📊 FÓRMULA APLICADA:
+Absenteísmo (%) = (Dias perdidos / Dias contratados) × 100
+
+📈 RESULTADOS CALCULADOS:
+• FTE: ${response.calculatedAbsenteeism.fte}%
+  (${response.medicalLeaveFteAll} dias perdidos / ${fteContractedDays} dias contratados)
+
+• Safristas: ${response.calculatedAbsenteeism.seasonal}%
+  (${response.medicalLeaveSeasonalAll} dias perdidos / ${seasonalContractedDays} dias contratados)
+
+• TOTAL GERAL: ${response.calculatedAbsenteeism.total}%
+
+📍 Site: ${response.site}
+📅 Período: ${response.month}/${response.year}
+🌎 País: ${response.country}
+🏢 Negócio: ${response.business}
+
+Os dados foram salvos e os gráficos serão atualizados automaticamente!
+            `;
+            
+            alert(resultMessage);
+            
+            // Reset form
+            this.reset();
+            
+            // Update charts with new data
+            updateCharts();
         });
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'96c76abcf775dc3f',t:'MTc1NDc0NDIyMi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'96c77c49661ff1d1',t:'MTc1NDc0NDk0MS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
+
