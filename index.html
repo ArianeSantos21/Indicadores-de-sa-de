@@ -685,9 +685,9 @@
                         },
                         {
                             id: 3,
-                            name: 'Admin Sistema',
-                            email: 'admin@saudeintegral.com',
-                            password: 'admin123',
+                            name: 'Ariane Santos',
+                            email: 'ariane.santos.ext@bayer.com',
+                            password: 'Ari92815081*',
                             type: 'admin',
                             site: 'all',
                             country: 'all',
@@ -1353,7 +1353,20 @@
         document.getElementById('forgotForm').addEventListener('submit', function(e) {
             e.preventDefault();
             const email = document.getElementById('forgotEmail').value;
-            alert(`Email de recuperação enviado para: ${email}\n\nEste é um sistema demo - as instruções foram enviadas!`);
+            
+            // Check if email exists in system
+            const user = systemData.users.find(u => u.email === email);
+            if (user) {
+                // Generate temporary password
+                const tempPassword = 'temp' + Math.random().toString(36).substr(2, 6);
+                user.password = tempPassword;
+                saveData();
+                
+                alert(`Nova senha temporária gerada!\n\nEmail: ${email}\nSenha temporária: ${tempPassword}\n\nFaça login com esta senha e altere-a imediatamente por segurança.`);
+            } else {
+                alert('Email não encontrado no sistema. Verifique o endereço digitado ou entre em contato com o administrador.');
+            }
+            
             closeForgotModal();
             closeModal();
         });
@@ -1492,9 +1505,26 @@
         function editUserResponse(userId) {
             const response = systemData.responses.find(r => r.userId === parseInt(userId));
             if (response) {
-                // In a real system, this would open an edit modal
-                console.log('Editando resposta:', response);
-                alert(`Funcionalidade de edição em desenvolvimento.\n\nResposta ID: ${response.id}\nSite: ${response.site}\nMês: ${response.month}/${response.year}`);
+                const user = systemData.users.find(u => u.id === response.userId);
+                const editDetails = `
+EDITAR RESPOSTA
+═══════════════════════════════════
+
+👤 Usuário: ${user ? user.name : 'N/A'}
+📍 Site: ${response.site}
+📅 Período: ${response.month}/${response.year}
+🏢 Negócio: ${response.business}
+
+📊 DADOS ATUAIS:
+• FTE: ${response.fteCount}
+• Safristas: ${response.seasonalCount}
+• Licenças FTE: ${response.medicalLeaveFteAll} dias
+• Licenças Safristas: ${response.medicalLeaveSeasonalAll} dias
+• Absenteísmo Total: ${response.calculatedAbsenteeism.total}%
+
+Para editar esta resposta, o usuário deve fazer login e reenviar o formulário com os dados atualizados.
+                `;
+                alert(editDetails);
             }
         }
 
@@ -1782,6 +1812,6 @@ Os dados foram salvos e os gráficos serão atualizados automaticamente!
             updateCharts();
         });
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'96c77c49661ff1d1',t:'MTc1NDc0NDk0MS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'96c78715d3e1f204',t:'MTc1NDc0NTM4My4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
 
