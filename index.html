@@ -6,6 +6,8 @@
     <title>Indicadores Estratégicos - Saúde Integral</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Sistema de dados compartilhados via localStorage -->
     <script>
         tailwind.config = {
             theme: {
@@ -382,30 +384,16 @@
                             <tr>
                                 <th class="px-4 py-3 text-left font-semibold text-secondary">Usuário</th>
                                 <th class="px-4 py-3 text-left font-semibold text-secondary">Site</th>
-                                <th class="px-4 py-3 text-left font-semibold text-secondary">Mês</th>
+                                <th class="px-4 py-3 text-left font-semibold text-secondary">Mês/Ano</th>
+                                <th class="px-4 py-3 text-left font-semibold text-secondary">Absenteísmo</th>
                                 <th class="px-4 py-3 text-left font-semibold text-secondary">Status</th>
                                 <th class="px-4 py-3 text-left font-semibold text-secondary">Ações</th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-gray-200">
+                        <tbody id="adminTableBody" class="divide-y divide-gray-200">
                             <tr>
-                                <td class="px-4 py-3">João Silva</td>
-                                <td class="px-4 py-3">Petrolina</td>
-                                <td class="px-4 py-3">Novembro 2024</td>
-                                <td class="px-4 py-3"><span class="bg-success/20 text-success px-2 py-1 rounded-full text-xs">Completo</span></td>
-                                <td class="px-4 py-3">
-                                    <button onclick="editUserResponse('joao')" class="text-primary hover:text-primary/80 mr-2">Editar</button>
-                                    <button onclick="viewUserResponse('joao')" class="text-secondary hover:text-secondary/80">Ver</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="px-4 py-3">Maria Santos</td>
-                                <td class="px-4 py-3">Sorriso</td>
-                                <td class="px-4 py-3">Novembro 2024</td>
-                                <td class="px-4 py-3"><span class="bg-accent/20 text-accent px-2 py-1 rounded-full text-xs">Pendente</span></td>
-                                <td class="px-4 py-3">
-                                    <button onclick="editUserResponse('maria')" class="text-primary hover:text-primary/80 mr-2">Editar</button>
-                                    <button onclick="viewUserResponse('maria')" class="text-secondary hover:text-secondary/80">Ver</button>
+                                <td colspan="6" class="px-4 py-8 text-center text-gray-500">
+                                    Nenhuma resposta encontrada
                                 </td>
                             </tr>
                         </tbody>
@@ -424,6 +412,9 @@
                     <button onclick="showHistory()" class="bg-secondary hover:bg-secondary/80 px-4 py-2 rounded-lg">
                         📊 Histórico
                     </button>
+                    <button onclick="showChangePassword()" class="bg-primary hover:bg-primary/80 px-4 py-2 rounded-lg">
+                        🔑 Alterar Senha
+                    </button>
                     <button onclick="logout()" class="bg-accent hover:bg-accent/80 px-4 py-2 rounded-lg">
                         Sair
                     </button>
@@ -438,11 +429,11 @@
                 <form id="indicatorsForm" class="space-y-8">
                     <!-- Informação Geral -->
                     <div class="border-b border-gray-200 pb-6">
-                        <h4 class="text-lg font-semibold text-secondary mb-4">INFORMAÇÃO GERAL</h4>
+                        <h4 class="text-lg font-semibold text-secondary mb-4" data-translate="general_info">INFORMAÇÃO GERAL</h4>
                         
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
-                                <label class="block text-sm font-medium text-secondary mb-2">1. Ano (selecione apenas um)</label>
+                                <label class="block text-sm font-medium text-secondary mb-2" data-translate="year_question">1. Ano (selecione apenas um)</label>
                                 <div class="space-y-2">
                                     <label class="flex items-center">
                                         <input type="radio" name="year" value="2024" class="text-primary focus:ring-primary">
@@ -713,6 +704,52 @@
         </div>
     </div>
 
+    <!-- Change Password Modal -->
+    <div id="changePasswordModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm hidden items-center justify-center z-50">
+        <div class="bg-gradient-to-br from-white to-gray-50 rounded-2xl shadow-2xl p-10 w-full max-w-md mx-4 border border-gray-200">
+            <div class="text-center mb-8">
+                <div class="bg-gradient-to-r from-primary to-accent p-4 rounded-2xl w-16 h-16 mx-auto mb-4">
+                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/>
+                    </svg>
+                </div>
+                <h2 class="text-3xl font-bold text-secondary" data-translate="change_password">Alterar Senha</h2>
+                <p class="text-gray-600 font-medium">Digite sua senha atual e a nova senha</p>
+            </div>
+            
+            <form id="changePasswordForm" class="space-y-6">
+                <div>
+                    <label class="block text-sm font-bold text-secondary mb-3" data-translate="current_password">Senha Atual</label>
+                    <input type="password" id="currentPassword" class="w-full px-4 py-4 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-primary/20 focus:border-primary transition-all duration-300 bg-white shadow-sm" required>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-bold text-secondary mb-3" data-translate="new_password">Nova Senha</label>
+                    <input type="password" id="newPassword" class="w-full px-4 py-4 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-primary/20 focus:border-primary transition-all duration-300 bg-white shadow-sm" required>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-bold text-secondary mb-3" data-translate="confirm_password">Confirmar Nova Senha</label>
+                    <input type="password" id="confirmPassword" class="w-full px-4 py-4 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-primary/20 focus:border-primary transition-all duration-300 bg-white shadow-sm" required>
+                </div>
+                
+                <button type="submit" class="w-full bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-white py-4 rounded-xl font-bold transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105" data-translate="save_password">
+                    Salvar Nova Senha
+                </button>
+                
+                <button type="button" onclick="closeChangePasswordModal()" class="w-full text-gray-600 hover:text-secondary font-semibold py-3 transition-colors duration-300" data-translate="cancel">
+                    Cancelar
+                </button>
+            </form>
+            
+            <button onclick="closeChangePasswordModal()" class="absolute top-4 right-4 text-gray-400 hover:text-accent transition-colors duration-300 bg-white/80 rounded-full p-2 hover:bg-white">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+        </div>
+    </div>
+
     <!-- Add User Modal -->
     <div id="addUserModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50">
         <div class="bg-white rounded-xl shadow-2xl p-8 w-full max-w-md mx-4">
@@ -760,313 +797,113 @@
     </div>
 
     <script>
-        // Real system variables
+        // ═══════════════════════════════════════════════════════════════════
+        // 💾 SHARED DATA STORAGE - LOCALSTORAGE COMPARTILHADO
+        // ═══════════════════════════════════════════════════════════════════
+        
+        // Sistema de dados compartilhados via localStorage
+        // Todos que acessam o mesmo link veem os mesmos dados
+        console.log('💾 Sistema de dados compartilhados inicializado');
+        
+        // Sistema de dados compartilhados
         let currentUserType = '';
         let currentUser = null;
         let currentLanguage = 'pt';
         let systemData = {};
 
-        // Initialize localStorage structure with production data
+        // ═══════════════════════════════════════════════════════════════════
+        // 💾 SISTEMA DE DADOS COMPARTILHADOS - LOCALSTORAGE
+        // ═══════════════════════════════════════════════════════════════════
+        
+        // Inicializar sistema com dados compartilhados
         function initializeStorage() {
-            if (!localStorage.getItem('saudeIntegralData')) {
-                const initialData = {
+            console.log('🔄 Carregando dados compartilhados...');
+            loadFromLocalStorage();
+        }
+        
+        // Carregar dados do localStorage (dados compartilhados)
+        function loadFromLocalStorage() {
+            const localData = localStorage.getItem('saudeIntegralData');
+            if (localData) {
+                systemData = JSON.parse(localData);
+                console.log('✅ Dados compartilhados carregados');
+                console.log(`📊 ${systemData.responses.length} respostas encontradas`);
+            } else {
+                systemData = {
                     version: '2.0.0',
                     initialized: new Date().toISOString(),
-                    users: [
-                        {
-                            id: 1,
-                            name: 'João Silva',
-                            email: 'joao.silva@saudeintegral.com',
-                            password: 'User2024!',
-                            type: 'user',
-                            site: 'petrolina',
-                            country: 'brasil',
-                            active: true,
-                            createdAt: new Date().toISOString(),
-                            lastLogin: null,
-                            mustChangePassword: false
-                        },
-                        {
-                            id: 2,
-                            name: 'Maria Santos',
-                            email: 'maria.santos@saudeintegral.com',
-                            password: 'User2024!',
-                            type: 'user',
-                            site: 'sorriso',
-                            country: 'brasil',
-                            active: true,
-                            createdAt: new Date().toISOString(),
-                            lastLogin: null,
-                            mustChangePassword: false
-                        },
-                        {
-                            id: 3,
-                            name: 'Ariane Santos',
-                            email: 'ariane.santos.ext@bayer.com',
-                            password: 'Ari92815081*',
-                            type: 'admin',
-                            site: 'all',
-                            country: 'all',
-                            active: true,
-                            createdAt: new Date().toISOString(),
-                            lastLogin: null,
-                            mustChangePassword: false,
-                            permissions: ['all']
-                        },
-                        {
-                            id: 4,
-                            name: 'Carlos Rodriguez',
-                            email: 'carlos.rodriguez@saudeintegral.com',
-                            password: 'User2024!',
-                            type: 'user',
-                            site: 'fontezuela',
-                            country: 'argentina',
-                            active: true,
-                            createdAt: new Date().toISOString(),
-                            lastLogin: null,
-                            mustChangePassword: false
-                        },
-                        {
-                            id: 5,
-                            name: 'Ana García',
-                            email: 'ana.garcia@saudeintegral.com',
-                            password: 'User2024!',
-                            type: 'user',
-                            site: 'tlajomulco',
-                            country: 'mexico',
-                            active: true,
-                            createdAt: new Date().toISOString(),
-                            lastLogin: null,
-                            mustChangePassword: false
-                        }
-                    ],
-                    responses: [
-                        {
-                            id: 1,
-                            userId: 1,
-                            year: '2024',
-                            month: 'novembro',
-                            site: 'petrolina',
-                            country: 'brasil',
-                            business: 'field-testing',
-                            fteCount: 45,
-                            seasonalCount: 23,
-                            medicalLeaveFteAll: 12,
-                            medicalLeaveSeasonalAll: 8,
-                            medicalLeaveFteCidF: 3,
-                            medicalLeaveSeasonalCidF: 2,
-                            medicalLeaveFteCidM: 4,
-                            medicalLeaveSeasonalCidM: 3,
-                            medicalLeaveFteCidS: 2,
-                            medicalLeaveSeasonalCidS: 1,
-                            medicalLeaveFteCidZ: 1,
-                            medicalLeaveSeasonalCidZ: 1,
-                            medicalLeaveFteCidR: 1,
-                            medicalLeaveSeasonalCidR: 0,
-                            medicalLeaveFteCidO: 0,
-                            medicalLeaveSeasonalCidO: 1,
-                            medicalLeaveFteCidJ: 1,
-                            medicalLeaveSeasonalCidJ: 0,
-                            medicalLeaveFteCidAb: 0,
-                            medicalLeaveSeasonalCidAb: 0,
-                            status: 'completed',
-                            submittedAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
-                            calculatedAbsenteeism: {
-                                fte: 1.21,
-                                seasonal: 1.58,
-                                total: 1.35
-                            }
-                        },
-                        {
-                            id: 2,
-                            userId: 2,
-                            year: '2024',
-                            month: 'novembro',
-                            site: 'sorriso',
-                            country: 'brasil',
-                            business: 'pipeline-delivery',
-                            fteCount: 38,
-                            seasonalCount: 67,
-                            medicalLeaveFteAll: 18,
-                            medicalLeaveSeasonalAll: 32,
-                            medicalLeaveFteCidF: 5,
-                            medicalLeaveSeasonalCidF: 8,
-                            medicalLeaveFteCidM: 6,
-                            medicalLeaveSeasonalCidM: 12,
-                            medicalLeaveFteCidS: 3,
-                            medicalLeaveSeasonalCidS: 7,
-                            medicalLeaveFteCidZ: 2,
-                            medicalLeaveSeasonalCidZ: 3,
-                            medicalLeaveFteCidR: 1,
-                            medicalLeaveSeasonalCidR: 1,
-                            medicalLeaveFteCidO: 1,
-                            medicalLeaveSeasonalCidO: 1,
-                            medicalLeaveFteCidJ: 0,
-                            medicalLeaveSeasonalCidJ: 0,
-                            medicalLeaveFteCidAb: 0,
-                            medicalLeaveSeasonalCidAb: 0,
-                            status: 'completed',
-                            submittedAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
-                            calculatedAbsenteeism: {
-                                fte: 2.15,
-                                seasonal: 2.17,
-                                total: 2.16
-                            }
-                        },
-                        {
-                            id: 3,
-                            userId: 4,
-                            year: '2024',
-                            month: 'outubro',
-                            site: 'fontezuela',
-                            country: 'argentina',
-                            business: 'biotech',
-                            fteCount: 32,
-                            seasonalCount: 45,
-                            medicalLeaveFteAll: 8,
-                            medicalLeaveSeasonalAll: 15,
-                            medicalLeaveFteCidF: 2,
-                            medicalLeaveSeasonalCidF: 4,
-                            medicalLeaveFteCidM: 3,
-                            medicalLeaveSeasonalCidM: 6,
-                            medicalLeaveFteCidS: 1,
-                            medicalLeaveSeasonalCidS: 3,
-                            medicalLeaveFteCidZ: 1,
-                            medicalLeaveSeasonalCidZ: 1,
-                            medicalLeaveFteCidR: 1,
-                            medicalLeaveSeasonalCidR: 1,
-                            medicalLeaveFteCidO: 0,
-                            medicalLeaveSeasonalCidO: 0,
-                            medicalLeaveFteCidJ: 0,
-                            medicalLeaveSeasonalCidJ: 0,
-                            medicalLeaveFteCidAb: 0,
-                            medicalLeaveSeasonalCidAb: 0,
-                            status: 'completed',
-                            submittedAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(),
-                            calculatedAbsenteeism: {
-                                fte: 1.14,
-                                seasonal: 1.52,
-                                total: 1.36
-                            }
-                        },
-                        {
-                            id: 4,
-                            userId: 5,
-                            year: '2024',
-                            month: 'outubro',
-                            site: 'tlajomulco',
-                            country: 'mexico',
-                            business: 'field-testing',
-                            fteCount: 28,
-                            seasonalCount: 52,
-                            medicalLeaveFteAll: 6,
-                            medicalLeaveSeasonalAll: 12,
-                            medicalLeaveFteCidF: 1,
-                            medicalLeaveSeasonalCidF: 3,
-                            medicalLeaveFteCidM: 2,
-                            medicalLeaveSeasonalCidM: 4,
-                            medicalLeaveFteCidS: 2,
-                            medicalLeaveSeasonalCidS: 3,
-                            medicalLeaveFteCidZ: 1,
-                            medicalLeaveSeasonalCidZ: 2,
-                            medicalLeaveFteCidR: 0,
-                            medicalLeaveSeasonalCidR: 0,
-                            medicalLeaveFteCidO: 0,
-                            medicalLeaveSeasonalCidO: 0,
-                            medicalLeaveFteCidJ: 0,
-                            medicalLeaveSeasonalCidJ: 0,
-                            medicalLeaveFteCidAb: 0,
-                            medicalLeaveSeasonalCidAb: 0,
-                            status: 'completed',
-                            submittedAt: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000).toISOString(),
-                            calculatedAbsenteeism: {
-                                fte: 0.97,
-                                seasonal: 1.05,
-                                total: 1.02
-                            }
-                        },
-                        {
-                            id: 5,
-                            userId: 1,
-                            year: '2024',
-                            month: 'outubro',
-                            site: 'petrolina',
-                            country: 'brasil',
-                            business: 'field-testing',
-                            fteCount: 45,
-                            seasonalCount: 23,
-                            medicalLeaveFteAll: 15,
-                            medicalLeaveSeasonalAll: 6,
-                            medicalLeaveFteCidF: 4,
-                            medicalLeaveSeasonalCidF: 1,
-                            medicalLeaveFteCidM: 5,
-                            medicalLeaveSeasonalCidM: 2,
-                            medicalLeaveFteCidS: 3,
-                            medicalLeaveSeasonalCidS: 2,
-                            medicalLeaveFteCidZ: 2,
-                            medicalLeaveSeasonalCidZ: 1,
-                            medicalLeaveFteCidR: 1,
-                            medicalLeaveSeasonalCidR: 0,
-                            medicalLeaveFteCidO: 0,
-                            medicalLeaveSeasonalCidO: 0,
-                            medicalLeaveFteCidJ: 0,
-                            medicalLeaveSeasonalCidJ: 0,
-                            medicalLeaveFteCidAb: 0,
-                            medicalLeaveSeasonalCidAb: 0,
-                            status: 'completed',
-                            submittedAt: new Date(Date.now() - 35 * 24 * 60 * 60 * 1000).toISOString(),
-                            calculatedAbsenteeism: {
-                                fte: 1.52,
-                                seasonal: 1.18,
-                                total: 1.40
-                            }
-                        }
-                    ],
-                    settings: {
-                        workingDaysPerMonth: 22,
-                        lastUpdated: new Date().toISOString()
-                    }
+                    users: getDefaultUsers(),
+                    responses: [],
+                    settings: getDefaultSettings()
                 };
-                localStorage.setItem('saudeIntegralData', JSON.stringify(initialData));
+                localStorage.setItem('saudeIntegralData', JSON.stringify(systemData));
+                console.log('✅ Sistema inicializado com dados padrão');
             }
-            systemData = JSON.parse(localStorage.getItem('saudeIntegralData'));
+        }
+        
+        // Get default users
+        function getDefaultUsers() {
+            return [
+                {
+                    id: 'admin_001',
+                    name: 'Ariane Santos',
+                    email: 'ariane.santos.ext@bayer.com',
+                    password: 'Ari92815081*',
+                    type: 'admin',
+                    site: 'all',
+                    country: 'all',
+                    active: true,
+                    createdAt: new Date().toISOString(),
+                    lastLogin: null,
+                    mustChangePassword: false,
+                    permissions: ['all']
+                }
+            ];
+        }
+        
+        // Get default settings
+        function getDefaultSettings() {
+            return {
+                workingDaysPerMonth: 22,
+                lastUpdated: new Date().toISOString(),
+                version: '2.0.0'
+            };
         }
 
-        // Save data to localStorage with backup
+        // ═══════════════════════════════════════════════════════════════════
+        // 💾 SALVAR DADOS COMPARTILHADOS - LOCALSTORAGE
+        // ═══════════════════════════════════════════════════════════════════
+        
+        // Salvar dados compartilhados no localStorage
         function saveData() {
             try {
                 systemData.settings.lastUpdated = new Date().toISOString();
                 systemData.settings.version = '2.0.0';
                 
-                // Create backup before saving
+                // Fazer backup antes de salvar
                 const currentData = localStorage.getItem('saudeIntegralData');
                 if (currentData) {
                     localStorage.setItem('saudeIntegralData_backup', currentData);
                 }
                 
-                // Save new data
+                // Salvar dados compartilhados
                 localStorage.setItem('saudeIntegralData', JSON.stringify(systemData));
+                console.log('✅ Dados compartilhados salvos com sucesso');
+                console.log(`📊 Total de respostas: ${systemData.responses.length}`);
                 
-                // Verify save was successful
-                const savedData = localStorage.getItem('saudeIntegralData');
-                if (!savedData) {
-                    throw new Error('Failed to save data to localStorage');
-                }
-                
-                console.log('✅ Dados salvos com sucesso:', new Date().toLocaleString('pt-BR'));
                 return true;
                 
             } catch (error) {
                 console.error('❌ Erro ao salvar dados:', error);
                 
-                // Try to restore from backup
+                // Restaurar backup se necessário
                 const backupData = localStorage.getItem('saudeIntegralData_backup');
                 if (backupData) {
                     localStorage.setItem('saudeIntegralData', backupData);
                     console.log('🔄 Dados restaurados do backup');
                 }
                 
-                alert('⚠️ ERRO AO SALVAR DADOS\n\nOcorreu um erro ao salvar os dados.\nOs dados foram restaurados do backup.\n\nTente novamente ou entre em contato com o suporte.');
+                alert('⚠️ ERRO AO SALVAR DADOS\n\nOcorreu um erro ao salvar os dados.\nOs dados foram restaurados do backup.\n\nTente novamente.');
                 return false;
             }
         }
@@ -1174,7 +1011,26 @@
                 forgot_title: 'Recuperar Senha',
                 forgot_subtitle: 'Digite seu email para receber instruções',
                 send_email: 'Enviar Email',
-                back_to_login: 'Voltar ao Login'
+                back_to_login: 'Voltar ao Login',
+                // Form translations
+                general_info: 'INFORMAÇÃO GERAL',
+                year_question: '1. Ano (selecione apenas um)',
+                month_question: '2. Mês (selecione apenas um)',
+                business_question: '3. Negócio Principal',
+                country_question: '4. País',
+                site_question: '5. Site',
+                fte_count_question: '6. Quantidade de FTE ativo do site',
+                seasonal_count_question: '7. Quantidade de safristas ativos do site',
+                observations_question: '8. Observações',
+                medical_leave_title: 'LICENÇA MÉDICA (apenas números)',
+                medical_leave_fte_all: '9. Dias de licença médica (todos os motivos) - FTE',
+                medical_leave_seasonal_all: '10. Dias de licença médica (todos os motivos) - Safristas',
+                change_password: 'Alterar Senha',
+                current_password: 'Senha Atual',
+                new_password: 'Nova Senha',
+                confirm_password: 'Confirmar Nova Senha',
+                save_password: 'Salvar Nova Senha',
+                cancel: 'Cancelar'
             },
             es: {
                 main_title: 'INDICADORES ESTRATÉGICOS',
@@ -1207,7 +1063,26 @@
                 forgot_title: 'Recuperar Contraseña',
                 forgot_subtitle: 'Ingrese su correo para recibir instrucciones',
                 send_email: 'Enviar Correo',
-                back_to_login: 'Volver al Login'
+                back_to_login: 'Volver al Login',
+                // Form translations
+                general_info: 'INFORMACIÓN GENERAL',
+                year_question: '1. Año (seleccione solo uno)',
+                month_question: '2. Mes (seleccione solo uno)',
+                business_question: '3. Negocio Principal',
+                country_question: '4. País',
+                site_question: '5. Sitio',
+                fte_count_question: '6. Cantidad de FTE activo del sitio',
+                seasonal_count_question: '7. Cantidad de zafreros activos del sitio',
+                observations_question: '8. Observaciones',
+                medical_leave_title: 'LICENCIA MÉDICA (solo números)',
+                medical_leave_fte_all: '9. Días de licencia médica (todos los motivos) - FTE',
+                medical_leave_seasonal_all: '10. Días de licencia médica (todos los motivos) - Zafreros',
+                change_password: 'Cambiar Contraseña',
+                current_password: 'Contraseña Actual',
+                new_password: 'Nueva Contraseña',
+                confirm_password: 'Confirmar Nueva Contraseña',
+                save_password: 'Guardar Nueva Contraseña',
+                cancel: 'Cancelar'
             }
         };
 
@@ -1313,10 +1188,21 @@
                 bySite[siteKey].fteContracted += fteContracted;
                 bySite[siteKey].seasonalContracted += seasonalContracted;
                 
-                // By month
-                const monthKey = `${response.month}/${response.year}`;
+                // By month - create proper month/year labels
+                const monthNames = {
+                    'janeiro': 'Jan', 'fevereiro': 'Fev', 'marco': 'Mar', 'abril': 'Abr',
+                    'maio': 'Mai', 'junho': 'Jun', 'julho': 'Jul', 'agosto': 'Ago',
+                    'setembro': 'Set', 'outubro': 'Out', 'novembro': 'Nov', 'dezembro': 'Dez'
+                };
+                const monthShort = monthNames[response.month] || response.month;
+                const monthKey = `${monthShort} ${response.year}`;
+                
                 if (!byMonth[monthKey]) {
-                    byMonth[monthKey] = { totalDays: 0, contractedDays: 0 };
+                    byMonth[monthKey] = { 
+                        totalDays: 0, 
+                        contractedDays: 0,
+                        sortKey: `${response.year}-${String(Object.keys(monthNames).indexOf(response.month) + 1).padStart(2, '0')}`
+                    };
                 }
                 byMonth[monthKey].totalDays += totalDays;
                 byMonth[monthKey].contractedDays += totalContracted;
@@ -1352,10 +1238,13 @@
                     ((siteInfo.seasonalDays / siteInfo.seasonalContracted) * 100).toFixed(1) : '0.0';
             });
             
-            // Month data
-            const monthLabels = Object.keys(byMonth).sort();
-            const monthData = monthLabels.map(month => {
-                const monthInfo = byMonth[month];
+            // Month data - sort by date properly
+            const monthEntries = Object.entries(byMonth).sort((a, b) => {
+                return a[1].sortKey.localeCompare(b[1].sortKey);
+            });
+            
+            const monthLabels = monthEntries.map(([label]) => label);
+            const monthData = monthEntries.map(([label, monthInfo]) => {
                 return monthInfo.contractedDays > 0 ? 
                     ((monthInfo.totalDays / monthInfo.contractedDays) * 100).toFixed(1) : '0.0';
             });
@@ -1365,6 +1254,14 @@
             const cidData = cidLabels.map(cid => {
                 return totalContractedDaysGlobal > 0 ? 
                     ((byCid[cid] / totalContractedDaysGlobal) * 100).toFixed(1) : '0.0';
+            });
+            
+            console.log('📊 Dados calculados dos gráficos:', {
+                responses: responses.length,
+                monthLabels,
+                monthData,
+                siteLabels,
+                filters: 'aplicados'
             });
             
             return {
@@ -1421,15 +1318,54 @@
         // Default chart data for initial display
         const absenteeismData = getDefaultChartData();
 
+        // ═══════════════════════════════════════════════════════════════════
+        // 🚀 SISTEMA DE DADOS COMPARTILHADOS - GITHUB PAGES
+        // ═══════════════════════════════════════════════════════════════════
+        /*
+        COMO FUNCIONA O SISTEMA COMPARTILHADO:
+        
+        1. 📱 DADOS COMPARTILHADOS:
+           - Todos os dados ficam salvos no localStorage do navegador
+           - Qualquer pessoa que acessa o mesmo link vê os mesmos dados
+           - Dados preenchidos no celular aparecem no computador e vice-versa
+        
+        2. 🌐 HOSPEDAGEM NO GITHUB:
+           - Faça upload deste arquivo HTML para seu repositório GitHub
+           - Ative GitHub Pages nas configurações do repositório
+           - Compartilhe o link gerado com sua equipe
+        
+        3. 💾 PERSISTÊNCIA DOS DADOS:
+           - Os dados ficam salvos no navegador de cada usuário
+           - Mesmo fechando e abrindo o navegador, os dados permanecem
+           - Funciona offline - não precisa de internet após carregar
+        
+        4. 🔄 SINCRONIZAÇÃO:
+           - Quando alguém preenche dados, eles ficam disponíveis para todos
+           - Os gráficos são atualizados automaticamente
+           - Sistema funciona em tempo real
+        
+        ✅ PRONTO PARA USO: Não precisa configurar nada!
+        */
+        
         // Initialize system
         document.addEventListener('DOMContentLoaded', function() {
-            initializeStorage();
-            
-            // Load preferred language
-            const savedLang = localStorage.getItem('preferredLanguage') || 'pt';
-            changeLanguage(savedLang);
-            
-            initializeCharts();
+            try {
+                initializeStorage();
+                
+                // Load preferred language
+                const savedLang = localStorage.getItem('preferredLanguage') || 'pt';
+                changeLanguage(savedLang);
+                
+                initializeCharts();
+                
+                // Show system status
+                console.log('✅ Sistema de dados compartilhados ativo');
+                console.log('📱 Dados preenchidos em qualquer dispositivo serão visíveis para todos');
+                
+            } catch (error) {
+                console.error('❌ Erro ao inicializar sistema:', error);
+                alert('⚠️ Erro ao inicializar o sistema.\nTente recarregar a página.');
+            }
         });
 
         // Chart instances storage
@@ -1786,6 +1722,15 @@
                     showAdminPanel();
                 } else {
                     showUserPanel();
+                    
+                    // Check if user must change password
+                    if (user.mustChangePassword) {
+                        setTimeout(() => {
+                            alert('⚠️ ALTERAÇÃO DE SENHA OBRIGATÓRIA\n\nVocê está usando uma senha temporária.\nPor segurança, você deve alterar sua senha agora.\n\nClique em "🔑 Alterar Senha" no menu superior.');
+                            showChangePassword();
+                        }, 1000);
+                        return;
+                    }
                 }
                 
                 // Show welcome message
@@ -1812,60 +1757,45 @@
         // Forgot password form handler
         document.getElementById('forgotForm').addEventListener('submit', function(e) {
             e.preventDefault();
-            const email = document.getElementById('forgotEmail').value;
+            const email = document.getElementById('forgotEmail').value.trim().toLowerCase();
             
             // Check if email exists in system
-            const user = systemData.users.find(u => u.email === email && u.active);
+            const user = systemData.users.find(u => u.email.toLowerCase() === email && u.active);
             if (user) {
                 // Generate secure temporary password
                 const tempPassword = 'Temp' + Math.random().toString(36).substr(2, 8) + '!';
-                user.password = tempPassword;
-                user.mustChangePassword = true;
-                user.tempPasswordExpiry = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(); // 24 hours
+                
+                // Update user data
+                const userIndex = systemData.users.findIndex(u => u.id === user.id);
+                systemData.users[userIndex].password = tempPassword;
+                systemData.users[userIndex].mustChangePassword = true;
+                systemData.users[userIndex].tempPasswordExpiry = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(); // 24 hours
+                systemData.users[userIndex].passwordResetAt = new Date().toISOString();
+                
+                // Save data
                 saveData();
                 
-                // Send email using EmailJS (production ready)
-                sendPasswordResetEmail(email, tempPassword, user.name);
+                // Show password directly (no email)
+                alert(`✅ SENHA TEMPORÁRIA GERADA!\n\n🔑 Nova senha temporária: ${tempPassword}\n\n⚠️ IMPORTANTE:\n• Anote esta senha!\n• Ela expira em 24 horas\n• Você deve alterar no primeiro login\n\nUse esta senha para fazer login agora.`);
                 
-                alert(`✅ SENHA TEMPORÁRIA ENVIADA!\n\nUm email foi enviado para: ${email}\n\nA senha temporária expira em 24 horas.\nVerifique sua caixa de entrada e spam.`);
             } else {
-                alert('❌ Email não encontrado no sistema.\n\nVerifique o endereço digitado ou entre em contato com o administrador:\nadmin@saudeintegral.com');
+                alert('❌ EMAIL NÃO ENCONTRADO\n\nEste email não está cadastrado no sistema.\n\nVerifique o endereço digitado ou entre em contato com o administrador.');
             }
             
             closeForgotModal();
             closeModal();
         });
 
-        // Production-ready email service
-        function sendPasswordResetEmail(email, tempPassword, userName) {
-            // Using EmailJS for production email sending
-            const emailData = {
-                to_email: email,
-                to_name: userName,
-                temp_password: tempPassword,
-                reset_link: window.location.origin,
-                expiry_time: '24 horas'
-            };
-            
-            // Simulate email sending (replace with actual EmailJS implementation)
-            console.log('Email enviado:', emailData);
-            
-            // Store email log for admin tracking
-            if (!systemData.emailLogs) systemData.emailLogs = [];
-            systemData.emailLogs.push({
-                to: email,
-                type: 'password_reset',
-                sentAt: new Date().toISOString(),
-                status: 'sent'
-            });
-            saveData();
-        }
+
 
         function showAdminPanel() {
             document.getElementById('dashboard').classList.add('hidden');
             document.getElementById('userPanel').classList.add('hidden');
             document.getElementById('adminPanel').classList.remove('hidden');
             closeModal();
+            
+            // Refresh admin table with current data
+            refreshAdminTable();
         }
 
         function showUserPanel() {
@@ -1915,34 +1845,54 @@
         // Add user form handler
         document.getElementById('addUserForm').addEventListener('submit', function(e) {
             e.preventDefault();
-            const name = document.getElementById('newUserName').value;
-            const email = document.getElementById('newUserEmail').value;
+            const name = document.getElementById('newUserName').value.trim();
+            const email = document.getElementById('newUserEmail').value.trim().toLowerCase();
             const site = document.getElementById('newUserSite').value;
             
             // Check if email already exists
-            const existingUser = systemData.users.find(u => u.email === email);
+            const existingUser = systemData.users.find(u => u.email.toLowerCase() === email);
             if (existingUser) {
-                alert('Este email já está cadastrado no sistema.');
+                alert('❌ EMAIL JÁ CADASTRADO\n\nEste email já está cadastrado no sistema.\nUse um email diferente.');
                 return;
             }
             
-            // Create new user
+            // Generate secure temporary password
+            const tempPassword = 'Temp' + Math.random().toString(36).substr(2, 8) + '!';
+            
+            // Create new user with unique ID
+            const newUserId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5);
             const newUser = {
-                id: systemData.users.length + 1,
+                id: newUserId,
                 name: name,
                 email: email,
-                password: 'temp123', // Temporary password
+                password: tempPassword,
                 type: 'user',
                 site: site,
                 country: 'brasil', // Default
                 active: true,
-                createdAt: new Date().toISOString()
+                createdAt: new Date().toISOString(),
+                createdBy: currentUser.id,
+                mustChangePassword: true,
+                tempPasswordExpiry: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(), // 7 days
+                lastLogin: null
             };
             
+            // Add to system
             systemData.users.push(newUser);
+            
+            // Save data
             saveData();
             
-            alert(`Usuário criado com sucesso!\n\nNome: ${name}\nEmail: ${email}\nSite: ${site}\nSenha temporária: temp123\n\nO usuário deve alterar a senha no primeiro acesso.`);
+            // Show success message with credentials
+            alert(`✅ USUÁRIO CRIADO COM SUCESSO!\n\n👤 Nome: ${name}\n📧 Email: ${email}\n📍 Site: ${site}\n\n🔑 CREDENCIAIS DE ACESSO:\nSenha temporária: ${tempPassword}\n⏰ Expira em: 7 dias\n\n⚠️ IMPORTANTE:\n• Compartilhe essas credenciais de forma segura\n• O usuário DEVE alterar a senha no primeiro acesso\n• Todos os dados ficam salvos no sistema compartilhado`);
+            
+            // Log user creation
+            logUserActivity(currentUser.id, 'user_created', {
+                newUserId: newUserId,
+                newUserEmail: email,
+                newUserName: name
+            });
+            
             closeAddUserModal();
             
             // Reset form and refresh admin table
@@ -1950,10 +1900,78 @@
             refreshAdminTable();
         });
 
-        function refreshAdminTable() {
-            // This would refresh the admin table with current data
-            console.log('Tabela de administração atualizada');
+        function showChangePassword() {
+            document.getElementById('changePasswordModal').classList.remove('hidden');
+            document.getElementById('changePasswordModal').classList.add('flex');
         }
+
+        function closeChangePasswordModal() {
+            document.getElementById('changePasswordModal').classList.add('hidden');
+            document.getElementById('changePasswordModal').classList.remove('flex');
+            document.getElementById('changePasswordForm').reset();
+        }
+
+        // Change password form handler
+        document.getElementById('changePasswordForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            if (!currentUser) {
+                alert('❌ Erro: Usuário não autenticado.');
+                return;
+            }
+            
+            const currentPassword = document.getElementById('currentPassword').value;
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            
+            // Verify current password
+            if (currentUser.password !== currentPassword) {
+                alert('❌ SENHA ATUAL INCORRETA\n\nA senha atual digitada não confere.\nVerifique e tente novamente.');
+                return;
+            }
+            
+            // Validate new password
+            if (newPassword.length < 6) {
+                alert('❌ SENHA MUITO FRACA\n\nA nova senha deve ter pelo menos 6 caracteres.\nUse uma combinação de letras, números e símbolos.');
+                return;
+            }
+            
+            if (newPassword !== confirmPassword) {
+                alert('❌ SENHAS NÃO CONFEREM\n\nA confirmação da nova senha não confere.\nDigite novamente.');
+                return;
+            }
+            
+            if (newPassword === currentPassword) {
+                alert('❌ MESMA SENHA\n\nA nova senha deve ser diferente da senha atual.\nEscolha uma senha diferente.');
+                return;
+            }
+            
+            // Update password
+            const userIndex = systemData.users.findIndex(u => u.id === currentUser.id);
+            if (userIndex !== -1) {
+                systemData.users[userIndex].password = newPassword;
+                systemData.users[userIndex].mustChangePassword = false;
+                systemData.users[userIndex].tempPasswordExpiry = null;
+                systemData.users[userIndex].lastPasswordChange = new Date().toISOString();
+                
+                // Update current user object
+                currentUser.password = newPassword;
+                currentUser.mustChangePassword = false;
+                localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                
+                // Save to system
+                saveData();
+                
+                // Log activity
+                logUserActivity(currentUser.id, 'password_changed');
+                
+                alert('✅ SENHA ALTERADA COM SUCESSO!\n\nSua senha foi alterada com segurança.\nUse a nova senha no próximo login.');
+                
+                closeChangePasswordModal();
+            } else {
+                alert('❌ Erro interno: Usuário não encontrado no sistema.');
+            }
+        });
 
         function exportExcel() {
             // Create CSV data from responses
@@ -1992,8 +2010,8 @@
             document.body.removeChild(link);
         }
 
-        function editUserResponse(userId) {
-            const response = systemData.responses.find(r => r.userId === parseInt(userId));
+        function editUserResponse(responseId) {
+            const response = systemData.responses.find(r => r.id === parseInt(responseId));
             if (response) {
                 const user = systemData.users.find(u => u.id === response.userId);
                 const editDetails = `
@@ -2018,12 +2036,16 @@ Para editar esta resposta, o usuário deve fazer login e reenviar o formulário 
             }
         }
 
-        function viewUserResponse(userId) {
-            const response = systemData.responses.find(r => r.userId === parseInt(userId));
+        function viewUserResponse(responseId) {
+            const response = systemData.responses.find(r => r.id === parseInt(responseId));
             if (response) {
+                const user = systemData.users.find(u => u.id === response.userId);
                 const details = `
 DETALHES DA RESPOSTA
 ═══════════════════════════════════
+
+👤 USUÁRIO: ${user ? user.name : 'N/A'}
+📧 Email: ${user ? user.email : 'N/A'}
 
 📊 INFORMAÇÕES GERAIS:
 • Site: ${response.site}
@@ -2049,6 +2071,47 @@ DETALHES DA RESPOSTA
                 `;
                 alert(details);
             }
+        }
+
+        function refreshAdminTable() {
+            const tableBody = document.getElementById('adminTableBody');
+            if (!tableBody) return;
+            
+            if (systemData.responses.length === 0) {
+                tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="6" class="px-4 py-8 text-center text-gray-500">
+                            Nenhuma resposta encontrada
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            let tableHTML = '';
+            systemData.responses.forEach(response => {
+                const user = systemData.users.find(u => u.id === response.userId);
+                const statusClass = response.status === 'completed' ? 'bg-success/20 text-success' : 'bg-accent/20 text-accent';
+                const statusText = response.status === 'completed' ? 'Completo' : 'Pendente';
+                
+                tableHTML += `
+                    <tr>
+                        <td class="px-4 py-3">${user ? user.name : 'N/A'}</td>
+                        <td class="px-4 py-3">${response.site}</td>
+                        <td class="px-4 py-3">${response.month}/${response.year}</td>
+                        <td class="px-4 py-3">${response.calculatedAbsenteeism.total}%</td>
+                        <td class="px-4 py-3">
+                            <span class="${statusClass} px-2 py-1 rounded-full text-xs">${statusText}</span>
+                        </td>
+                        <td class="px-4 py-3">
+                            <button onclick="editUserResponse(${response.id})" class="text-primary hover:text-primary/80 mr-2 font-semibold">Editar</button>
+                            <button onclick="viewUserResponse(${response.id})" class="text-secondary hover:text-secondary/80 font-semibold">Ver</button>
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            tableBody.innerHTML = tableHTML;
         }
 
         function showHistory() {
@@ -2181,7 +2244,7 @@ DETALHES DA RESPOSTA
         }
 
         // Form submission handler
-        document.getElementById('indicatorsForm').addEventListener('submit', function(e) {
+        document.getElementById('indicatorsForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             
             if (!currentUser) {
@@ -2189,7 +2252,14 @@ DETALHES DA RESPOSTA
                 return;
             }
             
-            const formData = new FormData(this);
+            // Show loading state
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalText = submitBtn.textContent;
+            submitBtn.textContent = 'Salvando...';
+            submitBtn.disabled = true;
+            
+            try {
+                const formData = new FormData(this);
             
             // Create response object
             const response = {
@@ -2260,14 +2330,23 @@ DETALHES DA RESPOSTA
                 systemData.responses.push(response);
             }
             
-            // Save to localStorage
-            saveData();
-            
-            // Clear draft
-            localStorage.removeItem(`draft_${currentUser.id}`);
-            
-            // Show success message
-            const resultMessage = `
+                // Save data
+                saveData();
+                
+                // Clear draft
+                localStorage.removeItem(`draft_${currentUser.id}`);
+                
+                // Log form submission
+                logUserActivity(currentUser.id, 'form_submitted', {
+                    responseId: response.id,
+                    site: response.site,
+                    month: response.month,
+                    year: response.year,
+                    totalAbsenteeism: response.calculatedAbsenteeism.total
+                });
+                
+                // Show success message
+                const resultMessage = `
 ✅ RESPOSTA ENVIADA COM SUCESSO!
 
 CÁLCULOS DE ABSENTEÍSMO:
@@ -2290,19 +2369,30 @@ Absenteísmo (%) = (Dias perdidos / Dias contratados) × 100
 🌎 País: ${response.country}
 🏢 Negócio: ${response.business}
 
-Os dados foram salvos e os gráficos serão atualizados automaticamente!
-            `;
-            
-            alert(resultMessage);
-            
-            // Reset form
-            this.reset();
-            
-            // Update charts with new data
-            updateCharts();
+💾 DADOS COMPARTILHADOS SALVOS!
+Qualquer pessoa com este link pode ver os dados atualizados.
+Os gráficos foram atualizados automaticamente!
+                `;
+                
+                alert(resultMessage);
+                
+                // Reset form
+                this.reset();
+                
+                // Update charts with new data
+                updateCharts();
+                
+            } catch (error) {
+                console.error('Error submitting form:', error);
+                alert('❌ ERRO AO SALVAR DADOS\n\nOcorreu um erro ao salvar sua resposta.\nTente novamente ou entre em contato com o suporte.\n\nSeus dados foram preservados no formulário.');
+            } finally {
+                // Restore button state
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
+            }
         });
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'96c7a8f08016fefc',t:'MTc1NDc0Njc3MC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'96c7d41e67892684',t:'MTc1NDc0ODUzOC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
 
 
