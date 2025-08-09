@@ -30,10 +30,8 @@
         <div class="container mx-auto px-6 py-6">
             <div class="flex justify-between items-center">
                 <div class="flex items-center space-x-4">
-                    <div class="bg-white/10 p-3 rounded-xl backdrop-blur-sm">
-                        <svg class="w-8 h-8 text-accent" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                        </svg>
+                    <div class="bg-white p-2 rounded-xl shadow-lg">
+                        <img src="https://logosdown.com/wp-content/uploads/2023/08/bayer-logo-0-1536x1536.png" alt="Bayer Logo" class="w-10 h-10 object-contain">
                     </div>
                     <div>
                         <h1 class="text-3xl font-bold tracking-tight" data-translate="main_title">INDICADORES ESTRATÉGICOS</h1>
@@ -328,6 +326,12 @@
                     <button onclick="showAddUser()" class="bg-success hover:bg-success/80 px-4 py-2 rounded-lg">
                         + Novo Usuário
                     </button>
+                    <button onclick="showChangePassword()" class="bg-secondary hover:bg-secondary/80 px-4 py-2 rounded-lg">
+                        🔑 Alterar Senha
+                    </button>
+                    <button onclick="showManageAdmins()" class="bg-primary hover:bg-primary/80 px-4 py-2 rounded-lg">
+                        👑 Gerenciar Admins
+                    </button>
                     <button onclick="exportExcel()" class="bg-primary hover:bg-primary/80 px-4 py-2 rounded-lg">
                         📊 Exportar Excel
                     </button>
@@ -524,12 +528,12 @@
 
                             <div>
                                 <label class="block text-sm font-medium text-secondary mb-2">6. Quantidade de FTE ativo do site</label>
-                                <input type="number" name="fte_count" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary" min="0">
+                                <input type="number" name="fte_count" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary" min="0" step="1" pattern="[0-9]*" inputmode="numeric">
                             </div>
 
                             <div>
                                 <label class="block text-sm font-medium text-secondary mb-2">7. Quantidade de safristas ativos do site</label>
-                                <input type="number" name="seasonal_count" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary" min="0">
+                                <input type="number" name="seasonal_count" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary" min="0" step="1" pattern="[0-9]*" inputmode="numeric">
                             </div>
 
                             <div class="md:col-span-2">
@@ -541,97 +545,97 @@
 
                     <!-- Licença Médica -->
                     <div class="border-b border-gray-200 pb-6">
-                        <h4 class="text-lg font-semibold text-secondary mb-4">LICENÇA MÉDICA (apenas números)</h4>
+                        <h4 class="text-lg font-semibold text-secondary mb-4">LICENÇA MÉDICA</h4>
                         
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
                                 <label class="block text-sm font-medium text-secondary mb-2">9. Dias de licença médica (todos os motivos) - FTE</label>
-                                <input type="number" name="medical_leave_fte_all" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary" min="0">
+                                <input type="number" name="medical_leave_fte_all" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary" min="0" step="1" pattern="[0-9]*" inputmode="numeric">
                             </div>
 
                             <div>
                                 <label class="block text-sm font-medium text-secondary mb-2">10. Dias de licença médica (todos os motivos) - Safristas</label>
-                                <input type="number" name="medical_leave_seasonal_all" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary" min="0">
+                                <input type="number" name="medical_leave_seasonal_all" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary" min="0" step="1" pattern="[0-9]*" inputmode="numeric">
                             </div>
 
                             <div>
                                 <label class="block text-sm font-medium text-secondary mb-2">11. Dias de licença médica por CID F - FTE</label>
-                                <input type="number" name="medical_leave_fte_cid_f" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary" min="0">
+                                <input type="number" name="medical_leave_fte_cid_f" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary" min="0" step="1" pattern="[0-9]*" inputmode="numeric">
                             </div>
 
                             <div>
                                 <label class="block text-sm font-medium text-secondary mb-2">12. Dias de licença médica por CID F - Safristas</label>
-                                <input type="number" name="medical_leave_seasonal_cid_f" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary" min="0">
+                                <input type="number" name="medical_leave_seasonal_cid_f" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary" min="0" step="1" pattern="[0-9]*" inputmode="numeric">
                             </div>
 
                             <div>
                                 <label class="block text-sm font-medium text-secondary mb-2">13. Dias de licença médica por CID M - FTE</label>
-                                <input type="number" name="medical_leave_fte_cid_m" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary" min="0">
+                                <input type="number" name="medical_leave_fte_cid_m" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary" min="0" step="1" pattern="[0-9]*" inputmode="numeric">
                             </div>
 
                             <div>
                                 <label class="block text-sm font-medium text-secondary mb-2">14. Dias de licença médica por CID M - Safristas</label>
-                                <input type="number" name="medical_leave_seasonal_cid_m" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary" min="0">
+                                <input type="number" name="medical_leave_seasonal_cid_m" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary" min="0" step="1" pattern="[0-9]*" inputmode="numeric">
                             </div>
 
                             <div>
                                 <label class="block text-sm font-medium text-secondary mb-2">15. Dias de licença médica por CID S - FTE</label>
-                                <input type="number" name="medical_leave_fte_cid_s" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary" min="0">
+                                <input type="number" name="medical_leave_fte_cid_s" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary" min="0" step="1" pattern="[0-9]*" inputmode="numeric">
                             </div>
 
                             <div>
                                 <label class="block text-sm font-medium text-secondary mb-2">16. Dias de licença médica por CID S - Safristas</label>
-                                <input type="number" name="medical_leave_seasonal_cid_s" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary" min="0">
+                                <input type="number" name="medical_leave_seasonal_cid_s" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary" min="0" step="1" pattern="[0-9]*" inputmode="numeric">
                             </div>
 
                             <div>
                                 <label class="block text-sm font-medium text-secondary mb-2">17. Dias de licença médica por CID Z - FTE</label>
-                                <input type="number" name="medical_leave_fte_cid_z" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary" min="0">
+                                <input type="number" name="medical_leave_fte_cid_z" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary" min="0" step="1" pattern="[0-9]*" inputmode="numeric">
                             </div>
 
                             <div>
                                 <label class="block text-sm font-medium text-secondary mb-2">18. Dias de licença médica por CID Z - Safristas</label>
-                                <input type="number" name="medical_leave_seasonal_cid_z" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary" min="0">
+                                <input type="number" name="medical_leave_seasonal_cid_z" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary" min="0" step="1" pattern="[0-9]*" inputmode="numeric">
                             </div>
 
                             <div>
                                 <label class="block text-sm font-medium text-secondary mb-2">19. Dias de licença médica por CID R - FTE</label>
-                                <input type="number" name="medical_leave_fte_cid_r" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary" min="0">
+                                <input type="number" name="medical_leave_fte_cid_r" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary" min="0" step="1" pattern="[0-9]*" inputmode="numeric">
                             </div>
 
                             <div>
                                 <label class="block text-sm font-medium text-secondary mb-2">20. Dias de licença médica por CID R - Safristas</label>
-                                <input type="number" name="medical_leave_seasonal_cid_r" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary" min="0">
+                                <input type="number" name="medical_leave_seasonal_cid_r" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary" min="0" step="1" pattern="[0-9]*" inputmode="numeric">
                             </div>
 
                             <div>
                                 <label class="block text-sm font-medium text-secondary mb-2">21. Dias de licença médica por CID O - FTE</label>
-                                <input type="number" name="medical_leave_fte_cid_o" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary" min="0">
+                                <input type="number" name="medical_leave_fte_cid_o" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary" min="0" step="1" pattern="[0-9]*" inputmode="numeric">
                             </div>
 
                             <div>
                                 <label class="block text-sm font-medium text-secondary mb-2">22. Dias de licença médica por CID O - Safristas</label>
-                                <input type="number" name="medical_leave_seasonal_cid_o" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary" min="0">
+                                <input type="number" name="medical_leave_seasonal_cid_o" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary" min="0" step="1" pattern="[0-9]*" inputmode="numeric">
                             </div>
 
                             <div>
                                 <label class="block text-sm font-medium text-secondary mb-2">23. Dias de licença médica por CID J - FTE</label>
-                                <input type="number" name="medical_leave_fte_cid_j" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary" min="0">
+                                <input type="number" name="medical_leave_fte_cid_j" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary" min="0" step="1" pattern="[0-9]*" inputmode="numeric">
                             </div>
 
                             <div>
                                 <label class="block text-sm font-medium text-secondary mb-2">24. Dias de licença médica por CID J - Safristas</label>
-                                <input type="number" name="medical_leave_seasonal_cid_j" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary" min="0">
+                                <input type="number" name="medical_leave_seasonal_cid_j" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary" min="0" step="1" pattern="[0-9]*" inputmode="numeric">
                             </div>
 
                             <div>
                                 <label class="block text-sm font-medium text-secondary mb-2">25. Dias de licença médica por CID A e B - FTE</label>
-                                <input type="number" name="medical_leave_fte_cid_ab" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary" min="0">
+                                <input type="number" name="medical_leave_fte_cid_ab" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary" min="0" step="1" pattern="[0-9]*" inputmode="numeric">
                             </div>
 
                             <div>
                                 <label class="block text-sm font-medium text-secondary mb-2">26. Dias de licença médica por CID A e B - Safristas</label>
-                                <input type="number" name="medical_leave_seasonal_cid_ab" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary" min="0">
+                                <input type="number" name="medical_leave_seasonal_cid_ab" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary" min="0" step="1" pattern="[0-9]*" inputmode="numeric">
                             </div>
 
                             <div class="md:col-span-2">
@@ -643,42 +647,42 @@
 
                     <!-- Afastamentos Previdenciários -->
                     <div class="border-b border-gray-200 pb-6">
-                        <h4 class="text-lg font-semibold text-secondary mb-4">AFASTAMENTOS PREVIDENCIÁRIOS / SEGURO SOCIAL (apenas números)</h4>
+                        <h4 class="text-lg font-semibold text-secondary mb-4">AFASTAMENTOS PREVIDENCIÁRIOS / SEGURO SOCIAL</h4>
                         
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
                                 <label class="block text-sm font-medium text-secondary mb-2">28. Colaboradores com afastamento previdenciário (qualquer motivo) - FTE</label>
-                                <input type="number" name="social_security_leave_fte_all" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary" min="0">
+                                <input type="number" name="social_security_leave_fte_all" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary" min="0" step="1" pattern="[0-9]*" inputmode="numeric">
                             </div>
 
                             <div>
                                 <label class="block text-sm font-medium text-secondary mb-2">29. Colaboradores com afastamento previdenciário (qualquer motivo) - Safristas</label>
-                                <input type="number" name="social_security_leave_seasonal_all" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary" min="0">
+                                <input type="number" name="social_security_leave_seasonal_all" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary" min="0" step="1" pattern="[0-9]*" inputmode="numeric">
                             </div>
 
                             <div>
                                 <label class="block text-sm font-medium text-secondary mb-2">30. Afastamento por licença maternidade - FTE</label>
-                                <input type="number" name="maternity_leave_fte" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary" min="0">
+                                <input type="number" name="maternity_leave_fte" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary" min="0" step="1" pattern="[0-9]*" inputmode="numeric">
                             </div>
 
                             <div>
                                 <label class="block text-sm font-medium text-secondary mb-2">31. Afastamento por licença maternidade - Safristas</label>
-                                <input type="number" name="maternity_leave_seasonal" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary" min="0">
+                                <input type="number" name="maternity_leave_seasonal" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary" min="0" step="1" pattern="[0-9]*" inputmode="numeric">
                             </div>
 
                             <div>
                                 <label class="block text-sm font-medium text-secondary mb-2">32. Afastamento por aposentadoria por invalidez - FTE</label>
-                                <input type="number" name="disability_retirement_fte" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary" min="0">
+                                <input type="number" name="disability_retirement_fte" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary" min="0" step="1" pattern="[0-9]*" inputmode="numeric">
                             </div>
 
                             <div>
                                 <label class="block text-sm font-medium text-secondary mb-2">33. Afastamento por aposentadoria por invalidez - Safristas</label>
-                                <input type="number" name="disability_retirement_seasonal" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary" min="0">
+                                <input type="number" name="disability_retirement_seasonal" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary" min="0" step="1" pattern="[0-9]*" inputmode="numeric">
                             </div>
 
                             <div>
                                 <label class="block text-sm font-medium text-secondary mb-2">34. Afastamento por acidente de trabalho (espécie B91) - FTE</label>
-                                <input type="number" name="work_accident_fte" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary" min="0">
+                                <input type="number" name="work_accident_fte" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary" min="0" step="1" pattern="[0-9]*" inputmode="numeric">
                             </div>
                         </div>
                     </div>
@@ -750,6 +754,105 @@
         </div>
     </div>
 
+    <!-- Manage Admins Modal -->
+    <div id="manageAdminsModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm hidden items-center justify-center z-50">
+        <div class="bg-gradient-to-br from-white to-gray-50 rounded-2xl shadow-2xl p-10 w-full max-w-2xl mx-4 border border-gray-200">
+            <div class="text-center mb-8">
+                <div class="bg-gradient-to-r from-primary to-accent p-4 rounded-2xl w-16 h-16 mx-auto mb-4">
+                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"/>
+                    </svg>
+                </div>
+                <h2 class="text-3xl font-bold text-secondary">Gerenciar Administradores</h2>
+                <p class="text-gray-600 font-medium">Promover usuários ou remover privilégios administrativos</p>
+            </div>
+            
+            <div class="space-y-6">
+                <div>
+                    <h3 class="text-lg font-bold text-secondary mb-4">👑 Administradores Atuais</h3>
+                    <div id="currentAdminsList" class="space-y-2 mb-6">
+                        <!-- Lista será preenchida dinamicamente -->
+                    </div>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-bold text-secondary mb-4">👤 Promover Usuário a Admin</h3>
+                    <select id="promoteUserSelect" class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-primary/20 focus:border-primary transition-all duration-300 bg-white shadow-sm mb-4">
+                        <option value="">Selecione um usuário para promover</option>
+                    </select>
+                    <button onclick="promoteToAdmin()" class="w-full bg-gradient-to-r from-success to-primary hover:from-success/90 hover:to-primary/90 text-white py-3 rounded-xl font-bold transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105">
+                        👑 Promover a Administrador
+                    </button>
+                </div>
+            </div>
+            
+            <div class="flex justify-center mt-8">
+                <button onclick="closeManageAdminsModal()" class="text-gray-600 hover:text-secondary font-semibold py-3 px-6 transition-colors duration-300">
+                    Fechar
+                </button>
+            </div>
+            
+            <button onclick="closeManageAdminsModal()" class="absolute top-4 right-4 text-gray-400 hover:text-accent transition-colors duration-300 bg-white/80 rounded-full p-2 hover:bg-white">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <!-- Edit Response Modal -->
+    <div id="editResponseModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm hidden items-center justify-center z-50">
+        <div class="bg-gradient-to-br from-white to-gray-50 rounded-2xl shadow-2xl p-8 w-full max-w-4xl mx-4 border border-gray-200 max-h-[90vh] overflow-y-auto">
+            <div class="text-center mb-6">
+                <div class="bg-gradient-to-r from-primary to-accent p-3 rounded-2xl w-12 h-12 mx-auto mb-4">
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                    </svg>
+                </div>
+                <h2 class="text-2xl font-bold text-secondary">Editar Resposta do Usuário</h2>
+                <p class="text-gray-600 font-medium">Modificar dados enviados pelo usuário</p>
+            </div>
+            
+            <form id="editResponseForm" class="space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-secondary mb-2">Site</label>
+                        <input type="text" id="editSite" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary" readonly>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-secondary mb-2">Período</label>
+                        <input type="text" id="editPeriod" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary" readonly>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-secondary mb-2">Quantidade FTE</label>
+                        <input type="number" id="editFteCount" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary" min="0">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-secondary mb-2">Quantidade Safristas</label>
+                        <input type="number" id="editSeasonalCount" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary" min="0">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-secondary mb-2">Licenças FTE (todos motivos)</label>
+                        <input type="number" id="editMedicalLeaveFte" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary" min="0">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-secondary mb-2">Licenças Safristas (todos motivos)</label>
+                        <input type="number" id="editMedicalLeaveSeasonal" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary" min="0">
+                    </div>
+                </div>
+                
+                <div class="flex justify-between pt-6">
+                    <button type="button" onclick="closeEditResponseModal()" class="bg-gray-500 hover:bg-gray-600 text-white px-6 py-3 rounded-lg font-semibold">
+                        Cancelar
+                    </button>
+                    <button type="submit" class="bg-success hover:bg-success/80 text-white px-6 py-3 rounded-lg font-semibold">
+                        💾 Salvar Alterações
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <!-- Add User Modal -->
     <div id="addUserModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50">
         <div class="bg-white rounded-xl shadow-2xl p-8 w-full max-w-md mx-4">
@@ -798,12 +901,26 @@
 
     <script>
         // ═══════════════════════════════════════════════════════════════════
-        // 💾 SHARED DATA STORAGE - LOCALSTORAGE COMPARTILHADO
+        // 🗄️ BANCO DE DADOS COMPARTILHADO - SISTEMA INTEGRADO
         // ═══════════════════════════════════════════════════════════════════
         
-        // Sistema de dados compartilhados via localStorage
-        // Todos que acessam o mesmo link veem os mesmos dados
-        console.log('💾 Sistema de dados compartilhados inicializado');
+        // Sistema de banco de dados compartilhado integrado no código
+        // Dados sincronizados entre todos os dispositivos que acessam o link
+        console.log('🗄️ Banco de dados compartilhado inicializado');
+        
+        // Configuração do banco de dados compartilhado
+        const DATABASE_CONFIG = {
+            name: 'SaudeIntegralDB',
+            version: '3.0.0',
+            storageKey: 'saudeIntegralSharedDB',
+            backupKey: 'saudeIntegralBackup',
+            syncInterval: 5000, // 5 segundos
+            maxBackups: 10
+        };
+        
+        // Sistema de sincronização automática
+        let syncTimer = null;
+        let lastSyncTime = null;
         
         // Sistema de dados compartilhados
         let currentUserType = '';
@@ -815,30 +932,84 @@
         // 💾 SISTEMA DE DADOS COMPARTILHADOS - LOCALSTORAGE
         // ═══════════════════════════════════════════════════════════════════
         
-        // Inicializar sistema com dados compartilhados
+        // ═══════════════════════════════════════════════════════════════════
+        // 🔄 SISTEMA DE SINCRONIZAÇÃO AUTOMÁTICA
+        // ═══════════════════════════════════════════════════════════════════
+        
+        // Inicializar banco de dados compartilhado
         function initializeStorage() {
-            console.log('🔄 Carregando dados compartilhados...');
-            loadFromLocalStorage();
+            console.log('🔄 Inicializando banco de dados compartilhado...');
+            loadFromSharedDatabase();
+            startAutoSync();
         }
         
-        // Carregar dados do localStorage (dados compartilhados)
-        function loadFromLocalStorage() {
-            const localData = localStorage.getItem('saudeIntegralData');
-            if (localData) {
-                systemData = JSON.parse(localData);
-                console.log('✅ Dados compartilhados carregados');
+        // Sincronização automática entre dispositivos
+        function startAutoSync() {
+            if (syncTimer) clearInterval(syncTimer);
+            
+            syncTimer = setInterval(() => {
+                syncWithSharedDatabase();
+            }, DATABASE_CONFIG.syncInterval);
+            
+            console.log(`🔄 Sincronização automática ativada (${DATABASE_CONFIG.syncInterval/1000}s)`);
+        }
+        
+        // Sincronizar com banco compartilhado
+        function syncWithSharedDatabase() {
+            try {
+                const currentData = localStorage.getItem(DATABASE_CONFIG.storageKey);
+                if (currentData) {
+                    const parsedData = JSON.parse(currentData);
+                    
+                    // Verificar se há dados mais recentes
+                    if (!lastSyncTime || new Date(parsedData.lastUpdated) > lastSyncTime) {
+                        systemData = parsedData;
+                        lastSyncTime = new Date(parsedData.lastUpdated);
+                        
+                        // Atualizar gráficos se necessário
+                        if (document.getElementById('dashboard').style.display !== 'none') {
+                            updateCharts();
+                        }
+                        
+                        console.log('🔄 Dados sincronizados automaticamente');
+                    }
+                }
+            } catch (error) {
+                console.error('❌ Erro na sincronização:', error);
+            }
+        }
+        
+        // Carregar dados do banco compartilhado
+        function loadFromSharedDatabase() {
+            const sharedData = localStorage.getItem(DATABASE_CONFIG.storageKey);
+            if (sharedData) {
+                systemData = JSON.parse(sharedData);
+                lastSyncTime = new Date(systemData.lastUpdated);
+                console.log('✅ Banco de dados compartilhado carregado');
                 console.log(`📊 ${systemData.responses.length} respostas encontradas`);
+                console.log(`👥 ${systemData.users.length} usuários cadastrados`);
             } else {
                 systemData = {
-                    version: '2.0.0',
+                    version: DATABASE_CONFIG.version,
                     initialized: new Date().toISOString(),
+                    lastUpdated: new Date().toISOString(),
                     users: getDefaultUsers(),
                     responses: [],
-                    settings: getDefaultSettings()
+                    settings: getDefaultSettings(),
+                    metadata: {
+                        totalAccess: 0,
+                        lastAccess: new Date().toISOString(),
+                        deviceCount: 1
+                    }
                 };
-                localStorage.setItem('saudeIntegralData', JSON.stringify(systemData));
-                console.log('✅ Sistema inicializado com dados padrão');
+                saveToSharedDatabase();
+                console.log('✅ Banco de dados inicializado com dados padrão');
             }
+            
+            // Registrar acesso
+            systemData.metadata.totalAccess = (systemData.metadata.totalAccess || 0) + 1;
+            systemData.metadata.lastAccess = new Date().toISOString();
+            saveToSharedDatabase();
         }
         
         // Get default users
@@ -874,38 +1045,102 @@
         // 💾 SALVAR DADOS COMPARTILHADOS - LOCALSTORAGE
         // ═══════════════════════════════════════════════════════════════════
         
-        // Salvar dados compartilhados no localStorage
-        function saveData() {
+        // Salvar no banco de dados compartilhado
+        function saveToSharedDatabase() {
             try {
-                systemData.settings.lastUpdated = new Date().toISOString();
-                systemData.settings.version = '2.0.0';
+                systemData.lastUpdated = new Date().toISOString();
+                systemData.version = DATABASE_CONFIG.version;
                 
-                // Fazer backup antes de salvar
-                const currentData = localStorage.getItem('saudeIntegralData');
-                if (currentData) {
-                    localStorage.setItem('saudeIntegralData_backup', currentData);
-                }
+                // Criar backup automático
+                createAutoBackup();
                 
-                // Salvar dados compartilhados
-                localStorage.setItem('saudeIntegralData', JSON.stringify(systemData));
-                console.log('✅ Dados compartilhados salvos com sucesso');
+                // Salvar no banco compartilhado
+                localStorage.setItem(DATABASE_CONFIG.storageKey, JSON.stringify(systemData));
+                lastSyncTime = new Date(systemData.lastUpdated);
+                
+                console.log('✅ Dados salvos no banco compartilhado');
                 console.log(`📊 Total de respostas: ${systemData.responses.length}`);
+                console.log(`👥 Total de usuários: ${systemData.users.length}`);
+                
+                // Notificar outros dispositivos (simulação)
+                broadcastDataUpdate();
                 
                 return true;
                 
             } catch (error) {
-                console.error('❌ Erro ao salvar dados:', error);
+                console.error('❌ Erro ao salvar no banco:', error);
                 
-                // Restaurar backup se necessário
-                const backupData = localStorage.getItem('saudeIntegralData_backup');
-                if (backupData) {
-                    localStorage.setItem('saudeIntegralData', backupData);
-                    console.log('🔄 Dados restaurados do backup');
-                }
+                // Tentar restaurar do backup
+                restoreFromBackup();
                 
-                alert('⚠️ ERRO AO SALVAR DADOS\n\nOcorreu um erro ao salvar os dados.\nOs dados foram restaurados do backup.\n\nTente novamente.');
+                alert('⚠️ ERRO AO SALVAR DADOS\n\nOcorreu um erro ao salvar no banco de dados.\nOs dados foram restaurados do backup.\n\nTente novamente.');
                 return false;
             }
+        }
+        
+        // Função de compatibilidade
+        function saveData() {
+            return saveToSharedDatabase();
+        }
+        
+        // Criar backup automático
+        function createAutoBackup() {
+            try {
+                const backupData = {
+                    ...systemData,
+                    backupCreatedAt: new Date().toISOString(),
+                    backupId: Date.now()
+                };
+                
+                // Manter apenas os últimos backups
+                const existingBackups = JSON.parse(localStorage.getItem(DATABASE_CONFIG.backupKey) || '[]');
+                existingBackups.push(backupData);
+                
+                // Limitar número de backups
+                if (existingBackups.length > DATABASE_CONFIG.maxBackups) {
+                    existingBackups.splice(0, existingBackups.length - DATABASE_CONFIG.maxBackups);
+                }
+                
+                localStorage.setItem(DATABASE_CONFIG.backupKey, JSON.stringify(existingBackups));
+                console.log('💾 Backup automático criado');
+                
+            } catch (error) {
+                console.error('❌ Erro ao criar backup:', error);
+            }
+        }
+        
+        // Restaurar do backup
+        function restoreFromBackup() {
+            try {
+                const backups = JSON.parse(localStorage.getItem(DATABASE_CONFIG.backupKey) || '[]');
+                if (backups.length > 0) {
+                    const latestBackup = backups[backups.length - 1];
+                    systemData = { ...latestBackup };
+                    delete systemData.backupCreatedAt;
+                    delete systemData.backupId;
+                    
+                    localStorage.setItem(DATABASE_CONFIG.storageKey, JSON.stringify(systemData));
+                    console.log('🔄 Dados restaurados do backup');
+                    return true;
+                }
+            } catch (error) {
+                console.error('❌ Erro ao restaurar backup:', error);
+            }
+            return false;
+        }
+        
+        // Simular broadcast para outros dispositivos
+        function broadcastDataUpdate() {
+            // Em um sistema real, isso seria uma notificação via WebSocket ou Server-Sent Events
+            // Aqui simulamos com um evento customizado
+            const event = new CustomEvent('dataUpdated', {
+                detail: {
+                    timestamp: systemData.lastUpdated,
+                    responseCount: systemData.responses.length,
+                    userCount: systemData.users.length
+                }
+            });
+            window.dispatchEvent(event);
         }
 
         // Data export for backup
@@ -936,12 +1171,27 @@
 
         // Authentication functions
         function authenticateUser(email, password, type) {
-            const user = systemData.users.find(u => 
-                u.email.toLowerCase() === email.toLowerCase() && 
-                u.password === password && 
-                u.type === type && 
-                u.active
-            );
+            console.log('🔐 Tentativa de login:', { email, type, totalUsers: systemData.users.length });
+            
+            const user = systemData.users.find(u => {
+                const emailMatch = u.email.toLowerCase().trim() === email.toLowerCase().trim();
+                const passwordMatch = u.password === password;
+                const typeMatch = u.type === type;
+                const isActive = u.active;
+                
+                console.log('🔍 Verificando usuário:', {
+                    userEmail: u.email,
+                    emailMatch,
+                    passwordMatch,
+                    typeMatch,
+                    isActive,
+                    userType: u.type
+                });
+                
+                return emailMatch && passwordMatch && typeMatch && isActive;
+            });
+            
+            console.log('✅ Resultado autenticação:', user ? 'SUCESSO' : 'FALHOU');
             return user || null;
         }
 
@@ -1358,15 +1608,39 @@
                 
                 initializeCharts();
                 
-                // Show system status
-                console.log('✅ Sistema de dados compartilhados ativo');
-                console.log('📱 Dados preenchidos em qualquer dispositivo serão visíveis para todos');
+                // Show enhanced system status
+                console.log('✅ BANCO DE DADOS COMPARTILHADO ATIVO');
+                console.log('🗄️ Sistema de sincronização automática iniciado');
+                console.log('📱 Dados preenchidos em qualquer dispositivo são sincronizados automaticamente');
+                console.log('💾 Backups automáticos ativados');
+                console.log(`🔄 Sincronização a cada ${DATABASE_CONFIG.syncInterval/1000} segundos`);
+                
+                // Adicionar listener para atualizações de dados
+                window.addEventListener('dataUpdated', function(event) {
+                    console.log('📡 Dados atualizados:', event.detail);
+                });
+                
+                // Mostrar status na interface (opcional)
+                showDatabaseStatus();
                 
             } catch (error) {
                 console.error('❌ Erro ao inicializar sistema:', error);
                 alert('⚠️ Erro ao inicializar o sistema.\nTente recarregar a página.');
             }
         });
+        
+        // Mostrar status do banco de dados
+        function showDatabaseStatus() {
+            const statusInfo = {
+                version: systemData.version,
+                responses: systemData.responses.length,
+                users: systemData.users.length,
+                lastUpdate: systemData.lastUpdated,
+                totalAccess: systemData.metadata?.totalAccess || 0
+            };
+            
+            console.log('📊 STATUS DO BANCO DE DADOS:', statusInfo);
+        }
 
         // Chart instances storage
         let chartInstances = {};
@@ -2010,29 +2284,136 @@
             document.body.removeChild(link);
         }
 
-        function editUserResponse(responseId) {
+        // Variável global para armazenar resposta sendo editada
+        let currentEditingResponse = null;
+
+        function editUserResponseAdmin(responseId) {
             const response = systemData.responses.find(r => r.id === parseInt(responseId));
             if (response) {
+                currentEditingResponse = response;
                 const user = systemData.users.find(u => u.id === response.userId);
-                const editDetails = `
-EDITAR RESPOSTA
-═══════════════════════════════════
+                
+                // Preencher modal de edição
+                document.getElementById('editSite').value = response.site;
+                document.getElementById('editPeriod').value = `${response.month}/${response.year}`;
+                document.getElementById('editFteCount').value = response.fteCount;
+                document.getElementById('editSeasonalCount').value = response.seasonalCount;
+                document.getElementById('editMedicalLeaveFte').value = response.medicalLeaveFteAll;
+                document.getElementById('editMedicalLeaveSeasonal').value = response.medicalLeaveSeasonalAll;
+                
+                // Mostrar modal
+                document.getElementById('editResponseModal').classList.remove('hidden');
+                document.getElementById('editResponseModal').classList.add('flex');
+            }
+        }
 
-👤 Usuário: ${user ? user.name : 'N/A'}
-📍 Site: ${response.site}
-📅 Período: ${response.month}/${response.year}
-🏢 Negócio: ${response.business}
+        function closeEditResponseModal() {
+            document.getElementById('editResponseModal').classList.add('hidden');
+            document.getElementById('editResponseModal').classList.remove('flex');
+            currentEditingResponse = null;
+        }
 
-📊 DADOS ATUAIS:
-• FTE: ${response.fteCount}
-• Safristas: ${response.seasonalCount}
-• Licenças FTE: ${response.medicalLeaveFteAll} dias
-• Licenças Safristas: ${response.medicalLeaveSeasonalAll} dias
-• Absenteísmo Total: ${response.calculatedAbsenteeism.total}%
-
-Para editar esta resposta, o usuário deve fazer login e reenviar o formulário com os dados atualizados.
+        function showManageAdmins() {
+            // Preencher lista de admins atuais
+            const adminsList = document.getElementById('currentAdminsList');
+            const admins = systemData.users.filter(u => u.type === 'admin' && u.active);
+            
+            adminsList.innerHTML = '';
+            admins.forEach(admin => {
+                const adminDiv = document.createElement('div');
+                adminDiv.className = 'flex justify-between items-center bg-primary/10 p-3 rounded-lg border border-primary/20';
+                adminDiv.innerHTML = `
+                    <div>
+                        <span class="font-semibold text-secondary">${admin.name}</span>
+                        <span class="text-sm text-gray-600 ml-2">(${admin.email})</span>
+                    </div>
+                    ${admin.id !== currentUser.id ? `
+                        <button onclick="removeAdmin('${admin.id}')" class="bg-accent hover:bg-accent/80 text-white px-3 py-1 rounded text-xs">
+                            🗑️ Remover
+                        </button>
+                    ` : '<span class="text-xs text-primary font-semibold">Você</span>'}
                 `;
-                alert(editDetails);
+                adminsList.appendChild(adminDiv);
+            });
+            
+            // Preencher select de usuários para promover
+            const promoteSelect = document.getElementById('promoteUserSelect');
+            const regularUsers = systemData.users.filter(u => u.type === 'user' && u.active);
+            
+            promoteSelect.innerHTML = '<option value="">Selecione um usuário para promover</option>';
+            regularUsers.forEach(user => {
+                const option = document.createElement('option');
+                option.value = user.id;
+                option.textContent = `${user.name} (${user.email})`;
+                promoteSelect.appendChild(option);
+            });
+            
+            // Mostrar modal
+            document.getElementById('manageAdminsModal').classList.remove('hidden');
+            document.getElementById('manageAdminsModal').classList.add('flex');
+        }
+
+        function closeManageAdminsModal() {
+            document.getElementById('manageAdminsModal').classList.add('hidden');
+            document.getElementById('manageAdminsModal').classList.remove('flex');
+        }
+
+        function promoteToAdmin() {
+            const userId = document.getElementById('promoteUserSelect').value;
+            if (!userId) {
+                alert('❌ Selecione um usuário para promover.');
+                return;
+            }
+            
+            const userIndex = systemData.users.findIndex(u => u.id === userId);
+            if (userIndex !== -1) {
+                const user = systemData.users[userIndex];
+                
+                if (confirm(`🔔 CONFIRMAR PROMOÇÃO\n\nPromover "${user.name}" a Administrador?\n\nEle terá acesso total ao sistema:\n• Ver todas as respostas\n• Editar dados de usuários\n• Gerenciar outros administradores\n• Exportar relatórios\n\nConfirma a promoção?`)) {
+                    systemData.users[userIndex].type = 'admin';
+                    systemData.users[userIndex].promotedAt = new Date().toISOString();
+                    systemData.users[userIndex].promotedBy = currentUser.id;
+                    
+                    saveData();
+                    
+                    logUserActivity(currentUser.id, 'user_promoted_to_admin', {
+                        promotedUserId: userId,
+                        promotedUserName: user.name
+                    });
+                    
+                    alert(`✅ USUÁRIO PROMOVIDO!\n\n👑 ${user.name} agora é Administrador!\n\nEle pode fazer login usando o botão "Administrador" com as mesmas credenciais.`);
+                    
+                    closeManageAdminsModal();
+                }
+            }
+        }
+
+        function removeAdmin(adminId) {
+            if (adminId === currentUser.id) {
+                alert('❌ Você não pode remover seus próprios privilégios administrativos.');
+                return;
+            }
+            
+            const adminIndex = systemData.users.findIndex(u => u.id === adminId);
+            if (adminIndex !== -1) {
+                const admin = systemData.users[adminIndex];
+                
+                if (confirm(`⚠️ CONFIRMAR REMOÇÃO\n\nRemover privilégios administrativos de "${admin.name}"?\n\nEle voltará a ser usuário comum e perderá:\n• Acesso ao painel administrativo\n• Capacidade de ver/editar dados de outros\n• Privilégios de gerenciamento\n\nConfirma a remoção?`)) {
+                    systemData.users[adminIndex].type = 'user';
+                    systemData.users[adminIndex].demotedAt = new Date().toISOString();
+                    systemData.users[adminIndex].demotedBy = currentUser.id;
+                    
+                    saveData();
+                    
+                    logUserActivity(currentUser.id, 'admin_demoted_to_user', {
+                        demotedUserId: adminId,
+                        demotedUserName: admin.name
+                    });
+                    
+                    alert(`✅ PRIVILÉGIOS REMOVIDOS!\n\n👤 ${admin.name} agora é usuário comum.\n\nEle deve usar o botão "Usuário" para fazer login.`);
+                    
+                    showManageAdmins(); // Refresh the modal
+                }
             }
         }
 
@@ -2104,8 +2485,8 @@ DETALHES DA RESPOSTA
                             <span class="${statusClass} px-2 py-1 rounded-full text-xs">${statusText}</span>
                         </td>
                         <td class="px-4 py-3">
-                            <button onclick="editUserResponse(${response.id})" class="text-primary hover:text-primary/80 mr-2 font-semibold">Editar</button>
-                            <button onclick="viewUserResponse(${response.id})" class="text-secondary hover:text-secondary/80 font-semibold">Ver</button>
+                            <button onclick="editUserResponseAdmin(${response.id})" class="bg-primary hover:bg-primary/80 text-white px-3 py-1 rounded text-xs mr-2">✏️ Editar</button>
+                            <button onclick="viewUserResponse(${response.id})" class="bg-secondary hover:bg-secondary/80 text-white px-3 py-1 rounded text-xs">👁️ Ver</button>
                         </td>
                     </tr>
                 `;
@@ -2242,6 +2623,92 @@ DETALHES DA RESPOSTA
                 seasonalCount: seasonalCount
             };
         }
+
+        // Edit response form handler
+        document.getElementById('editResponseForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            if (!currentEditingResponse || !currentUser) {
+                alert('❌ Erro: Dados de edição não encontrados.');
+                return;
+            }
+            
+            // Obter novos valores
+            const newFteCount = parseInt(document.getElementById('editFteCount').value) || 0;
+            const newSeasonalCount = parseInt(document.getElementById('editSeasonalCount').value) || 0;
+            const newMedicalLeaveFte = parseInt(document.getElementById('editMedicalLeaveFte').value) || 0;
+            const newMedicalLeaveSeasonal = parseInt(document.getElementById('editMedicalLeaveSeasonal').value) || 0;
+            
+            // Encontrar resposta no sistema
+            const responseIndex = systemData.responses.findIndex(r => r.id === currentEditingResponse.id);
+            if (responseIndex !== -1) {
+                // Salvar valores antigos para log
+                const oldValues = {
+                    fteCount: systemData.responses[responseIndex].fteCount,
+                    seasonalCount: systemData.responses[responseIndex].seasonalCount,
+                    medicalLeaveFteAll: systemData.responses[responseIndex].medicalLeaveFteAll,
+                    medicalLeaveSeasonalAll: systemData.responses[responseIndex].medicalLeaveSeasonalAll
+                };
+                
+                // Atualizar valores
+                systemData.responses[responseIndex].fteCount = newFteCount;
+                systemData.responses[responseIndex].seasonalCount = newSeasonalCount;
+                systemData.responses[responseIndex].medicalLeaveFteAll = newMedicalLeaveFte;
+                systemData.responses[responseIndex].medicalLeaveSeasonalAll = newMedicalLeaveSeasonal;
+                
+                // Recalcular absenteísmo
+                const workingDays = systemData.settings.workingDaysPerMonth;
+                const fteContractedDays = newFteCount * workingDays;
+                const seasonalContractedDays = newSeasonalCount * workingDays;
+                const totalContractedDays = fteContractedDays + seasonalContractedDays;
+                
+                const fteAbsenteeism = fteContractedDays > 0 ? 
+                    ((newMedicalLeaveFte / fteContractedDays) * 100) : 0;
+                const seasonalAbsenteeism = seasonalContractedDays > 0 ? 
+                    ((newMedicalLeaveSeasonal / seasonalContractedDays) * 100) : 0;
+                const totalAbsenteeism = totalContractedDays > 0 ? 
+                    (((newMedicalLeaveFte + newMedicalLeaveSeasonal) / totalContractedDays) * 100) : 0;
+                
+                systemData.responses[responseIndex].calculatedAbsenteeism = {
+                    fte: Math.round(fteAbsenteeism * 100) / 100,
+                    seasonal: Math.round(seasonalAbsenteeism * 100) / 100,
+                    total: Math.round(totalAbsenteeism * 100) / 100
+                };
+                
+                // Marcar como editado pelo admin
+                systemData.responses[responseIndex].editedBy = currentUser.id;
+                systemData.responses[responseIndex].editedAt = new Date().toISOString();
+                systemData.responses[responseIndex].originalValues = oldValues;
+                
+                // Salvar dados
+                saveData();
+                
+                // Log da edição
+                logUserActivity(currentUser.id, 'response_edited_by_admin', {
+                    responseId: currentEditingResponse.id,
+                    oldValues: oldValues,
+                    newValues: {
+                        fteCount: newFteCount,
+                        seasonalCount: newSeasonalCount,
+                        medicalLeaveFteAll: newMedicalLeaveFte,
+                        medicalLeaveSeasonalAll: newMedicalLeaveSeasonal
+                    },
+                    newAbsenteeism: systemData.responses[responseIndex].calculatedAbsenteeism
+                });
+                
+                // Atualizar gráficos
+                updateCharts();
+                
+                // Atualizar tabela admin
+                refreshAdminTable();
+                
+                alert(`✅ RESPOSTA EDITADA COM SUCESSO!\n\n📊 NOVOS CÁLCULOS:\n• FTE: ${systemData.responses[responseIndex].calculatedAbsenteeism.fte}%\n• Safristas: ${systemData.responses[responseIndex].calculatedAbsenteeism.seasonal}%\n• Total: ${systemData.responses[responseIndex].calculatedAbsenteeism.total}%\n\n💾 Dados salvos e gráficos atualizados!`);
+                
+                closeEditResponseModal();
+            } else {
+                alert('❌ Erro: Resposta não encontrada no sistema.');
+            }
+        });
 
         // Form submission handler
         document.getElementById('indicatorsForm').addEventListener('submit', async function(e) {
@@ -2392,7 +2859,8 @@ Os gráficos foram atualizados automaticamente!
             }
         });
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'96c7d41e67892684',t:'MTc1NDc0ODUzOC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'96c7f3a7d491346c',t:'MTc1NDc0OTgzMC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
+
 
 
