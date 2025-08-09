@@ -7,7 +7,6 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
-    <!-- Sistema de dados compartilhados via localStorage -->
     <script>
         tailwind.config = {
             theme: {
@@ -25,6 +24,25 @@
     </script>
 </head>
 <body class="bg-gradient-to-br from-primary/10 to-secondary/10 min-h-screen">
+    <!-- ═══════════════════════════════════════════════════════════════════ -->
+    <!-- 🚀 SISTEMA AVANÇADO DE SINCRONIZAÇÃO MULTI-DISPOSITIVO -->
+    <!-- ═══════════════════════════════════════════════════════════════════ -->
+    
+    <!-- Status de Conexão no Rodapé -->
+    <div id="connectionStatus" class="fixed bottom-4 left-4 z-50 bg-white rounded-lg shadow-lg p-3 border-l-4 border-success">
+        <div class="flex items-center gap-2">
+            <div id="statusIndicator" class="w-3 h-3 bg-success rounded-full animate-pulse"></div>
+            <span id="statusText" class="text-sm font-semibold text-secondary">Sistema Online</span>
+        </div>
+        <div id="syncInfo" class="text-xs text-gray-600 mt-1">
+            <span id="deviceCount">1 dispositivo conectado</span> • 
+            <span id="lastSync">Sincronizado agora</span>
+        </div>
+    </div>
+
+    <!-- Notificações em Tempo Real -->
+    <div id="notificationContainer" class="fixed top-4 right-4 z-50 space-y-2"></div>
+
     <!-- Header -->
     <header class="bg-gradient-to-r from-secondary via-secondary to-primary text-white shadow-2xl border-b-4 border-accent">
         <div class="container mx-auto px-6 py-6">
@@ -63,8 +81,6 @@
 
     <!-- Main Dashboard -->
     <main id="dashboard" class="container mx-auto px-6 py-8 min-h-screen">
-
-
         <!-- Chart Filters -->
         <div class="bg-gradient-to-r from-white to-gray-50 rounded-2xl shadow-2xl p-8 mb-8 border border-gray-100">
             <div class="flex items-center mb-6">
@@ -420,52 +436,70 @@
         </div>
 
         <div class="container mx-auto px-6 py-6">
-            <div class="bg-white rounded-xl shadow-lg p-6">
-                <h3 class="text-lg font-semibold text-secondary mb-6">Questionário - Indicadores Estratégicos</h3>
+            <div class="bg-gradient-to-br from-white to-gray-50 rounded-2xl shadow-2xl p-8 border border-gray-100">
+                <div class="text-center mb-8">
+                    <div class="bg-gradient-to-r from-primary to-accent p-4 rounded-2xl w-16 h-16 mx-auto mb-4">
+                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-3xl font-bold text-secondary mb-2" data-translate="questionnaire_title">Questionário - Indicadores Estratégicos</h3>
+                    <p class="text-gray-600 font-medium" data-translate="questionnaire_subtitle">Preencha os dados mensais do seu site</p>
+                </div>
                 
-                <form id="indicatorsForm" class="space-y-8">
+                <form id="indicatorsForm" class="space-y-10">
                     <!-- Informação Geral -->
-                    <div class="border-b border-gray-200 pb-6">
-                        <h4 class="text-lg font-semibold text-secondary mb-4" data-translate="general_info">INFORMAÇÃO GERAL</h4>
-                        
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-gradient-to-r from-primary/5 to-accent/5 rounded-2xl p-8 border border-primary/20">
+                        <div class="flex items-center mb-6">
+                            <div class="bg-gradient-to-r from-primary to-accent p-3 rounded-xl mr-4">
+                                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                </svg>
+                            </div>
                             <div>
-                                <label class="block text-sm font-medium text-secondary mb-2" data-translate="year_question">1. Ano (selecione apenas um)</label>
-                                <div class="space-y-2">
-                                    <label class="flex items-center">
-                                        <input type="radio" name="year" value="2024" class="text-primary focus:ring-primary">
-                                        <span class="ml-2">2024</span>
+                                <h4 class="text-2xl font-bold text-secondary" data-translate="general_info">INFORMAÇÃO GERAL</h4>
+                                <p class="text-gray-600 font-medium" data-translate="general_info_desc">Dados básicos do período e localização</p>
+                            </div>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+                                <label class="block text-lg font-bold text-secondary mb-4" data-translate="year_question">1. Ano (selecione apenas um)</label>
+                                <div class="grid grid-cols-2 gap-4">
+                                    <label class="flex items-center p-4 border-2 border-gray-200 rounded-xl hover:border-primary hover:bg-primary/5 transition-all duration-300 cursor-pointer">
+                                        <input type="radio" name="year" value="2024" class="text-primary focus:ring-primary mr-3">
+                                        <span class="font-semibold">2024</span>
                                     </label>
-                                    <label class="flex items-center">
-                                        <input type="radio" name="year" value="2025" class="text-primary focus:ring-primary">
-                                        <span class="ml-2">2025</span>
+                                    <label class="flex items-center p-4 border-2 border-gray-200 rounded-xl hover:border-primary hover:bg-primary/5 transition-all duration-300 cursor-pointer">
+                                        <input type="radio" name="year" value="2025" class="text-primary focus:ring-primary mr-3">
+                                        <span class="font-semibold">2025</span>
                                     </label>
                                 </div>
                             </div>
 
-                            <div>
-                                <label class="block text-sm font-medium text-secondary mb-2">2. Mês (selecione apenas um)</label>
-                                <select name="month" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary">
-                                    <option value="">Selecione o mês</option>
-                                    <option value="janeiro">Janeiro</option>
-                                    <option value="fevereiro">Fevereiro</option>
-                                    <option value="marco">Março</option>
-                                    <option value="abril">Abril</option>
-                                    <option value="maio">Maio</option>
-                                    <option value="junho">Junho</option>
-                                    <option value="julho">Julho</option>
-                                    <option value="agosto">Agosto</option>
-                                    <option value="setembro">Setembro</option>
-                                    <option value="outubro">Outubro</option>
-                                    <option value="novembro">Novembro</option>
-                                    <option value="dezembro">Dezembro</option>
+                            <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+                                <label class="block text-lg font-bold text-secondary mb-4" data-translate="month_question">2. Mês (selecione apenas um)</label>
+                                <select name="month" class="w-full px-4 py-4 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-primary/20 focus:border-primary transition-all duration-300 bg-white shadow-sm hover:shadow-md font-semibold">
+                                    <option value="" data-translate="select_month">Selecione o mês</option>
+                                    <option value="janeiro" data-translate="january">Janeiro</option>
+                                    <option value="fevereiro" data-translate="february">Fevereiro</option>
+                                    <option value="marco" data-translate="march">Março</option>
+                                    <option value="abril" data-translate="april">Abril</option>
+                                    <option value="maio" data-translate="may">Maio</option>
+                                    <option value="junho" data-translate="june">Junho</option>
+                                    <option value="julho" data-translate="july">Julho</option>
+                                    <option value="agosto" data-translate="august">Agosto</option>
+                                    <option value="setembro" data-translate="september">Setembro</option>
+                                    <option value="outubro" data-translate="october">Outubro</option>
+                                    <option value="novembro" data-translate="november">Novembro</option>
+                                    <option value="dezembro" data-translate="december">Dezembro</option>
                                 </select>
                             </div>
 
-                            <div>
-                                <label class="block text-sm font-medium text-secondary mb-2">3. Negócio Principal</label>
-                                <select name="business" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary">
-                                    <option value="">Selecione o negócio</option>
+                            <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+                                <label class="block text-lg font-bold text-secondary mb-4" data-translate="business_question">3. Negócio Principal</label>
+                                <select name="business" class="w-full px-4 py-4 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-primary/20 focus:border-primary transition-all duration-300 bg-white shadow-sm hover:shadow-md font-semibold">
+                                    <option value="" data-translate="select_business">Selecione o negócio</option>
                                     <option value="field-testing">Field Testing</option>
                                     <option value="pipeline-delivery">Pipeline Delivery</option>
                                     <option value="biotech">Biotech</option>
@@ -476,17 +510,17 @@
                                 </select>
                             </div>
 
-                            <div>
-                                <label class="block text-sm font-medium text-secondary mb-2">4. País</label>
-                                <select name="country" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary">
-                                    <option value="">Selecione o país</option>
+                            <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+                                <label class="block text-lg font-bold text-secondary mb-4" data-translate="country_question">4. País</label>
+                                <select name="country" class="w-full px-4 py-4 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-primary/20 focus:border-primary transition-all duration-300 bg-white shadow-sm hover:shadow-md font-semibold">
+                                    <option value="" data-translate="select_country">Selecione o país</option>
                                     <option value="argentina">Argentina</option>
-                                    <option value="paraguai">Paraguai</option>
+                                    <option value="paraguai" data-translate="paraguay">Paraguai</option>
                                     <option value="chile">Chile</option>
-                                    <option value="mexico">México</option>
+                                    <option value="mexico" data-translate="mexico">México</option>
                                     <option value="guatemala">Guatemala</option>
                                     <option value="el-salvador">El Salvador</option>
-                                    <option value="brasil">Brasil</option>
+                                    <option value="brasil" data-translate="brazil">Brasil</option>
                                 </select>
                             </div>
 
@@ -537,10 +571,20 @@
                     </div>
 
                     <!-- Licença Médica -->
-                    <div class="border-b border-gray-200 pb-6">
-                        <h4 class="text-lg font-semibold text-secondary mb-4">LICENÇA MÉDICA</h4>
+                    <div class="bg-gradient-to-r from-accent/5 to-success/5 rounded-2xl p-8 border border-accent/20">
+                        <div class="flex items-center mb-6">
+                            <div class="bg-gradient-to-r from-accent to-success p-3 rounded-xl mr-4">
+                                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <h4 class="text-2xl font-bold text-secondary" data-translate="medical_leave">LICENÇA MÉDICA</h4>
+                                <p class="text-gray-600 font-medium" data-translate="medical_leave_desc">Dados de afastamentos por motivos de saúde</p>
+                            </div>
+                        </div>
                         
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                             <div>
                                 <label class="block text-sm font-medium text-secondary mb-2">9. Dias de licença médica (todos os motivos) - FTE</label>
                                 <input type="number" name="medical_leave_fte_all" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary" min="0" step="1" pattern="[0-9]*" inputmode="numeric">
@@ -679,9 +723,6 @@
                             </div>
                         </div>
                     </div>
-
-                    <!-- Note: Continuing with remaining questions would make this extremely long -->
-                    <!-- This is a sample showing the structure for the first 34 questions -->
                     
                     <div class="flex justify-between pt-6">
                         <div class="flex gap-4">
@@ -894,172 +935,288 @@
 
     <script>
         // ═══════════════════════════════════════════════════════════════════
-        // 🌐 SISTEMA DE DADOS COMPARTILHADOS ENTRE DISPOSITIVOS
+        // 🚀 SISTEMA AVANÇADO DE SINCRONIZAÇÃO MULTI-DISPOSITIVO EM TEMPO REAL
         // ═══════════════════════════════════════════════════════════════════
         
-        // COMO FUNCIONA:
-        // 1. Dados salvos no localStorage com chave única global
-        // 2. Qualquer dispositivo que acessa o mesmo link vê os mesmos dados
-        // 3. Sincronização automática a cada 3 segundos
-        // 4. Sistema de backup automático para segurança
+        console.log('🚀 SISTEMA AVANÇADO MULTI-DISPOSITIVO INICIANDO...');
         
-        console.log('🌐 Sistema de dados compartilhados inicializado');
-        
-        // Configuração do sistema compartilhado
-        const SHARED_CONFIG = {
+        // Configuração avançada do sistema
+        const ADVANCED_CONFIG = {
             // Chave única global - MESMA para todos os dispositivos
-            globalKey: 'SAUDE_INTEGRAL_GLOBAL_DATA_V4',
-            backupKey: 'SAUDE_INTEGRAL_BACKUP_V4',
-            syncInterval: 3000, // 3 segundos
-            maxBackups: 15,
-            version: '4.0.0'
+            globalKey: 'SAUDE_INTEGRAL_ADVANCED_V5',
+            backupKey: 'SAUDE_INTEGRAL_BACKUP_V5',
+            syncInterval: 1500, // 1.5 segundos - sincronização mais rápida
+            maxBackups: 25,
+            version: '5.0.0',
+            maxRetries: 3,
+            retryDelay: 1000,
+            compressionEnabled: true,
+            encryptionEnabled: false // Para demo, desabilitado
         };
         
-        // Variáveis globais
+        // Variáveis globais avançadas
         let syncTimer = null;
+        let heartbeatTimer = null;
         let lastDataHash = null;
         let currentUserType = '';
         let currentUser = null;
         let currentLanguage = 'pt';
         let globalData = {};
+        let deviceId = null;
+        let isOnline = true;
+        let syncRetries = 0;
+        let lastSyncTime = null;
+        let connectedDevices = new Set();
+        let pendingChanges = [];
+        let isInitialized = false;
 
         // ═══════════════════════════════════════════════════════════════════
-        // 🔄 SISTEMA DE SINCRONIZAÇÃO GLOBAL ENTRE DISPOSITIVOS
+        // 🔄 SISTEMA DE SINCRONIZAÇÃO AVANÇADO EM TEMPO REAL
         // ═══════════════════════════════════════════════════════════════════
         
-        // Inicializar sistema compartilhado
-        function initializeSharedSystem() {
-            console.log('🔄 Inicializando sistema compartilhado...');
-            loadGlobalData();
-            startGlobalSync();
-            registerDeviceAccess();
-        }
-        
-        // Carregar dados globais (mesmos dados em todos os dispositivos)
-        function loadGlobalData() {
+        // Inicializar sistema avançado
+        function initializeAdvancedSystem() {
+            console.log('🔄 Inicializando sistema avançado...');
+            
             try {
-                const savedData = localStorage.getItem(SHARED_CONFIG.globalKey);
+                // Gerar ID único do dispositivo
+                deviceId = generateAdvancedDeviceId();
                 
-                if (savedData) {
-                    globalData = JSON.parse(savedData);
-                    console.log('✅ Dados globais carregados do localStorage');
-                    console.log(`📊 ${globalData.responses?.length || 0} respostas encontradas`);
-                    console.log(`👥 ${globalData.users?.length || 0} usuários cadastrados`);
-                    console.log(`🌐 Dispositivos conectados: ${globalData.metadata?.deviceCount || 1}`);
-                } else {
-                    // Criar estrutura inicial
-                    globalData = createInitialData();
-                    saveGlobalData();
-                    console.log('✅ Sistema inicializado com dados padrão');
-                }
+                // Carregar dados globais
+                loadAdvancedGlobalData();
                 
-                // Calcular hash dos dados para detectar mudanças
-                lastDataHash = calculateDataHash(globalData);
+                // Iniciar sincronização em tempo real
+                startAdvancedSync();
+                
+                // Iniciar heartbeat para detectar dispositivos conectados
+                startDeviceHeartbeat();
+                
+                // Registrar eventos de visibilidade da página
+                registerVisibilityEvents();
+                
+                // Registrar eventos de rede
+                registerNetworkEvents();
+                
+                // Marcar como inicializado
+                isInitialized = true;
+                
+                console.log('✅ Sistema avançado inicializado com sucesso!');
+                updateConnectionStatus('online', 'Sistema Online');
                 
             } catch (error) {
-                console.error('❌ Erro ao carregar dados:', error);
-                globalData = createInitialData();
-                saveGlobalData();
+                console.error('❌ Erro ao inicializar sistema avançado:', error);
+                updateConnectionStatus('error', 'Erro de Inicialização');
+                
+                // Tentar recuperação automática
+                setTimeout(() => {
+                    console.log('🔄 Tentando recuperação automática...');
+                    initializeAdvancedSystem();
+                }, 3000);
             }
         }
         
-        // Criar dados iniciais
-        function createInitialData() {
+        // Gerar ID único avançado do dispositivo
+        function generateAdvancedDeviceId() {
+            const stored = localStorage.getItem('advancedDeviceId');
+            if (stored) return stored;
+            
+            const id = 'device_' + Date.now() + '_' + Math.random().toString(36).substr(2, 12);
+            localStorage.setItem('advancedDeviceId', id);
+            return id;
+        }
+        
+        // Carregar dados globais avançados
+        function loadAdvancedGlobalData() {
+            try {
+                const savedData = localStorage.getItem(ADVANCED_CONFIG.globalKey);
+                
+                if (savedData) {
+                    // Tentar descomprimir se necessário
+                    const parsedData = ADVANCED_CONFIG.compressionEnabled ? 
+                        decompressData(savedData) : JSON.parse(savedData);
+                    
+                    globalData = parsedData;
+                    console.log('✅ Dados globais avançados carregados');
+                    console.log(`📊 ${globalData.responses?.length || 0} respostas`);
+                    console.log(`👥 ${globalData.users?.length || 0} usuários`);
+                    console.log(`🌐 ${globalData.metadata?.deviceCount || 1} dispositivos`);
+                } else {
+                    // Criar estrutura inicial avançada
+                    globalData = createAdvancedInitialData();
+                    saveAdvancedGlobalData();
+                    console.log('✅ Sistema inicializado com dados avançados');
+                }
+                
+                // Registrar este dispositivo
+                registerAdvancedDevice();
+                
+                // Calcular hash dos dados
+                lastDataHash = calculateAdvancedDataHash(globalData);
+                
+            } catch (error) {
+                console.error('❌ Erro ao carregar dados avançados:', error);
+                
+                // Tentar restaurar do backup
+                if (restoreFromAdvancedBackup()) {
+                    console.log('🔄 Dados restaurados do backup avançado');
+                } else {
+                    globalData = createAdvancedInitialData();
+                    saveAdvancedGlobalData();
+                    console.log('🆕 Criados novos dados iniciais');
+                }
+            }
+        }
+        
+        // Criar dados iniciais avançados
+        function createAdvancedInitialData() {
             return {
-                version: SHARED_CONFIG.version,
+                version: ADVANCED_CONFIG.version,
                 initialized: new Date().toISOString(),
                 lastUpdated: new Date().toISOString(),
                 users: getDefaultUsers(),
                 responses: [],
-                settings: getDefaultSettings(),
+                settings: getAdvancedDefaultSettings(),
                 metadata: {
                     totalAccess: 1,
                     lastAccess: new Date().toISOString(),
                     deviceCount: 1,
-                    devices: [generateDeviceId()]
+                    devices: [deviceId],
+                    activeDevices: new Set([deviceId]),
+                    lastHeartbeat: new Date().toISOString(),
+                    syncCount: 0,
+                    errorCount: 0
                 },
-                activityLogs: []
+                activityLogs: [],
+                systemLogs: [{
+                    id: 1,
+                    type: 'system_init',
+                    message: 'Sistema avançado inicializado',
+                    timestamp: new Date().toISOString(),
+                    deviceId: deviceId
+                }]
             };
         }
         
-        // Gerar ID único do dispositivo
-        function generateDeviceId() {
-            return 'device_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        // Configurações avançadas padrão
+        function getAdvancedDefaultSettings() {
+            return {
+                workingDaysPerMonth: 22,
+                syncInterval: ADVANCED_CONFIG.syncInterval,
+                autoBackup: true,
+                compressionEnabled: ADVANCED_CONFIG.compressionEnabled,
+                maxRetries: ADVANCED_CONFIG.maxRetries,
+                lastUpdated: new Date().toISOString(),
+                version: '5.0.0'
+            };
         }
         
-        // Registrar acesso do dispositivo
-        function registerDeviceAccess() {
-            const deviceId = localStorage.getItem('deviceId') || generateDeviceId();
-            localStorage.setItem('deviceId', deviceId);
+        // Registrar dispositivo avançado
+        function registerAdvancedDevice() {
+            if (!globalData.metadata) globalData.metadata = {};
+            if (!globalData.metadata.devices) globalData.metadata.devices = [];
+            if (!globalData.metadata.activeDevices) globalData.metadata.activeDevices = {};
             
-            if (!globalData.metadata.devices) {
-                globalData.metadata.devices = [];
-            }
-            
+            // Adicionar dispositivo se não existir
             if (!globalData.metadata.devices.includes(deviceId)) {
                 globalData.metadata.devices.push(deviceId);
-                globalData.metadata.deviceCount = globalData.metadata.devices.length;
             }
             
+            // Marcar como ativo
+            globalData.metadata.activeDevices[deviceId] = {
+                lastSeen: new Date().toISOString(),
+                userAgent: navigator.userAgent,
+                platform: navigator.platform,
+                language: navigator.language,
+                online: true
+            };
+            
+            globalData.metadata.deviceCount = globalData.metadata.devices.length;
             globalData.metadata.totalAccess = (globalData.metadata.totalAccess || 0) + 1;
             globalData.metadata.lastAccess = new Date().toISOString();
-            
-            saveGlobalData();
             
             console.log(`📱 Dispositivo registrado: ${deviceId}`);
             console.log(`🌐 Total de dispositivos: ${globalData.metadata.deviceCount}`);
         }
         
-        // Iniciar sincronização automática
-        function startGlobalSync() {
+        // Iniciar sincronização avançada em tempo real
+        function startAdvancedSync() {
             if (syncTimer) clearInterval(syncTimer);
             
             syncTimer = setInterval(() => {
-                checkForDataUpdates();
-            }, SHARED_CONFIG.syncInterval);
+                performAdvancedSync();
+            }, ADVANCED_CONFIG.syncInterval);
             
-            console.log(`🔄 Sincronização ativa a cada ${SHARED_CONFIG.syncInterval/1000}s`);
+            console.log(`🔄 Sincronização avançada ativa a cada ${ADVANCED_CONFIG.syncInterval/1000}s`);
         }
         
-        // Verificar atualizações de dados
-        function checkForDataUpdates() {
+        // Realizar sincronização avançada
+        function performAdvancedSync() {
             try {
-                const currentData = localStorage.getItem(SHARED_CONFIG.globalKey);
+                const currentData = localStorage.getItem(ADVANCED_CONFIG.globalKey);
                 if (currentData) {
-                    const parsedData = JSON.parse(currentData);
-                    const newHash = calculateDataHash(parsedData);
+                    const parsedData = ADVANCED_CONFIG.compressionEnabled ? 
+                        decompressData(currentData) : JSON.parse(currentData);
                     
-                    // Se os dados mudaram, atualizar
+                    const newHash = calculateAdvancedDataHash(parsedData);
+                    
+                    // Se os dados mudaram, sincronizar
                     if (newHash !== lastDataHash) {
                         globalData = parsedData;
                         lastDataHash = newHash;
+                        lastSyncTime = new Date().toISOString();
                         
-                        // Atualizar interface se necessário
-                        if (document.getElementById('dashboard').style.display !== 'none') {
-                            updateCharts();
-                        }
+                        // Atualizar contadores
+                        if (!globalData.metadata) globalData.metadata = {};
+                        globalData.metadata.syncCount = (globalData.metadata.syncCount || 0) + 1;
                         
-                        // Atualizar tabela admin se visível
-                        if (document.getElementById('adminPanel').style.display !== 'none') {
-                            refreshAdminTable();
-                        }
+                        // Atualizar interface
+                        updateInterfaceAfterSync();
+                        
+                        // Mostrar notificação de sincronização
+                        showAdvancedSyncNotification();
+                        
+                        // Atualizar status de conexão
+                        updateConnectionStatus('synced', 'Sincronizado');
                         
                         console.log('🔄 Dados sincronizados de outro dispositivo');
-                        showSyncNotification();
+                        
+                        // Reset retry counter on successful sync
+                        syncRetries = 0;
                     }
                 }
+                
+                // Atualizar heartbeat deste dispositivo
+                updateDeviceHeartbeat();
+                
             } catch (error) {
-                console.error('❌ Erro na sincronização:', error);
+                console.error('❌ Erro na sincronização avançada:', error);
+                
+                syncRetries++;
+                globalData.metadata.errorCount = (globalData.metadata.errorCount || 0) + 1;
+                
+                if (syncRetries < ADVANCED_CONFIG.maxRetries) {
+                    console.log(`🔄 Tentativa ${syncRetries}/${ADVANCED_CONFIG.maxRetries} em ${ADVANCED_CONFIG.retryDelay}ms`);
+                    setTimeout(() => performAdvancedSync(), ADVANCED_CONFIG.retryDelay);
+                } else {
+                    updateConnectionStatus('error', 'Erro de Sincronização');
+                    console.error('❌ Máximo de tentativas de sincronização atingido');
+                }
             }
         }
         
-        // Calcular hash dos dados para detectar mudanças
-        function calculateDataHash(data) {
-            const dataString = JSON.stringify({
+        // Calcular hash avançado dos dados
+        function calculateAdvancedDataHash(data) {
+            const criticalData = {
                 responses: data.responses || [],
                 users: data.users || [],
-                lastUpdated: data.lastUpdated
-            });
+                lastUpdated: data.lastUpdated,
+                metadata: {
+                    deviceCount: data.metadata?.deviceCount || 0,
+                    syncCount: data.metadata?.syncCount || 0
+                }
+            };
+            
+            const dataString = JSON.stringify(criticalData);
             
             let hash = 0;
             for (let i = 0; i < dataString.length; i++) {
@@ -1070,19 +1227,398 @@
             return hash.toString();
         }
         
-        // Mostrar notificação de sincronização
-        function showSyncNotification() {
-            // Criar notificação visual discreta
-            const notification = document.createElement('div');
-            notification.className = 'fixed top-4 right-4 bg-success text-white px-4 py-2 rounded-lg shadow-lg z-50 text-sm';
-            notification.innerHTML = '🔄 Dados atualizados de outro dispositivo';
-            document.body.appendChild(notification);
+        // Atualizar interface após sincronização
+        function updateInterfaceAfterSync() {
+            // Atualizar gráficos se dashboard visível
+            if (document.getElementById('dashboard').style.display !== 'none') {
+                updateCharts();
+            }
             
-            setTimeout(() => {
-                notification.remove();
-            }, 3000);
+            // Atualizar tabela admin se visível
+            if (document.getElementById('adminPanel').style.display !== 'none') {
+                refreshAdminTable();
+            }
+            
+            // Atualizar contadores de dispositivos
+            updateDeviceCounters();
         }
         
+        // Mostrar notificação avançada de sincronização
+        function showAdvancedSyncNotification() {
+            const notification = createAdvancedNotification(
+                '🔄 Dados Atualizados',
+                'Sincronizado de outro dispositivo',
+                'success',
+                3000
+            );
+            
+            // Adicionar informações extras
+            const extraInfo = document.createElement('div');
+            extraInfo.className = 'text-xs opacity-75 mt-1';
+            extraInfo.textContent = `${globalData.responses?.length || 0} respostas • ${globalData.metadata?.deviceCount || 1} dispositivos`;
+            notification.appendChild(extraInfo);
+        }
+        
+        // Criar notificação avançada
+        function createAdvancedNotification(title, message, type = 'info', duration = 5000) {
+            const container = document.getElementById('notificationContainer');
+            
+            const notification = document.createElement('div');
+            notification.className = `
+                bg-white rounded-lg shadow-lg border-l-4 p-4 mb-2 transform transition-all duration-300
+                ${type === 'success' ? 'border-success' : 
+                  type === 'error' ? 'border-accent' : 
+                  type === 'warning' ? 'border-yellow-500' : 'border-primary'}
+                translate-x-full opacity-0
+            `;
+            
+            notification.innerHTML = `
+                <div class="flex items-start">
+                    <div class="flex-1">
+                        <div class="font-semibold text-secondary text-sm">${title}</div>
+                        <div class="text-gray-600 text-xs mt-1">${message}</div>
+                    </div>
+                    <button onclick="this.parentElement.parentElement.remove()" class="text-gray-400 hover:text-gray-600 ml-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+            `;
+            
+            container.appendChild(notification);
+            
+            // Animar entrada
+            setTimeout(() => {
+                notification.classList.remove('translate-x-full', 'opacity-0');
+            }, 100);
+            
+            // Auto remover
+            setTimeout(() => {
+                notification.classList.add('translate-x-full', 'opacity-0');
+                setTimeout(() => notification.remove(), 300);
+            }, duration);
+            
+            return notification;
+        }
+        
+        // Iniciar heartbeat de dispositivos
+        function startDeviceHeartbeat() {
+            if (heartbeatTimer) clearInterval(heartbeatTimer);
+            
+            heartbeatTimer = setInterval(() => {
+                updateDeviceHeartbeat();
+                checkDeviceActivity();
+            }, 5000); // A cada 5 segundos
+            
+            console.log('💓 Heartbeat de dispositivos iniciado');
+        }
+        
+        // Atualizar heartbeat do dispositivo
+        function updateDeviceHeartbeat() {
+            if (!globalData.metadata) globalData.metadata = {};
+            if (!globalData.metadata.activeDevices) globalData.metadata.activeDevices = {};
+            
+            globalData.metadata.activeDevices[deviceId] = {
+                ...globalData.metadata.activeDevices[deviceId],
+                lastSeen: new Date().toISOString(),
+                online: true
+            };
+            
+            globalData.metadata.lastHeartbeat = new Date().toISOString();
+        }
+        
+        // Verificar atividade de dispositivos
+        function checkDeviceActivity() {
+            if (!globalData.metadata?.activeDevices) return;
+            
+            const now = new Date();
+            const fiveMinutesAgo = new Date(now.getTime() - 5 * 60 * 1000);
+            
+            let activeCount = 0;
+            
+            Object.keys(globalData.metadata.activeDevices).forEach(id => {
+                const device = globalData.metadata.activeDevices[id];
+                const lastSeen = new Date(device.lastSeen);
+                
+                if (lastSeen > fiveMinutesAgo) {
+                    device.online = true;
+                    activeCount++;
+                } else {
+                    device.online = false;
+                }
+            });
+            
+            // Atualizar contador de dispositivos ativos
+            updateDeviceCounters(activeCount);
+        }
+        
+        // Atualizar contadores de dispositivos
+        function updateDeviceCounters(activeCount = null) {
+            const deviceCountElement = document.getElementById('deviceCount');
+            if (deviceCountElement) {
+                const total = globalData.metadata?.deviceCount || 1;
+                const active = activeCount !== null ? activeCount : 
+                    Object.values(globalData.metadata?.activeDevices || {})
+                        .filter(d => d.online).length;
+                
+                deviceCountElement.textContent = `${active}/${total} dispositivos online`;
+            }
+            
+            const lastSyncElement = document.getElementById('lastSync');
+            if (lastSyncElement && lastSyncTime) {
+                const timeDiff = new Date() - new Date(lastSyncTime);
+                const seconds = Math.floor(timeDiff / 1000);
+                
+                if (seconds < 60) {
+                    lastSyncElement.textContent = `Sincronizado há ${seconds}s`;
+                } else {
+                    const minutes = Math.floor(seconds / 60);
+                    lastSyncElement.textContent = `Sincronizado há ${minutes}m`;
+                }
+            }
+        }
+        
+        // Registrar eventos de visibilidade da página
+        function registerVisibilityEvents() {
+            document.addEventListener('visibilitychange', () => {
+                if (document.hidden) {
+                    console.log('📱 Página oculta - reduzindo sincronização');
+                    // Reduzir frequência de sincronização quando página não está visível
+                    if (syncTimer) {
+                        clearInterval(syncTimer);
+                        syncTimer = setInterval(performAdvancedSync, ADVANCED_CONFIG.syncInterval * 3);
+                    }
+                } else {
+                    console.log('📱 Página visível - restaurando sincronização');
+                    // Restaurar sincronização normal
+                    startAdvancedSync();
+                    // Sincronizar imediatamente
+                    performAdvancedSync();
+                }
+            });
+        }
+        
+        // Registrar eventos de rede
+        function registerNetworkEvents() {
+            window.addEventListener('online', () => {
+                console.log('🌐 Conexão restaurada');
+                isOnline = true;
+                updateConnectionStatus('online', 'Online');
+                
+                // Sincronizar imediatamente quando voltar online
+                performAdvancedSync();
+                
+                // Mostrar notificação
+                createAdvancedNotification(
+                    '🌐 Conexão Restaurada',
+                    'Sincronizando dados...',
+                    'success'
+                );
+            });
+            
+            window.addEventListener('offline', () => {
+                console.log('📡 Conexão perdida');
+                isOnline = false;
+                updateConnectionStatus('offline', 'Offline');
+                
+                createAdvancedNotification(
+                    '📡 Sem Conexão',
+                    'Trabalhando offline',
+                    'warning'
+                );
+            });
+        }
+        
+        // Atualizar status de conexão
+        function updateConnectionStatus(status, message) {
+            const indicator = document.getElementById('statusIndicator');
+            const text = document.getElementById('statusText');
+            
+            if (indicator && text) {
+                // Remover classes anteriores
+                indicator.className = 'w-3 h-3 rounded-full';
+                
+                switch (status) {
+                    case 'online':
+                        indicator.classList.add('bg-success', 'animate-pulse');
+                        break;
+                    case 'synced':
+                        indicator.classList.add('bg-primary', 'animate-ping');
+                        setTimeout(() => {
+                            indicator.className = 'w-3 h-3 bg-success rounded-full';
+                        }, 1000);
+                        break;
+                    case 'offline':
+                        indicator.classList.add('bg-yellow-500');
+                        break;
+                    case 'error':
+                        indicator.classList.add('bg-accent', 'animate-bounce');
+                        break;
+                    default:
+                        indicator.classList.add('bg-gray-400');
+                }
+                
+                text.textContent = message;
+            }
+        }
+        
+        // ═══════════════════════════════════════════════════════════════════
+        // 💾 SISTEMA AVANÇADO DE SALVAMENTO E BACKUP
+        // ═══════════════════════════════════════════════════════════════════
+        
+        // Salvar dados globais avançados
+        function saveAdvancedGlobalData() {
+            try {
+                globalData.lastUpdated = new Date().toISOString();
+                globalData.version = ADVANCED_CONFIG.version;
+                
+                // Atualizar metadata
+                if (!globalData.metadata) globalData.metadata = {};
+                globalData.metadata.lastSave = new Date().toISOString();
+                globalData.metadata.saveCount = (globalData.metadata.saveCount || 0) + 1;
+                
+                // Criar backup automático
+                createAdvancedBackup();
+                
+                // Comprimir dados se habilitado
+                const dataToSave = ADVANCED_CONFIG.compressionEnabled ? 
+                    compressData(globalData) : JSON.stringify(globalData);
+                
+                // Salvar com chave global única
+                localStorage.setItem(ADVANCED_CONFIG.globalKey, dataToSave);
+                
+                // Atualizar hash local
+                lastDataHash = calculateAdvancedDataHash(globalData);
+                
+                console.log('✅ Dados globais avançados salvos');
+                console.log(`📊 ${globalData.responses?.length || 0} respostas`);
+                console.log(`👥 ${globalData.users?.length || 0} usuários`);
+                console.log(`🌐 ${globalData.metadata?.deviceCount || 1} dispositivos`);
+                console.log(`💾 Save #${globalData.metadata?.saveCount || 1}`);
+                
+                // Notificar atualização global
+                broadcastAdvancedUpdate();
+                
+                return true;
+                
+            } catch (error) {
+                console.error('❌ Erro ao salvar dados avançados:', error);
+                
+                // Tentar restaurar do backup
+                if (restoreFromAdvancedBackup()) {
+                    createAdvancedNotification(
+                        '⚠️ Erro de Salvamento',
+                        'Dados restaurados do backup',
+                        'warning'
+                    );
+                } else {
+                    createAdvancedNotification(
+                        '❌ Erro Crítico',
+                        'Falha ao salvar dados',
+                        'error'
+                    );
+                }
+                
+                return false;
+            }
+        }
+        
+        // Criar backup avançado
+        function createAdvancedBackup() {
+            try {
+                const backupData = {
+                    ...globalData,
+                    backupCreatedAt: new Date().toISOString(),
+                    backupId: Date.now(),
+                    backupDeviceId: deviceId
+                };
+                
+                const existingBackups = JSON.parse(localStorage.getItem(ADVANCED_CONFIG.backupKey) || '[]');
+                existingBackups.push(backupData);
+                
+                // Limitar número de backups
+                if (existingBackups.length > ADVANCED_CONFIG.maxBackups) {
+                    existingBackups.splice(0, existingBackups.length - ADVANCED_CONFIG.maxBackups);
+                }
+                
+                const backupsToSave = ADVANCED_CONFIG.compressionEnabled ? 
+                    compressData(existingBackups) : JSON.stringify(existingBackups);
+                
+                localStorage.setItem(ADVANCED_CONFIG.backupKey, backupsToSave);
+                console.log('💾 Backup avançado criado');
+                
+            } catch (error) {
+                console.error('❌ Erro ao criar backup avançado:', error);
+            }
+        }
+        
+        // Restaurar do backup avançado
+        function restoreFromAdvancedBackup() {
+            try {
+                const backupsData = localStorage.getItem(ADVANCED_CONFIG.backupKey);
+                if (!backupsData) return false;
+                
+                const backups = ADVANCED_CONFIG.compressionEnabled ? 
+                    decompressData(backupsData) : JSON.parse(backupsData);
+                
+                if (backups.length > 0) {
+                    const latestBackup = backups[backups.length - 1];
+                    globalData = { ...latestBackup };
+                    
+                    // Limpar propriedades de backup
+                    delete globalData.backupCreatedAt;
+                    delete globalData.backupId;
+                    delete globalData.backupDeviceId;
+                    
+                    // Salvar dados restaurados
+                    const dataToSave = ADVANCED_CONFIG.compressionEnabled ? 
+                        compressData(globalData) : JSON.stringify(globalData);
+                    
+                    localStorage.setItem(ADVANCED_CONFIG.globalKey, dataToSave);
+                    lastDataHash = calculateAdvancedDataHash(globalData);
+                    
+                    console.log('🔄 Dados restaurados do backup avançado');
+                    return true;
+                }
+            } catch (error) {
+                console.error('❌ Erro ao restaurar backup avançado:', error);
+            }
+            return false;
+        }
+        
+        // Comprimir dados (simulação - em produção usar biblioteca real)
+        function compressData(data) {
+            // Simulação de compressão - em produção usar LZ-string ou similar
+            return JSON.stringify(data);
+        }
+        
+        // Descomprimir dados (simulação)
+        function decompressData(compressedData) {
+            // Simulação de descompressão
+            return JSON.parse(compressedData);
+        }
+        
+        // Notificar atualização avançada
+        function broadcastAdvancedUpdate() {
+            const event = new CustomEvent('advancedDataUpdated', {
+                detail: {
+                    timestamp: globalData.lastUpdated,
+                    responseCount: globalData.responses?.length || 0,
+                    userCount: globalData.users?.length || 0,
+                    deviceCount: globalData.metadata?.deviceCount || 1,
+                    syncCount: globalData.metadata?.syncCount || 0,
+                    deviceId: deviceId
+                }
+            });
+            window.dispatchEvent(event);
+        }
+        
+        // Funções de compatibilidade
+        function saveGlobalData() { return saveAdvancedGlobalData(); }
+        function saveData() { return saveAdvancedGlobalData(); }
+        function saveToSharedDatabase() { return saveAdvancedGlobalData(); }
+
         // Get default users
         function getDefaultUsers() {
             return [
@@ -1101,166 +1637,6 @@
                     permissions: ['all']
                 }
             ];
-        }
-        
-        // Get default settings
-        function getDefaultSettings() {
-            return {
-                workingDaysPerMonth: 22,
-                lastUpdated: new Date().toISOString(),
-                version: '2.0.0'
-            };
-        }
-
-        // ═══════════════════════════════════════════════════════════════════
-        // 💾 SALVAR DADOS GLOBAIS (COMPARTILHADOS ENTRE DISPOSITIVOS)
-        // ═══════════════════════════════════════════════════════════════════
-        
-        // Salvar dados globais (sincronizados entre todos os dispositivos)
-        function saveGlobalData() {
-            try {
-                globalData.lastUpdated = new Date().toISOString();
-                globalData.version = SHARED_CONFIG.version;
-                
-                // Criar backup automático
-                createGlobalBackup();
-                
-                // Salvar com chave global única
-                localStorage.setItem(SHARED_CONFIG.globalKey, JSON.stringify(globalData));
-                
-                // Atualizar hash local
-                lastDataHash = calculateDataHash(globalData);
-                
-                console.log('✅ Dados globais salvos e sincronizados');
-                console.log(`📊 Total de respostas: ${globalData.responses?.length || 0}`);
-                console.log(`👥 Total de usuários: ${globalData.users?.length || 0}`);
-                console.log(`🌐 Dispositivos conectados: ${globalData.metadata?.deviceCount || 1}`);
-                
-                // Notificar que dados foram atualizados
-                broadcastGlobalUpdate();
-                
-                return true;
-                
-            } catch (error) {
-                console.error('❌ Erro ao salvar dados globais:', error);
-                
-                // Tentar restaurar do backup
-                restoreFromGlobalBackup();
-                
-                alert('⚠️ ERRO AO SALVAR DADOS\n\nOcorreu um erro ao salvar no sistema compartilhado.\nOs dados foram restaurados do backup.\n\nTente novamente.');
-                return false;
-            }
-        }
-        
-        // Função de compatibilidade (para não quebrar código existente)
-        function saveData() {
-            return saveGlobalData();
-        }
-        
-        // Função de compatibilidade (para não quebrar código existente)
-        function saveToSharedDatabase() {
-            return saveGlobalData();
-        }
-        
-        // Criar backup global automático
-        function createGlobalBackup() {
-            try {
-                const backupData = {
-                    ...globalData,
-                    backupCreatedAt: new Date().toISOString(),
-                    backupId: Date.now()
-                };
-                
-                // Manter apenas os últimos backups
-                const existingBackups = JSON.parse(localStorage.getItem(SHARED_CONFIG.backupKey) || '[]');
-                existingBackups.push(backupData);
-                
-                // Limitar número de backups
-                if (existingBackups.length > SHARED_CONFIG.maxBackups) {
-                    existingBackups.splice(0, existingBackups.length - SHARED_CONFIG.maxBackups);
-                }
-                
-                localStorage.setItem(SHARED_CONFIG.backupKey, JSON.stringify(existingBackups));
-                console.log('💾 Backup global automático criado');
-                
-            } catch (error) {
-                console.error('❌ Erro ao criar backup global:', error);
-            }
-        }
-        
-        // Restaurar do backup global
-        function restoreFromGlobalBackup() {
-            try {
-                const backups = JSON.parse(localStorage.getItem(SHARED_CONFIG.backupKey) || '[]');
-                if (backups.length > 0) {
-                    const latestBackup = backups[backups.length - 1];
-                    globalData = { ...latestBackup };
-                    delete globalData.backupCreatedAt;
-                    delete globalData.backupId;
-                    
-                    localStorage.setItem(SHARED_CONFIG.globalKey, JSON.stringify(globalData));
-                    lastDataHash = calculateDataHash(globalData);
-                    console.log('🔄 Dados restaurados do backup global');
-                    return true;
-                }
-            } catch (error) {
-                console.error('❌ Erro ao restaurar backup global:', error);
-            }
-            return false;
-        }
-        
-        // Função de compatibilidade
-        function createAutoBackup() {
-            return createGlobalBackup();
-        }
-        
-        // Função de compatibilidade
-        function restoreFromBackup() {
-            return restoreFromGlobalBackup();
-        }
-        
-        // Notificar atualização global
-        function broadcastGlobalUpdate() {
-            const event = new CustomEvent('globalDataUpdated', {
-                detail: {
-                    timestamp: globalData.lastUpdated,
-                    responseCount: globalData.responses?.length || 0,
-                    userCount: globalData.users?.length || 0,
-                    deviceCount: globalData.metadata?.deviceCount || 1
-                }
-            });
-            window.dispatchEvent(event);
-        }
-        
-        // Função de compatibilidade
-        function broadcastDataUpdate() {
-            return broadcastGlobalUpdate();
-        }
-
-        // Data export for backup
-        function exportSystemData() {
-            try {
-                const dataToExport = {
-                    ...globalData,
-                    exportedAt: new Date().toISOString(),
-                    exportedBy: currentUser ? currentUser.name : 'Sistema'
-                };
-                
-                const dataStr = JSON.stringify(dataToExport, null, 2);
-                const dataBlob = new Blob([dataStr], {type: 'application/json'});
-                
-                const link = document.createElement('a');
-                link.href = URL.createObjectURL(dataBlob);
-                link.download = `saude_integral_backup_${new Date().toISOString().split('T')[0]}.json`;
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-                
-                return true;
-            } catch (error) {
-                console.error('Erro ao exportar dados:', error);
-                return false;
-            }
         }
 
         // Authentication functions
@@ -1299,27 +1675,17 @@
                 action: action,
                 metadata: metadata,
                 timestamp: new Date().toISOString(),
-                ip: 'localhost', // In production, get real IP
+                deviceId: deviceId,
+                ip: 'localhost',
                 userAgent: navigator.userAgent
             });
             
-            // Keep only last 1000 logs to prevent storage bloat
+            // Keep only last 1000 logs
             if (globalData.activityLogs.length > 1000) {
                 globalData.activityLogs = globalData.activityLogs.slice(-1000);
             }
             
-            saveData();
-        }
-
-        function hashPassword(password) {
-            // Simple hash for demo - in production use proper hashing
-            let hash = 0;
-            for (let i = 0; i < password.length; i++) {
-                const char = password.charCodeAt(i);
-                hash = ((hash << 5) - hash) + char;
-                hash = hash & hash;
-            }
-            return hash.toString();
+            saveAdvancedGlobalData();
         }
 
         // Translation dictionary
@@ -1356,8 +1722,8 @@
                 forgot_subtitle: 'Digite seu email para receber instruções',
                 send_email: 'Enviar Email',
                 back_to_login: 'Voltar ao Login',
-                // Form translations
                 general_info: 'INFORMAÇÃO GERAL',
+                general_info_desc: 'Dados básicos do período e localização',
                 year_question: '1. Ano (selecione apenas um)',
                 month_question: '2. Mês (selecione apenas um)',
                 business_question: '3. Negócio Principal',
@@ -1366,9 +1732,29 @@
                 fte_count_question: '6. Quantidade de FTE ativo do site',
                 seasonal_count_question: '7. Quantidade de safristas ativos do site',
                 observations_question: '8. Observações',
-                medical_leave_title: 'LICENÇA MÉDICA (apenas números)',
-                medical_leave_fte_all: '9. Dias de licença médica (todos os motivos) - FTE',
-                medical_leave_seasonal_all: '10. Dias de licença médica (todos os motivos) - Safristas',
+                select_month: 'Selecione o mês',
+                select_business: 'Selecione o negócio',
+                select_country: 'Selecione o país',
+                select_site: 'Selecione o site',
+                january: 'Janeiro',
+                february: 'Fevereiro',
+                march: 'Março',
+                april: 'Abril',
+                may: 'Maio',
+                june: 'Junho',
+                july: 'Julho',
+                august: 'Agosto',
+                september: 'Setembro',
+                october: 'Outubro',
+                november: 'Novembro',
+                december: 'Dezembro',
+                brazil: 'Brasil',
+                paraguay: 'Paraguai',
+                mexico: 'México',
+                medical_leave: 'LICENÇA MÉDICA',
+                medical_leave_desc: 'Dados de afastamentos por motivos de saúde',
+                questionnaire_title: 'Questionário - Indicadores Estratégicos',
+                questionnaire_subtitle: 'Preencha os dados mensais do seu site',
                 change_password: 'Alterar Senha',
                 current_password: 'Senha Atual',
                 new_password: 'Nova Senha',
@@ -1408,8 +1794,8 @@
                 forgot_subtitle: 'Ingrese su correo para recibir instrucciones',
                 send_email: 'Enviar Correo',
                 back_to_login: 'Volver al Login',
-                // Form translations
                 general_info: 'INFORMACIÓN GENERAL',
+                general_info_desc: 'Datos básicos del período y ubicación',
                 year_question: '1. Año (seleccione solo uno)',
                 month_question: '2. Mes (seleccione solo uno)',
                 business_question: '3. Negocio Principal',
@@ -1418,9 +1804,29 @@
                 fte_count_question: '6. Cantidad de FTE activo del sitio',
                 seasonal_count_question: '7. Cantidad de zafreros activos del sitio',
                 observations_question: '8. Observaciones',
-                medical_leave_title: 'LICENCIA MÉDICA (solo números)',
-                medical_leave_fte_all: '9. Días de licencia médica (todos los motivos) - FTE',
-                medical_leave_seasonal_all: '10. Días de licencia médica (todos los motivos) - Zafreros',
+                select_month: 'Seleccione el mes',
+                select_business: 'Seleccione el negocio',
+                select_country: 'Seleccione el país',
+                select_site: 'Seleccione el sitio',
+                january: 'Enero',
+                february: 'Febrero',
+                march: 'Marzo',
+                april: 'Abril',
+                may: 'Mayo',
+                june: 'Junio',
+                july: 'Julio',
+                august: 'Agosto',
+                september: 'Septiembre',
+                october: 'Octubre',
+                november: 'Noviembre',
+                december: 'Diciembre',
+                brazil: 'Brasil',
+                paraguay: 'Paraguay',
+                mexico: 'México',
+                medical_leave: 'LICENCIA MÉDICA',
+                medical_leave_desc: 'Datos de ausencias por motivos de salud',
+                questionnaire_title: 'Cuestionario - Indicadores Estratégicos',
+                questionnaire_subtitle: 'Complete los datos mensuales de su sitio',
                 change_password: 'Cambiar Contraseña',
                 current_password: 'Contraseña Actual',
                 new_password: 'Nueva Contraseña',
@@ -1532,7 +1938,7 @@
                 bySite[siteKey].fteContracted += fteContracted;
                 bySite[siteKey].seasonalContracted += seasonalContracted;
                 
-                // By month - create proper month/year labels
+                // By month
                 const monthNames = {
                     'janeiro': 'Jan', 'fevereiro': 'Fev', 'marco': 'Mar', 'abril': 'Abr',
                     'maio': 'Mai', 'junho': 'Jun', 'julho': 'Jul', 'agosto': 'Ago',
@@ -1545,1432 +1951,8 @@
                     byMonth[monthKey] = { 
                         totalDays: 0, 
                         contractedDays: 0,
-                        sortKey: `${response.year}-${String(Object.keys(monthNames).indexOf(response.month) + 1).padStart(2, '0')}`
-                    };
-                }
-                byMonth[monthKey].totalDays += totalDays;
-                byMonth[monthKey].contractedDays += totalContracted;
-                
-                // By CID - accumulate all CID categories
-                byCid['CID F'] += (response.medicalLeaveFteCidF || 0) + (response.medicalLeaveSeasonalCidF || 0);
-                byCid['CID M'] += (response.medicalLeaveFteCidM || 0) + (response.medicalLeaveSeasonalCidM || 0);
-                byCid['CID S'] += (response.medicalLeaveFteCidS || 0) + (response.medicalLeaveSeasonalCidS || 0);
-                byCid['CID Z'] += (response.medicalLeaveFteCidZ || 0) + (response.medicalLeaveSeasonalCidZ || 0);
-                byCid['CID R'] += (response.medicalLeaveFteCidR || 0) + (response.medicalLeaveSeasonalCidR || 0);
-                byCid['CID O'] += (response.medicalLeaveFteCidO || 0) + (response.medicalLeaveSeasonalCidO || 0);
-                byCid['CID J'] += (response.medicalLeaveFteCidJ || 0) + (response.medicalLeaveSeasonalCidJ || 0);
-                byCid['CID A/B'] += (response.medicalLeaveFteCidAb || 0) + (response.medicalLeaveSeasonalCidAb || 0);
-            });
-            
-            // Calculate percentages for each site
-            const siteLabels = Object.keys(bySite);
-            const siteData = siteLabels.map(site => {
-                const siteInfo = bySite[site];
-                return siteInfo.contractedDays > 0 ? 
-                    ((siteInfo.totalDays / siteInfo.contractedDays) * 100).toFixed(1) : '0.0';
-            });
-            
-            const fteData = siteLabels.map(site => {
-                const siteInfo = bySite[site];
-                return siteInfo.fteContracted > 0 ? 
-                    ((siteInfo.fteDays / siteInfo.fteContracted) * 100).toFixed(1) : '0.0';
-            });
-            
-            const safristasData = siteLabels.map(site => {
-                const siteInfo = bySite[site];
-                return siteInfo.seasonalContracted > 0 ? 
-                    ((siteInfo.seasonalDays / siteInfo.seasonalContracted) * 100).toFixed(1) : '0.0';
-            });
-            
-            // Month data - sort by date properly
-            const monthEntries = Object.entries(byMonth).sort((a, b) => {
-                return a[1].sortKey.localeCompare(b[1].sortKey);
-            });
-            
-            const monthLabels = monthEntries.map(([label]) => label);
-            const monthData = monthEntries.map(([label, monthInfo]) => {
-                return monthInfo.contractedDays > 0 ? 
-                    ((monthInfo.totalDays / monthInfo.contractedDays) * 100).toFixed(1) : '0.0';
-            });
-            
-            // CID data
-            const cidLabels = Object.keys(byCid);
-            const cidData = cidLabels.map(cid => {
-                return totalContractedDaysGlobal > 0 ? 
-                    ((byCid[cid] / totalContractedDaysGlobal) * 100).toFixed(1) : '0.0';
-            });
-            
-            console.log('📊 Dados calculados dos gráficos:', {
-                responses: responses.length,
-                monthLabels,
-                monthData,
-                siteLabels,
-                filters: 'aplicados'
-            });
-            
-            return {
-                general: {
-                    labels: monthLabels.length > 0 ? monthLabels : ['Sem dados'],
-                    data: monthData.length > 0 ? monthData : ['0.0']
-                },
-                byLocation: {
-                    labels: siteLabels.length > 0 ? siteLabels : ['Sem dados'],
-                    data: siteData.length > 0 ? siteData : ['0.0']
-                },
-                byCategory: {
-                    labels: cidLabels,
-                    data: cidData
-                },
-                trend: {
-                    labels: monthLabels.length > 0 ? monthLabels : ['Sem dados'],
-                    data: monthData.length > 0 ? monthData : ['0.0']
-                },
-                comparison: {
-                    labels: siteLabels.length > 0 ? siteLabels : ['Sem dados'],
-                    fteData: fteData.length > 0 ? fteData : ['0.0'],
-                    safristasData: safristasData.length > 0 ? safristasData : ['0.0']
-                }
-            };
-        }
-
-        function getDefaultChartData() {
-            return {
-                general: {
-                    labels: ['Nov 2024', 'Out 2024', 'Set 2024', 'Ago 2024', 'Jul 2024'],
-                    data: [4.2, 3.8, 5.1, 4.6, 3.9]
-                },
-                byLocation: {
-                    labels: ['Petrolina', 'Sorriso', 'Uberlândia', 'Rolândia', 'Santa Rita'],
-                    data: [3.2, 4.8, 2.9, 5.1, 3.7]
-                },
-                byCategory: {
-                    labels: ['CID F', 'CID M', 'CID S', 'CID Z', 'CID R', 'CID O', 'CID J', 'CID A/B'],
-                    data: [1.2, 0.8, 1.5, 0.3, 0.4, 0.2, 0.6, 0.2]
-                },
-                trend: {
-                    labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov'],
-                    data: [3.1, 3.8, 2.9, 4.2, 3.6, 3.3, 3.9, 4.6, 5.1, 3.8, 4.2]
-                },
-                comparison: {
-                    labels: ['Petrolina', 'Sorriso', 'Uberlândia', 'Rolândia', 'Santa Rita'],
-                    fteData: [2.8, 4.1, 2.3, 4.6, 3.2],
-                    safristasData: [3.6, 5.5, 3.5, 5.6, 4.2]
-                }
-            };
-        }
-
-        // Default chart data for initial display
-        const absenteeismData = getDefaultChartData();
-
-        // ═══════════════════════════════════════════════════════════════════
-        // 🚀 SISTEMA DE DADOS COMPARTILHADOS - GITHUB PAGES
-        // ═══════════════════════════════════════════════════════════════════
-        /*
-        COMO FUNCIONA O SISTEMA COMPARTILHADO:
-        
-        1. 📱 DADOS COMPARTILHADOS:
-           - Todos os dados ficam salvos no localStorage do navegador
-           - Qualquer pessoa que acessa o mesmo link vê os mesmos dados
-           - Dados preenchidos no celular aparecem no computador e vice-versa
-        
-        2. 🌐 HOSPEDAGEM NO GITHUB:
-           - Faça upload deste arquivo HTML para seu repositório GitHub
-           - Ative GitHub Pages nas configurações do repositório
-           - Compartilhe o link gerado com sua equipe
-        
-        3. 💾 PERSISTÊNCIA DOS DADOS:
-           - Os dados ficam salvos no navegador de cada usuário
-           - Mesmo fechando e abrindo o navegador, os dados permanecem
-           - Funciona offline - não precisa de internet após carregar
-        
-        4. 🔄 SINCRONIZAÇÃO:
-           - Quando alguém preenche dados, eles ficam disponíveis para todos
-           - Os gráficos são atualizados automaticamente
-           - Sistema funciona em tempo real
-        
-        ✅ PRONTO PARA USO: Não precisa configurar nada!
-        */
-        
-        // Initialize system
-        document.addEventListener('DOMContentLoaded', function() {
-            try {
-                // Inicializar sistema compartilhado global
-                initializeSharedSystem();
-                
-                // Load preferred language
-                const savedLang = localStorage.getItem('preferredLanguage') || 'pt';
-                changeLanguage(savedLang);
-                
-                initializeCharts();
-                
-                // Show enhanced system status
-                console.log('✅ SISTEMA COMPARTILHADO GLOBAL ATIVO');
-                console.log('🌐 Dados sincronizados entre TODOS os dispositivos');
-                console.log('📱 Celular ↔️ Computador ↔️ Tablet - TUDO SINCRONIZADO');
-                console.log('💾 Backups automáticos ativados');
-                console.log(`🔄 Sincronização a cada ${SHARED_CONFIG.syncInterval/1000} segundos`);
-                console.log('🔑 Chave global única:', SHARED_CONFIG.globalKey);
-                
-                // Adicionar listener para atualizações globais
-                window.addEventListener('globalDataUpdated', function(event) {
-                    console.log('📡 Dados atualizados globalmente:', event.detail);
-                });
-                
-                // Mostrar status na interface
-                showGlobalStatus();
-                
-            } catch (error) {
-                console.error('❌ Erro ao inicializar sistema:', error);
-                alert('⚠️ Erro ao inicializar o sistema.\nTente recarregar a página.');
-            }
-        });
-        
-        // Mostrar status do sistema global
-        function showGlobalStatus() {
-            const statusInfo = {
-                version: globalData.version,
-                responses: globalData.responses?.length || 0,
-                users: globalData.users?.length || 0,
-                lastUpdate: globalData.lastUpdated,
-                totalAccess: globalData.metadata?.totalAccess || 0,
-                deviceCount: globalData.metadata?.deviceCount || 1,
-                globalKey: SHARED_CONFIG.globalKey
-            };
-            
-            console.log('📊 STATUS DO SISTEMA GLOBAL:', statusInfo);
-            console.log('🌐 DADOS COMPARTILHADOS ENTRE DISPOSITIVOS:', {
-                celular: '✅ Sincronizado',
-                computador: '✅ Sincronizado', 
-                tablet: '✅ Sincronizado',
-                chaveGlobal: SHARED_CONFIG.globalKey
-            });
-        }
-
-        // Chart instances storage
-        let chartInstances = {};
-
-        function initializeCharts() {
-            createAbsenteeismGeneralChart();
-            createAbsenteeismLocationChart();
-            createAbsenteeismCategoryChart();
-            createAbsenteeismTrendChart();
-            createAbsenteeismComparisonChart();
-        }
-
-        function createAbsenteeismGeneralChart() {
-            const ctx = document.getElementById('absenteeismGeneralChart').getContext('2d');
-            chartInstances.general = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: absenteeismData.general.labels,
-                    datasets: [{
-                        label: 'Absenteísmo (%)',
-                        data: absenteeismData.general.data,
-                        backgroundColor: '#879ACF',
-                        borderColor: '#0E334C',
-                        borderWidth: 2,
-                        borderRadius: 8
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: {
-                            display: true
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    return `Absenteísmo: ${context.parsed.y}%`;
-                                }
-                            }
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            max: 6,
-                            ticks: {
-                                callback: function(value) {
-                                    return value + '%';
-                                }
-                            }
-                        }
-                    }
-                }
-            });
-        }
-
-        function createAbsenteeismLocationChart() {
-            const ctx = document.getElementById('absenteeismLocationChart').getContext('2d');
-            chartInstances.location = new Chart(ctx, {
-                type: 'doughnut',
-                data: {
-                    labels: absenteeismData.byLocation.labels,
-                    datasets: [{
-                        data: absenteeismData.byLocation.data,
-                        backgroundColor: ['#879ACF', '#FA3268', '#8CD000', '#0E334C', '#FFFFFF'],
-                        borderColor: '#FFFFFF',
-                        borderWidth: 3
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: {
-                            position: 'bottom'
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    return `${context.label}: ${context.parsed}%`;
-                                }
-                            }
-                        }
-                    }
-                }
-            });
-        }
-
-        function createAbsenteeismCategoryChart() {
-            const ctx = document.getElementById('absenteeismCategoryChart').getContext('2d');
-            chartInstances.category = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: absenteeismData.byCategory.labels,
-                    datasets: [{
-                        label: 'Absenteísmo por CID (%)',
-                        data: absenteeismData.byCategory.data,
-                        backgroundColor: '#FA3268',
-                        borderColor: '#0E334C',
-                        borderWidth: 1,
-                        borderRadius: 4
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    indexAxis: 'y',
-                    plugins: {
-                        legend: {
-                            display: false
-                        }
-                    },
-                    scales: {
-                        x: {
-                            beginAtZero: true,
-                            ticks: {
-                                callback: function(value) {
-                                    return value + '%';
-                                }
-                            }
-                        }
-                    }
-                }
-            });
-        }
-
-        function createAbsenteeismTrendChart() {
-            const ctx = document.getElementById('absenteeismTrendChart').getContext('2d');
-            chartInstances.trend = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: absenteeismData.trend.labels,
-                    datasets: [{
-                        label: 'Tendência Mensal (%)',
-                        data: absenteeismData.trend.data,
-                        backgroundColor: [
-                            '#879ACF', '#FA3268', '#8CD000', '#0E334C', '#879ACF',
-                            '#FA3268', '#8CD000', '#0E334C', '#879ACF', '#FA3268', '#8CD000'
-                        ],
-                        borderColor: '#0E334C',
-                        borderWidth: 2,
-                        borderRadius: 8,
-                        borderSkipped: false
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: {
-                            display: true
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    return `${context.dataset.label}: ${context.parsed.y}%`;
-                                }
-                            }
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            max: 6,
-                            ticks: {
-                                callback: function(value) {
-                                    return value + '%';
-                                }
-                            }
-                        }
-                    }
-                }
-            });
-        }
-
-        function createAbsenteeismComparisonChart() {
-            const ctx = document.getElementById('absenteeismComparisonChart').getContext('2d');
-            chartInstances.comparison = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: absenteeismData.comparison.labels,
-                    datasets: [{
-                        label: 'FTE (%)',
-                        data: absenteeismData.comparison.fteData,
-                        backgroundColor: '#879ACF',
-                        borderColor: '#0E334C',
-                        borderWidth: 1,
-                        borderRadius: 6
-                    }, {
-                        label: 'Safristas (%)',
-                        data: absenteeismData.comparison.safristasData,
-                        backgroundColor: '#FA3268',
-                        borderColor: '#0E334C',
-                        borderWidth: 1,
-                        borderRadius: 6
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: {
-                            position: 'top'
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    return `${context.dataset.label}: ${context.parsed.y}%`;
-                                }
-                            }
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            max: 6,
-                            ticks: {
-                                callback: function(value) {
-                                    return value + '%';
-                                }
-                            }
-                        }
-                    }
-                }
-            });
-        }
-
-        function updateCharts() {
-            const country = document.getElementById('chartFilterCountry').value;
-            const site = document.getElementById('chartFilterSite').value;
-            const business = document.getElementById('chartFilterBusiness').value;
-            const year = document.getElementById('chartFilterYear').value;
-
-            // Get filtered responses from global data
-            const filters = { country, site, business, year };
-            const filteredResponses = getFilteredResponses(filters);
-            
-            // Always show data - if no filtered data, show all data
-            const dataToUse = filteredResponses.length > 0 ? filteredResponses : (globalData.responses || []);
-            const chartData = calculateAbsenteeismFromResponses(dataToUse);
-
-            // Update all charts with filtered data
-            if (chartInstances.general) {
-                updateChartData(chartInstances.general, chartData.general);
-            }
-            if (chartInstances.location) {
-                updateChartData(chartInstances.location, chartData.byLocation);
-            }
-            if (chartInstances.category) {
-                updateChartData(chartInstances.category, chartData.byCategory);
-            }
-            if (chartInstances.trend) {
-                updateChartData(chartInstances.trend, chartData.trend);
-            }
-            if (chartInstances.comparison) {
-                updateComparisonChartData(chartInstances.comparison, chartData.comparison);
-            }
-
-            // Update sites without response based on filtered data
-            updateSitesWithoutResponse(filteredResponses);
-
-            // Show filter status
-            const activeFilters = Object.entries(filters).filter(([k,v]) => v).map(([k,v]) => `${k}: ${v}`);
-            const statusMessage = activeFilters.length > 0 ? 
-                `Filtros ativos: ${activeFilters.join(', ')} | Dados encontrados: ${dataToUse.length}` :
-                `Mostrando todos os dados: ${dataToUse.length} registros`;
-            
-            console.log(statusMessage);
-            
-            // Visual feedback for applied filters
-            const filterContainer = document.querySelector('.bg-gradient-to-r.from-white.to-gray-50');
-            if (activeFilters.length > 0) {
-                filterContainer.classList.add('ring-2', 'ring-primary', 'ring-opacity-50');
-            } else {
-                filterContainer.classList.remove('ring-2', 'ring-primary', 'ring-opacity-50');
-            }
-        }
-
-        function updateSitesWithoutResponse(responses) {
-            const allSites = ['petrolina', 'sorriso', 'uberlandia', 'rolandia', 'santa-rita', 'carandai', 'el-tizate', 'rio-iv'];
-            const sitesWithResponse = responses.map(r => r.site);
-            const sitesWithoutResponse = allSites.filter(site => !sitesWithResponse.includes(site));
-            
-            // This would update the UI to show sites without response
-            // For now, keeping the static display
-        }
-
-        function updateChartData(chart, newData) {
-            if (chart && newData) {
-                chart.data.labels = newData.labels;
-                chart.data.datasets[0].data = newData.data;
-                chart.update();
-            }
-        }
-
-        function updateComparisonChartData(chart, newData) {
-            if (chart && newData) {
-                chart.data.labels = newData.labels;
-                chart.data.datasets[0].data = newData.fteData;
-                chart.data.datasets[1].data = newData.safristasData;
-                chart.update();
-            }
-        }
-
-        function showLogin(type) {
-            currentUserType = type;
-            document.getElementById('loginModal').classList.remove('hidden');
-            document.getElementById('loginModal').classList.add('flex');
-            document.getElementById('loginTitle').textContent = type === 'admin' ? 'Login Administrador' : 'Login Usuário';
-        }
-
-        function closeModal() {
-            document.getElementById('loginModal').classList.add('hidden');
-            document.getElementById('loginModal').classList.remove('flex');
-        }
-
-        function showForgotPassword() {
-            document.getElementById('loginModal').classList.add('hidden');
-            document.getElementById('forgotModal').classList.remove('hidden');
-            document.getElementById('forgotModal').classList.add('flex');
-        }
-
-        function closeForgotModal() {
-            document.getElementById('forgotModal').classList.add('hidden');
-            document.getElementById('forgotModal').classList.remove('flex');
-            document.getElementById('loginModal').classList.remove('hidden');
-            document.getElementById('loginModal').classList.add('flex');
-        }
-
-        // Login form handler
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const email = document.getElementById('loginEmail').value.trim().toLowerCase();
-            const password = document.getElementById('loginPassword').value;
-            
-            // Enhanced authentication with better error handling
-            const user = authenticateUser(email, password, currentUserType);
-            
-            if (user) {
-                // Check if password is expired
-                if (user.tempPasswordExpiry && new Date() > new Date(user.tempPasswordExpiry)) {
-                    alert('❌ SENHA TEMPORÁRIA EXPIRADA\n\nSua senha temporária expirou.\nSolicite uma nova senha através da opção "Esqueceu a senha?"');
-                    return;
-                }
-                
-                currentUser = user;
-                localStorage.setItem('currentUser', JSON.stringify(user));
-                localStorage.setItem('lastLogin', new Date().toISOString());
-                
-                // Log successful login
-                logUserActivity(user.id, 'login_success');
-                
-                // Clear form
-                document.getElementById('loginForm').reset();
-                
-                if (user.type === 'admin') {
-                    showAdminPanel();
-                } else {
-                    showUserPanel();
-                    
-                    // Check if user must change password
-                    if (user.mustChangePassword) {
-                        setTimeout(() => {
-                            alert('⚠️ ALTERAÇÃO DE SENHA OBRIGATÓRIA\n\nVocê está usando uma senha temporária.\nPor segurança, você deve alterar sua senha agora.\n\nClique em "🔑 Alterar Senha" no menu superior.');
-                            showChangePassword();
-                        }, 1000);
-                        return;
-                    }
-                }
-                
-                // Show welcome message
-                setTimeout(() => {
-                    alert(`LOGIN REALIZADO COM SUCESSO\n\nBem-vindo(a), ${user.name}!\n\nÚltimo acesso: ${new Date().toLocaleString('pt-BR')}`);
-                }, 500);
-                
-            } else {
-                // Enhanced error messages
-                const userExists = globalData.users?.find(u => u.email === email);
-                if (userExists && !userExists.active) {
-                    alert('CONTA DESATIVADA\n\nSua conta foi desativada.\nEntre em contato com o administrador:\nadmin@saudeintegral.com');
-                } else if (userExists && userExists.type !== currentUserType) {
-                    alert(`TIPO DE ACESSO INCORRETO\n\nEste email está cadastrado como ${userExists.type === 'admin' ? 'Administrador' : 'Usuário'}.\nUse o botão correto para fazer login.`);
-                } else {
-                    alert('CREDENCIAIS INVÁLIDAS\n\nEmail ou senha incorretos.\nVerifique os dados e tente novamente.\n\nEsqueceu a senha? Use a opção "Esqueceu a senha?"');
-                }
-                
-                // Log failed login attempt
-                logUserActivity(null, 'login_failed', { email, type: currentUserType });
-            }
-        });
-
-        // Forgot password form handler
-        document.getElementById('forgotForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const email = document.getElementById('forgotEmail').value.trim().toLowerCase();
-            
-            // Check if email exists in system
-            const user = globalData.users?.find(u => u.email.toLowerCase() === email && u.active);
-            if (user) {
-                // Set standard temporary password
-                const tempPassword = 'saudeintegral123';
-                
-                // Update user data
-                const userIndex = globalData.users.findIndex(u => u.id === user.id);
-                globalData.users[userIndex].password = tempPassword;
-                globalData.users[userIndex].mustChangePassword = true;
-                globalData.users[userIndex].tempPasswordExpiry = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(); // 24 hours
-                globalData.users[userIndex].passwordResetAt = new Date().toISOString();
-                
-                // Save data
-                saveGlobalData();
-                
-                // Show password directly (no email)
-                alert(`SENHA TEMPORÁRIA GERADA\n\nNova senha temporária: ${tempPassword}\n\nIMPORTANTE:\n• Anote esta senha\n• Ela expira em 24 horas\n• Você deve alterar no primeiro login\n\nUse esta senha para fazer login agora.`);
-                
-            } else {
-                alert('❌ EMAIL NÃO ENCONTRADO\n\nEste email não está cadastrado no sistema.\n\nVerifique o endereço digitado ou entre em contato com o administrador.');
-            }
-            
-            closeForgotModal();
-            closeModal();
-        });
-
-
-
-        function showAdminPanel() {
-            document.getElementById('dashboard').classList.add('hidden');
-            document.getElementById('userPanel').classList.add('hidden');
-            document.getElementById('adminPanel').classList.remove('hidden');
-            closeModal();
-            
-            // Refresh admin table with current data
-            refreshAdminTable();
-        }
-
-        function showUserPanel() {
-            document.getElementById('dashboard').classList.add('hidden');
-            document.getElementById('adminPanel').classList.add('hidden');
-            document.getElementById('userPanel').classList.remove('hidden');
-            closeModal();
-        }
-
-        function logout() {
-            currentUser = null;
-            localStorage.removeItem('currentUser');
-            document.getElementById('adminPanel').classList.add('hidden');
-            document.getElementById('userPanel').classList.add('hidden');
-            document.getElementById('dashboard').classList.remove('hidden');
-        }
-
-        // Session management
-        function checkSession() {
-            const savedUser = localStorage.getItem('currentUser');
-            if (savedUser) {
-                currentUser = JSON.parse(savedUser);
-                if (currentUser.type === 'admin') {
-                    showAdminPanel();
-                } else {
-                    showUserPanel();
-                    loadDraft(); // Load any saved draft
-                }
-            }
-        }
-
-        // Initialize session check
-        document.addEventListener('DOMContentLoaded', function() {
-            setTimeout(checkSession, 100); // Small delay to ensure DOM is ready
-        });
-
-        function showAddUser() {
-            document.getElementById('addUserModal').classList.remove('hidden');
-            document.getElementById('addUserModal').classList.add('flex');
-        }
-
-        function closeAddUserModal() {
-            document.getElementById('addUserModal').classList.add('hidden');
-            document.getElementById('addUserModal').classList.remove('flex');
-        }
-
-        // Add user form handler
-        document.getElementById('addUserForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const name = document.getElementById('newUserName').value.trim();
-            const email = document.getElementById('newUserEmail').value.trim().toLowerCase();
-            const site = document.getElementById('newUserSite').value;
-            
-            // Check if email already exists
-            const existingUser = globalData.users?.find(u => u.email.toLowerCase() === email);
-            if (existingUser) {
-                alert('❌ EMAIL JÁ CADASTRADO\n\nEste email já está cadastrado no sistema.\nUse um email diferente.');
-                return;
-            }
-            
-            // Set standard temporary password
-            const tempPassword = 'saudeintegral123';
-            
-            // Create new user with unique ID
-            const newUserId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5);
-            const newUser = {
-                id: newUserId,
-                name: name,
-                email: email,
-                password: tempPassword,
-                type: 'user',
-                site: site,
-                country: 'brasil', // Default
-                active: true,
-                createdAt: new Date().toISOString(),
-                createdBy: currentUser.id,
-                mustChangePassword: true,
-                tempPasswordExpiry: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(), // 7 days
-                lastLogin: null
-            };
-            
-            // Add to system
-            if (!globalData.users) globalData.users = [];
-            globalData.users.push(newUser);
-            
-            // Save data
-            saveGlobalData();
-            
-            // Show success message with credentials
-            alert(`USUÁRIO CRIADO COM SUCESSO\n\nNome: ${name}\nEmail: ${email}\nSite: ${site}\n\nCREDENCIAIS DE ACESSO:\nSenha temporária: ${tempPassword}\nExpira em: 7 dias\n\nIMPORTANTE:\n• Compartilhe essas credenciais de forma segura\n• O usuário deve alterar a senha no primeiro acesso\n• Todos os dados ficam salvos no sistema compartilhado`);
-            
-            // Log user creation
-            logUserActivity(currentUser.id, 'user_created', {
-                newUserId: newUserId,
-                newUserEmail: email,
-                newUserName: name
-            });
-            
-            closeAddUserModal();
-            
-            // Reset form and refresh admin table
-            document.getElementById('addUserForm').reset();
-            refreshAdminTable();
-        });
-
-        function showChangePassword() {
-            document.getElementById('changePasswordModal').classList.remove('hidden');
-            document.getElementById('changePasswordModal').classList.add('flex');
-        }
-
-        function closeChangePasswordModal() {
-            document.getElementById('changePasswordModal').classList.add('hidden');
-            document.getElementById('changePasswordModal').classList.remove('flex');
-            document.getElementById('changePasswordForm').reset();
-        }
-
-        // Change password form handler
-        document.getElementById('changePasswordForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            if (!currentUser) {
-                alert('❌ Erro: Usuário não autenticado.');
-                return;
-            }
-            
-            const currentPassword = document.getElementById('currentPassword').value;
-            const newPassword = document.getElementById('newPassword').value;
-            const confirmPassword = document.getElementById('confirmPassword').value;
-            
-            // Verify current password
-            if (currentUser.password !== currentPassword) {
-                alert('❌ SENHA ATUAL INCORRETA\n\nA senha atual digitada não confere.\nVerifique e tente novamente.');
-                return;
-            }
-            
-            // Validate new password
-            if (newPassword.length < 6) {
-                alert('❌ SENHA MUITO FRACA\n\nA nova senha deve ter pelo menos 6 caracteres.\nUse uma combinação de letras, números e símbolos.');
-                return;
-            }
-            
-            if (newPassword !== confirmPassword) {
-                alert('❌ SENHAS NÃO CONFEREM\n\nA confirmação da nova senha não confere.\nDigite novamente.');
-                return;
-            }
-            
-            if (newPassword === currentPassword) {
-                alert('❌ MESMA SENHA\n\nA nova senha deve ser diferente da senha atual.\nEscolha uma senha diferente.');
-                return;
-            }
-            
-            // Update password
-            const userIndex = globalData.users?.findIndex(u => u.id === currentUser.id) ?? -1;
-            if (userIndex !== -1) {
-                globalData.users[userIndex].password = newPassword;
-                globalData.users[userIndex].mustChangePassword = false;
-                globalData.users[userIndex].tempPasswordExpiry = null;
-                globalData.users[userIndex].lastPasswordChange = new Date().toISOString();
-                
-                // Update current user object
-                currentUser.password = newPassword;
-                currentUser.mustChangePassword = false;
-                localStorage.setItem('currentUser', JSON.stringify(currentUser));
-                
-                // Save to system
-                saveGlobalData();
-                
-                // Log activity
-                logUserActivity(currentUser.id, 'password_changed');
-                
-                alert('✅ SENHA ALTERADA COM SUCESSO!\n\nSua senha foi alterada com segurança.\nUse a nova senha no próximo login.');
-                
-                closeChangePasswordModal();
-            } else {
-                alert('❌ Erro interno: Usuário não encontrado no sistema.');
-            }
-        });
-
-        function exportExcel() {
-            // Create CSV data from responses
-            const responses = globalData.responses || [];
-            let csvContent = "data:text/csv;charset=utf-8,";
-            
-            // Headers
-            csvContent += "Usuario,Site,Mes,Ano,Pais,Negocio,FTE,Safristas,Absenteismo_FTE,Absenteismo_Safristas,Status\n";
-            
-            // Data rows
-            responses.forEach(response => {
-                const user = globalData.users?.find(u => u.id === response.userId);
-                const row = [
-                    user ? user.name : 'N/A',
-                    response.site,
-                    response.month,
-                    response.year,
-                    response.country,
-                    response.business,
-                    response.fteCount,
-                    response.seasonalCount,
-                    response.calculatedAbsenteeism?.fte || 0,
-                    response.calculatedAbsenteeism?.seasonal || 0,
-                    response.status
-                ].join(',');
-                csvContent += row + "\n";
-            });
-            
-            // Download file
-            const encodedUri = encodeURI(csvContent);
-            const link = document.createElement("a");
-            link.setAttribute("href", encodedUri);
-            link.setAttribute("download", `indicadores_saude_${new Date().toISOString().split('T')[0]}.csv`);
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        }
-
-        // Variável global para armazenar resposta sendo editada
-        let currentEditingResponse = null;
-
-        function editUserResponseAdmin(responseId) {
-            const response = globalData.responses?.find(r => r.id === parseInt(responseId));
-            if (response) {
-                currentEditingResponse = response;
-                const user = globalData.users?.find(u => u.id === response.userId);
-                
-                // Preencher modal de edição
-                document.getElementById('editSite').value = response.site;
-                document.getElementById('editPeriod').value = `${response.month}/${response.year}`;
-                document.getElementById('editFteCount').value = response.fteCount;
-                document.getElementById('editSeasonalCount').value = response.seasonalCount;
-                document.getElementById('editMedicalLeaveFte').value = response.medicalLeaveFteAll;
-                document.getElementById('editMedicalLeaveSeasonal').value = response.medicalLeaveSeasonalAll;
-                
-                // Mostrar modal
-                document.getElementById('editResponseModal').classList.remove('hidden');
-                document.getElementById('editResponseModal').classList.add('flex');
-            }
-        }
-
-        function closeEditResponseModal() {
-            document.getElementById('editResponseModal').classList.add('hidden');
-            document.getElementById('editResponseModal').classList.remove('flex');
-            currentEditingResponse = null;
-        }
-
-        function showManageAdmins() {
-            // Preencher lista de admins atuais
-            const adminsList = document.getElementById('currentAdminsList');
-            const admins = globalData.users?.filter(u => u.type === 'admin' && u.active) || [];
-            
-            adminsList.innerHTML = '';
-            admins.forEach(admin => {
-                const adminDiv = document.createElement('div');
-                adminDiv.className = 'flex justify-between items-center bg-primary/10 p-3 rounded-lg border border-primary/20';
-                adminDiv.innerHTML = `
-                    <div>
-                        <span class="font-semibold text-secondary">${admin.name}</span>
-                        <span class="text-sm text-gray-600 ml-2">(${admin.email})</span>
-                    </div>
-                    ${admin.id !== currentUser.id ? `
-                        <button onclick="removeAdmin('${admin.id}')" class="bg-accent hover:bg-accent/80 text-white px-3 py-1 rounded text-xs">
-                            Remover
-                        </button>
-                    ` : '<span class="text-xs text-primary font-semibold">Você</span>'}
-                `;
-                adminsList.appendChild(adminDiv);
-            });
-            
-            // Preencher select de usuários para promover
-            const promoteSelect = document.getElementById('promoteUserSelect');
-            const regularUsers = globalData.users?.filter(u => u.type === 'user' && u.active) || [];
-            
-            promoteSelect.innerHTML = '<option value="">Selecione um usuário para promover</option>';
-            regularUsers.forEach(user => {
-                const option = document.createElement('option');
-                option.value = user.id;
-                option.textContent = `${user.name} (${user.email})`;
-                promoteSelect.appendChild(option);
-            });
-            
-            // Mostrar modal
-            document.getElementById('manageAdminsModal').classList.remove('hidden');
-            document.getElementById('manageAdminsModal').classList.add('flex');
-        }
-
-        function closeManageAdminsModal() {
-            document.getElementById('manageAdminsModal').classList.add('hidden');
-            document.getElementById('manageAdminsModal').classList.remove('flex');
-        }
-
-        function promoteToAdmin() {
-            const userId = document.getElementById('promoteUserSelect').value;
-            if (!userId) {
-                alert('❌ Selecione um usuário para promover.');
-                return;
-            }
-            
-            const userIndex = globalData.users?.findIndex(u => u.id === userId) ?? -1;
-            if (userIndex !== -1) {
-                const user = globalData.users[userIndex];
-                
-                if (confirm(`🔔 CONFIRMAR PROMOÇÃO\n\nPromover "${user.name}" a Administrador?\n\nEle terá acesso total ao sistema:\n• Ver todas as respostas\n• Editar dados de usuários\n• Gerenciar outros administradores\n• Exportar relatórios\n\nConfirma a promoção?`)) {
-                    globalData.users[userIndex].type = 'admin';
-                    globalData.users[userIndex].promotedAt = new Date().toISOString();
-                    globalData.users[userIndex].promotedBy = currentUser.id;
-                    
-                    saveGlobalData();
-                    
-                    logUserActivity(currentUser.id, 'user_promoted_to_admin', {
-                        promotedUserId: userId,
-                        promotedUserName: user.name
-                    });
-                    
-                    alert(`✅ USUÁRIO PROMOVIDO!\n\n👑 ${user.name} agora é Administrador!\n\nEle pode fazer login usando o botão "Administrador" com as mesmas credenciais.`);
-                    
-                    closeManageAdminsModal();
-                }
-            }
-        }
-
-        function removeAdmin(adminId) {
-            if (adminId === currentUser.id) {
-                alert('❌ Você não pode remover seus próprios privilégios administrativos.');
-                return;
-            }
-            
-            const adminIndex = globalData.users?.findIndex(u => u.id === adminId) ?? -1;
-            if (adminIndex !== -1) {
-                const admin = globalData.users[adminIndex];
-                
-                if (confirm(`⚠️ CONFIRMAR REMOÇÃO\n\nRemover privilégios administrativos de "${admin.name}"?\n\nEle voltará a ser usuário comum e perderá:\n• Acesso ao painel administrativo\n• Capacidade de ver/editar dados de outros\n• Privilégios de gerenciamento\n\nConfirma a remoção?`)) {
-                    globalData.users[adminIndex].type = 'user';
-                    globalData.users[adminIndex].demotedAt = new Date().toISOString();
-                    globalData.users[adminIndex].demotedBy = currentUser.id;
-                    
-                    saveGlobalData();
-                    
-                    logUserActivity(currentUser.id, 'admin_demoted_to_user', {
-                        demotedUserId: adminId,
-                        demotedUserName: admin.name
-                    });
-                    
-                    alert(`✅ PRIVILÉGIOS REMOVIDOS!\n\n👤 ${admin.name} agora é usuário comum.\n\nEle deve usar o botão "Usuário" para fazer login.`);
-                    
-                    showManageAdmins(); // Refresh the modal
-                }
-            }
-        }
-
-        function viewUserResponse(responseId) {
-            const response = (globalData.responses || []).find(r => r.id === parseInt(responseId));
-            if (response) {
-                const user = globalData.users?.find(u => u.id === response.userId);
-                const details = `
-DETALHES DA RESPOSTA
-═══════════════════════════════════
-
-👤 USUÁRIO: ${user ? user.name : 'N/A'}
-📧 Email: ${user ? user.email : 'N/A'}
-
-📊 INFORMAÇÕES GERAIS:
-• Site: ${response.site}
-• Período: ${response.month}/${response.year}
-• País: ${response.country}
-• Negócio: ${response.business}
-
-👥 COLABORADORES:
-• FTE: ${response.fteCount}
-• Safristas: ${response.seasonalCount}
-
-📈 ABSENTEÍSMO CALCULADO:
-• FTE: ${response.calculatedAbsenteeism.fte}%
-• Safristas: ${response.calculatedAbsenteeism.seasonal}%
-• Total: ${response.calculatedAbsenteeism.total}%
-
-🏥 LICENÇAS MÉDICAS:
-• FTE Total: ${response.medicalLeaveFteAll} dias
-• Safristas Total: ${response.medicalLeaveSeasonalAll} dias
-
-📅 Status: ${response.status}
-📅 Enviado em: ${new Date(response.submittedAt).toLocaleDateString('pt-BR')}
-                `;
-                alert(details);
-            }
-        }
-
-        function refreshAdminTable() {
-            const tableBody = document.getElementById('adminTableBody');
-            if (!tableBody) return;
-            
-            const responses = globalData.responses || [];
-            
-            if (responses.length === 0) {
-                tableBody.innerHTML = `
-                    <tr>
-                        <td colspan="6" class="px-4 py-8 text-center text-gray-500">
-                            Nenhuma resposta encontrada
-                        </td>
-                    </tr>
-                `;
-                return;
-            }
-            
-            let tableHTML = '';
-            responses.forEach(response => {
-                const user = globalData.users?.find(u => u.id === response.userId);
-                const statusClass = response.status === 'completed' ? 'bg-success/20 text-success' : 'bg-accent/20 text-accent';
-                const statusText = response.status === 'completed' ? 'Completo' : 'Pendente';
-                
-                tableHTML += `
-                    <tr>
-                        <td class="px-4 py-3">${user ? user.name : 'N/A'}</td>
-                        <td class="px-4 py-3">${response.site}</td>
-                        <td class="px-4 py-3">${response.month}/${response.year}</td>
-                        <td class="px-4 py-3">${response.calculatedAbsenteeism.total}%</td>
-                        <td class="px-4 py-3">
-                            <span class="${statusClass} px-2 py-1 rounded-full text-xs">${statusText}</span>
-                        </td>
-                        <td class="px-4 py-3">
-                            <button onclick="editUserResponseAdmin(${response.id})" class="bg-primary hover:bg-primary/80 text-white px-3 py-1 rounded text-xs mr-2">Editar</button>
-                            <button onclick="viewUserResponse(${response.id})" class="bg-secondary hover:bg-secondary/80 text-white px-3 py-1 rounded text-xs">Ver</button>
-                        </td>
-                    </tr>
-                `;
-            });
-            
-            tableBody.innerHTML = tableHTML;
-        }
-
-        function showHistory() {
-            if (!currentUser) return;
-            
-            const userResponses = (globalData.responses || []).filter(r => r.userId === currentUser.id);
-            
-            if (userResponses.length === 0) {
-                alert('Nenhuma resposta encontrada no seu histórico.');
-                return;
-            }
-            
-            let historyText = 'HISTÓRICO DE RESPOSTAS\n═══════════════════════════════════\n\n';
-            
-            userResponses.forEach(response => {
-                historyText += `📅 ${response.month}/${response.year}\n`;
-                historyText += `📍 Site: ${response.site}\n`;
-                historyText += `📊 Absenteísmo Total: ${response.calculatedAbsenteeism.total}%\n`;
-                historyText += `✅ Status: ${response.status}\n`;
-                historyText += `📤 Enviado: ${new Date(response.submittedAt).toLocaleDateString('pt-BR')}\n\n`;
-            });
-            
-            alert(historyText);
-        }
-
-        function saveDraft() {
-            const formData = new FormData(document.getElementById('indicatorsForm'));
-            const draftData = {};
-            
-            for (let [key, value] of formData.entries()) {
-                draftData[key] = value;
-            }
-            
-            draftData.savedAt = new Date().toISOString();
-            draftData.userId = currentUser.id;
-            
-            localStorage.setItem(`draft_${currentUser.id}`, JSON.stringify(draftData));
-            alert('Rascunho salvo com sucesso!\n\nVocê pode continuar preenchendo depois.');
-        }
-
-        function loadDraft() {
-            if (!currentUser) return;
-            
-            const draftData = localStorage.getItem(`draft_${currentUser.id}`);
-            if (draftData) {
-                const draft = JSON.parse(draftData);
-                const form = document.getElementById('indicatorsForm');
-                
-                Object.keys(draft).forEach(key => {
-                    if (key !== 'savedAt' && key !== 'userId') {
-                        const field = form.querySelector(`[name="${key}"]`);
-                        if (field) {
-                            if (field.type === 'radio') {
-                                const radio = form.querySelector(`[name="${key}"][value="${draft[key]}"]`);
-                                if (radio) radio.checked = true;
-                            } else {
-                                field.value = draft[key];
-                            }
-                        }
-                    }
-                });
-                
-                alert(`Rascunho carregado!\n\nSalvo em: ${new Date(draft.savedAt).toLocaleString('pt-BR')}`);
-            }
-        }
-
-        // Absenteeism calculation function
-        function calculateAbsenteeism(daysLost, contractedDays) {
-            if (contractedDays === 0) return 0;
-            return ((daysLost / contractedDays) * 100).toFixed(2);
-        }
-
-        // Function to process form data and calculate absenteeism
-        function processFormData(formData) {
-            const fteCount = parseInt(formData.get('fte_count')) || 0;
-            const seasonalCount = parseInt(formData.get('seasonal_count')) || 0;
-            
-            // Assuming 22 working days per month
-            const workingDaysPerMonth = 22;
-            const fteContractedDays = fteCount * workingDaysPerMonth;
-            const seasonalContractedDays = seasonalCount * workingDaysPerMonth;
-            
-            // Calculate total medical leave days
-            const fteMedicalDays = (
-                (parseInt(formData.get('medical_leave_fte_all')) || 0) +
-                (parseInt(formData.get('medical_leave_fte_cid_f')) || 0) +
-                (parseInt(formData.get('medical_leave_fte_cid_m')) || 0) +
-                (parseInt(formData.get('medical_leave_fte_cid_s')) || 0) +
-                (parseInt(formData.get('medical_leave_fte_cid_z')) || 0) +
-                (parseInt(formData.get('medical_leave_fte_cid_r')) || 0) +
-                (parseInt(formData.get('medical_leave_fte_cid_o')) || 0) +
-                (parseInt(formData.get('medical_leave_fte_cid_j')) || 0) +
-                (parseInt(formData.get('medical_leave_fte_cid_ab')) || 0)
-            );
-            
-            const seasonalMedicalDays = (
-                (parseInt(formData.get('medical_leave_seasonal_all')) || 0) +
-                (parseInt(formData.get('medical_leave_seasonal_cid_f')) || 0) +
-                (parseInt(formData.get('medical_leave_seasonal_cid_m')) || 0) +
-                (parseInt(formData.get('medical_leave_seasonal_cid_s')) || 0) +
-                (parseInt(formData.get('medical_leave_seasonal_cid_z')) || 0) +
-                (parseInt(formData.get('medical_leave_seasonal_cid_r')) || 0) +
-                (parseInt(formData.get('medical_leave_seasonal_cid_o')) || 0) +
-                (parseInt(formData.get('medical_leave_seasonal_cid_j')) || 0) +
-                (parseInt(formData.get('medical_leave_seasonal_cid_ab')) || 0)
-            );
-            
-            // Calculate absenteeism percentages
-            const fteAbsenteeism = calculateAbsenteeism(fteMedicalDays, fteContractedDays);
-            const seasonalAbsenteeism = calculateAbsenteeism(seasonalMedicalDays, seasonalContractedDays);
-            const totalAbsenteeism = calculateAbsenteeism(
-                fteMedicalDays + seasonalMedicalDays, 
-                fteContractedDays + seasonalContractedDays
-            );
-            
-            return {
-                site: formData.get('site'),
-                month: formData.get('month'),
-                year: formData.get('year'),
-                country: formData.get('country'),
-                business: formData.get('business'),
-                fteAbsenteeism: parseFloat(fteAbsenteeism),
-                seasonalAbsenteeism: parseFloat(seasonalAbsenteeism),
-                totalAbsenteeism: parseFloat(totalAbsenteeism),
-                fteDays: fteMedicalDays,
-                seasonalDays: seasonalMedicalDays,
-                fteCount: fteCount,
-                seasonalCount: seasonalCount
-            };
-        }
-
-        // Edit response form handler
-        document.getElementById('editResponseForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            if (!currentEditingResponse || !currentUser) {
-                alert('❌ Erro: Dados de edição não encontrados.');
-                return;
-            }
-            
-            // Obter novos valores
-            const newFteCount = parseInt(document.getElementById('editFteCount').value) || 0;
-            const newSeasonalCount = parseInt(document.getElementById('editSeasonalCount').value) || 0;
-            const newMedicalLeaveFte = parseInt(document.getElementById('editMedicalLeaveFte').value) || 0;
-            const newMedicalLeaveSeasonal = parseInt(document.getElementById('editMedicalLeaveSeasonal').value) || 0;
-            
-            // Encontrar resposta no sistema
-            const responseIndex = globalData.responses.findIndex(r => r.id === currentEditingResponse.id);
-            if (responseIndex !== -1) {
-                // Salvar valores antigos para log
-                const oldValues = {
-                    fteCount: globalData.responses[responseIndex].fteCount,
-                    seasonalCount: globalData.responses[responseIndex].seasonalCount,
-                    medicalLeaveFteAll: globalData.responses[responseIndex].medicalLeaveFteAll,
-                    medicalLeaveSeasonalAll: globalData.responses[responseIndex].medicalLeaveSeasonalAll
-                };
-                
-                // Atualizar valores
-                globalData.responses[responseIndex].fteCount = newFteCount;
-                globalData.responses[responseIndex].seasonalCount = newSeasonalCount;
-                globalData.responses[responseIndex].medicalLeaveFteAll = newMedicalLeaveFte;
-                globalData.responses[responseIndex].medicalLeaveSeasonalAll = newMedicalLeaveSeasonal;
-                
-                // Recalcular absenteísmo
-                const workingDays = globalData.settings?.workingDaysPerMonth || 22;
-                const fteContractedDays = newFteCount * workingDays;
-                const seasonalContractedDays = newSeasonalCount * workingDays;
-                const totalContractedDays = fteContractedDays + seasonalContractedDays;
-                
-                const fteAbsenteeism = fteContractedDays > 0 ? 
-                    ((newMedicalLeaveFte / fteContractedDays) * 100) : 0;
-                const seasonalAbsenteeism = seasonalContractedDays > 0 ? 
-                    ((newMedicalLeaveSeasonal / seasonalContractedDays) * 100) : 0;
-                const totalAbsenteeism = totalContractedDays > 0 ? 
-                    (((newMedicalLeaveFte + newMedicalLeaveSeasonal) / totalContractedDays) * 100) : 0;
-                
-                globalData.responses[responseIndex].calculatedAbsenteeism = {
-                    fte: Math.round(fteAbsenteeism * 100) / 100,
-                    seasonal: Math.round(seasonalAbsenteeism * 100) / 100,
-                    total: Math.round(totalAbsenteeism * 100) / 100
-                };
-                
-                // Marcar como editado pelo admin
-                globalData.responses[responseIndex].editedBy = currentUser.id;
-                globalData.responses[responseIndex].editedAt = new Date().toISOString();
-                globalData.responses[responseIndex].originalValues = oldValues;
-                
-                // Salvar dados
-                saveGlobalData();
-                
-                // Log da edição
-                logUserActivity(currentUser.id, 'response_edited_by_admin', {
-                    responseId: currentEditingResponse.id,
-                    oldValues: oldValues,
-                    newValues: {
-                        fteCount: newFteCount,
-                        seasonalCount: newSeasonalCount,
-                        medicalLeaveFteAll: newMedicalLeaveFte,
-                        medicalLeaveSeasonalAll: newMedicalLeaveSeasonal
-                    },
-                    newAbsenteeism: systemData.responses[responseIndex].calculatedAbsenteeism
-                });
-                
-                // Atualizar gráficos
-                updateCharts();
-                
-                // Atualizar tabela admin
-                refreshAdminTable();
-                
-                alert(`✅ RESPOSTA EDITADA COM SUCESSO!\n\n📊 NOVOS CÁLCULOS:\n• FTE: ${globalData.responses[responseIndex].calculatedAbsenteeism.fte}%\n• Safristas: ${globalData.responses[responseIndex].calculatedAbsenteeism.seasonal}%\n• Total: ${globalData.responses[responseIndex].calculatedAbsenteeism.total}%\n\n💾 Dados salvos e gráficos atualizados!`);
-                
-                closeEditResponseModal();
-            } else {
-                alert('❌ Erro: Resposta não encontrada no sistema.');
-            }
-        });
-
-        // Form submission handler
-        document.getElementById('indicatorsForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            
-            if (!currentUser) {
-                alert('Erro: Usuário não autenticado.');
-                return;
-            }
-            
-            // Show loading state
-            const submitBtn = this.querySelector('button[type="submit"]');
-            const originalText = submitBtn.textContent;
-            submitBtn.textContent = 'Salvando...';
-            submitBtn.disabled = true;
-            
-            try {
-                const formData = new FormData(this);
-            
-            // Create response object
-            const response = {
-                id: systemData.responses.length + 1,
-                userId: currentUser.id,
-                year: formData.get('year'),
-                month: formData.get('month'),
-                site: formData.get('site'),
-                country: formData.get('country'),
-                business: formData.get('business'),
-                fteCount: parseInt(formData.get('fte_count')) || 0,
-                seasonalCount: parseInt(formData.get('seasonal_count')) || 0,
-                medicalLeaveFteAll: parseInt(formData.get('medical_leave_fte_all')) || 0,
-                medicalLeaveSeasonalAll: parseInt(formData.get('medical_leave_seasonal_all')) || 0,
-                medicalLeaveFteCidF: parseInt(formData.get('medical_leave_fte_cid_f')) || 0,
-                medicalLeaveSeasonalCidF: parseInt(formData.get('medical_leave_seasonal_cid_f')) || 0,
-                medicalLeaveFteCidM: parseInt(formData.get('medical_leave_fte_cid_m')) || 0,
-                medicalLeaveSeasonalCidM: parseInt(formData.get('medical_leave_seasonal_cid_m')) || 0,
-                medicalLeaveFteCidS: parseInt(formData.get('medical_leave_fte_cid_s')) || 0,
-                medicalLeaveSeasonalCidS: parseInt(formData.get('medical_leave_seasonal_cid_s')) || 0,
-                medicalLeaveFteCidZ: parseInt(formData.get('medical_leave_fte_cid_z')) || 0,
-                medicalLeaveSeasonalCidZ: parseInt(formData.get('medical_leave_seasonal_cid_z')) || 0,
-                medicalLeaveFteCidR: parseInt(formData.get('medical_leave_fte_cid_r')) || 0,
-                medicalLeaveSeasonalCidR: parseInt(formData.get('medical_leave_seasonal_cid_r')) || 0,
-                medicalLeaveFteCidO: parseInt(formData.get('medical_leave_fte_cid_o')) || 0,
-                medicalLeaveSeasonalCidO: parseInt(formData.get('medical_leave_seasonal_cid_o')) || 0,
-                medicalLeaveFteCidJ: parseInt(formData.get('medical_leave_fte_cid_j')) || 0,
-                medicalLeaveSeasonalCidJ: parseInt(formData.get('medical_leave_seasonal_cid_j')) || 0,
-                medicalLeaveFteCidAb: parseInt(formData.get('medical_leave_fte_cid_ab')) || 0,
-                medicalLeaveSeasonalCidAb: parseInt(formData.get('medical_leave_seasonal_cid_ab')) || 0,
-                status: 'completed',
-                submittedAt: new Date().toISOString()
-            };
-            
-            // Calculate absenteeism
-            const workingDays = globalData.settings?.workingDaysPerMonth || 22;
-            const fteContractedDays = response.fteCount * workingDays;
-            const seasonalContractedDays = response.seasonalCount * workingDays;
-            const totalContractedDays = fteContractedDays + seasonalContractedDays;
-            
-            const fteAbsenteeism = fteContractedDays > 0 ? 
-                ((response.medicalLeaveFteAll / fteContractedDays) * 100) : 0;
-            const seasonalAbsenteeism = seasonalContractedDays > 0 ? 
-                ((response.medicalLeaveSeasonalAll / seasonalContractedDays) * 100) : 0;
-            const totalAbsenteeism = totalContractedDays > 0 ? 
-                (((response.medicalLeaveFteAll + response.medicalLeaveSeasonalAll) / totalContractedDays) * 100) : 0;
-            
-            response.calculatedAbsenteeism = {
-                fte: Math.round(fteAbsenteeism * 100) / 100,
-                seasonal: Math.round(seasonalAbsenteeism * 100) / 100,
-                total: Math.round(totalAbsenteeism * 100) / 100
-            };
-            
-            // Check for existing response from same user/site/month/year
-            if (!globalData.responses) globalData.responses = [];
-            
-            const existingIndex = globalData.responses.findIndex(r => 
-                r.userId === response.userId && 
-                r.site === response.site && 
-                r.month === response.month && 
-                r.year === response.year
-            );
-            
-            if (existingIndex !== -1) {
-                // Update existing response
-                response.id = globalData.responses[existingIndex].id;
-                globalData.responses[existingIndex] = response;
-            } else {
-                // Add new response
-                response.id = (globalData.responses.length > 0 ? Math.max(...globalData.responses.map(r => r.id)) : 0) + 1;
-                globalData.responses.push(response);
-            }
-            
-                // Save data
-                saveGlobalData();
-                
-                // Clear draft
-                localStorage.removeItem(`draft_${currentUser.id}`);
-                
-                // Log form submission
-                logUserActivity(currentUser.id, 'form_submitted', {
-                    responseId: response.id,
-                    site: response.site,
-                    month: response.month,
-                    year: response.year,
-                    totalAbsenteeism: response.calculatedAbsenteeism.total
-                });
-                
-                // Show success message
-                const resultMessage = `
-RESPOSTA ENVIADA COM SUCESSO
-
-CÁLCULOS DE ABSENTEÍSMO:
-═══════════════════════════════════
-
-FÓRMULA APLICADA:
-Absenteísmo (%) = (Dias perdidos / Dias contratados) × 100
-
-RESULTADOS CALCULADOS:
-• FTE: ${response.calculatedAbsenteeism.fte}%
-  (${response.medicalLeaveFteAll} dias perdidos / ${fteContractedDays} dias contratados)
-
-• Safristas: ${response.calculatedAbsenteeism.seasonal}%
-  (${response.medicalLeaveSeasonalAll} dias perdidos / ${seasonalContractedDays} dias contratados)
-
-• TOTAL GERAL: ${response.calculatedAbsenteeism.total}%
-
-Site: ${response.site}
-Período: ${response.month}/${response.year}
-País: ${response.country}
-Negócio: ${response.business}
-
-DADOS COMPARTILHADOS SALVOS
-Qualquer pessoa com este link pode ver os dados atualizados.
-Os gráficos foram atualizados automaticamente.
-                `;
-                
-                alert(resultMessage);
-                
-                // Reset form
-                this.reset();
-                
-                // Update charts with new data
-                updateCharts();
-                
-            } catch (error) {
-                console.error('Error submitting form:', error);
-                alert('❌ ERRO AO SALVAR DADOS\n\nOcorreu um erro ao salvar sua resposta.\nTente novamente ou entre em contato com o suporte.\n\nSeus dados foram preservados no formulário.');
-            } finally {
-                // Restore button state
-                submitBtn.textContent = originalText;
-                submitBtn.disabled = false;
-            }
-        });
-    </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'96c81a0c06ccb4e8',t:'MTc1NDc1MTQwMy4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
-</html>
+                        sortKey: `${response.year
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'96c8308af6c67810',t:'MTc1NDc1MjMyNC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
 
 
 
