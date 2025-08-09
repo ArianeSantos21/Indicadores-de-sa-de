@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Indicadores Estratégicos - Saúde Integral</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#879ACF',
+                        secondary: '#0E334C',
+                        accent: '#FA3268',
+                        success: '#8CD000',
+                        white: '#FFFFFF'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gradient-to-br from-primary/10 to-secondary/10 min-h-screen">
+    <!-- Header -->
+    <header class="bg-secondary text-white shadow-lg">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex justify-between items-center">
+                <div>
+                    <h1 class="text-2xl font-bold">INDICADORES ESTRATÉGICOS</h1>
+                    <p class="text-primary">SAÚDE INTEGRAL / SALUD INTEGRAL R&D LATAM</p>
+                </div>
+                <div class="flex gap-4">
+                    <button onclick="showLogin('user')" class="bg-primary hover:bg-primary/80 px-6 py-2 rounded-lg font-semibold transition-colors">
+                        Usuário
+                    </button>
+                    <button onclick="showLogin('admin')" class="bg-accent hover:bg-accent/80 px-6 py-2 rounded-lg font-semibold transition-colors">
+                        Administrador
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Dashboard -->
+    <main id="dashboard" class="container mx-auto px-6 py-8">
+        <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6 mb-8">
+            <!-- KPI Cards -->
+            <div class="bg-white rounded-xl shadow-lg p-6 border-l-4 border-success">
+                <h3 class="text-lg font-semibold text-secondary mb-2">Total de Respostas</h3>
+                <p class="text-3xl font-bold text-success">847</p>
+                <p class="text-sm text-gray-600">Este mês</p>
+            </div>
+            
+            <div class="bg-white rounded-xl shadow-lg p-6 border-l-4 border-accent">
+                <h3 class="text-lg font-semibold text-secondary mb-2">Sites Ativos</h3>
+                <p class="text-3xl font-bold text-accent">22</p>
+                <p class="text-sm text-gray-600">De 25 total</p>
+            </div>
+            
+            <div class="bg-white rounded-xl shadow-lg p-6 border-l-4 border-primary">
+                <h3 class="text-lg font-semibold text-secondary mb-2">Taxa de Resposta</h3>
+                <p class="text-3xl font-bold text-primary">88%</p>
+                <p class="text-sm text-gray-600">Meta: 90%</p>
+            </div>
+        </div>
+
+        <!-- Charts Section -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <h3 class="text-lg font-semibold text-secondary mb-4">Licenças Médicas por País</h3>
+                <canvas id="countryChart" width="400" height="200"></canvas>
+            </div>
+            
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <h3 class="text-lg font-semibold text-secondary mb-4">Afastamentos por Mês</h3>
+                <canvas id="monthChart" width="400" height="200"></canvas>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-lg p-6">
+            <h3 class="text-lg font-semibold text-secondary mb-4">Sites sem Resposta no Mês</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="bg-accent/10 border border-accent/20 rounded-lg p-4">
+                    <h4 class="font-semibold text-accent">Carandaí</h4>
+                    <p class="text-sm text-gray-600">Última resposta: Outubro</p>
+                </div>
+                <div class="bg-accent/10 border border-accent/20 rounded-lg p-4">
+                    <h4 class="font-semibold text-accent">El Tizate</h4>
+                    <p class="text-sm text-gray-600">Última resposta: Setembro</p>
+                </div>
+                <div class="bg-accent/10 border border-accent/20 rounded-lg p-4">
+                    <h4 class="font-semibold text-accent">Rio IV</h4>
+                    <p class="text-sm text-gray-600">Última resposta: Outubro</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Login Modal -->
+    <div id="loginModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-xl shadow-2xl p-8 w-full max-w-md mx-4">
+            <div class="text-center mb-6">
+                <h2 id="loginTitle" class="text-2xl font-bold text-secondary">Login</h2>
+                <p class="text-gray-600">Acesse sua conta</p>
+            </div>
+            
+            <form id="loginForm" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-secondary mb-2">Email</label>
+                    <input type="email" id="loginEmail" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent" required>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-secondary mb-2">Senha</label>
+                    <input type="password" id="loginPassword" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent" required>
+                </div>
+                
+                <button type="submit" class="w-full bg-primary hover:bg-primary/80 text-white py-3 rounded-lg font-semibold transition-colors">
+                    Entrar
+                </button>
+                
+                <div class="text-center">
+                    <button type="button" onclick="showForgotPassword()" class="text-primary hover:text-primary/80 text-sm">
+                        Esqueceu a senha?
+                    </button>
+                </div>
+            </form>
+            
+            <button onclick="closeModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <!-- Forgot Password Modal -->
+    <div id="forgotModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-xl shadow-2xl p-8 w-full max-w-md mx-4">
+            <div class="text-center mb-6">
+                <h2 class="text-2xl font-bold text-secondary">Recuperar Senha</h2>
+                <p class="text-gray-600">Digite seu email para receber instruções</p>
+            </div>
+            
+            <form id="forgotForm" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-secondary mb-2">Email</label>
+                    <input type="email" id="forgotEmail" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent" required>
+                </div>
+                
+                <button type="submit" class="w-full bg-accent hover:bg-accent/80 text-white py-3 rounded-lg font-semibold transition-colors">
+                    Enviar Email
+                </button>
+                
+                <button type="button" onclick="closeForgotModal()" class="w-full text-gray-600 hover:text-gray-800 py-2">
+                    Voltar ao Login
+                </button>
+            </form>
+            
+            <button onclick="closeForgotModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <!-- Admin Panel -->
+    <div id="adminPanel" class="hidden">
+        <div class="bg-secondary text-white p-4">
+            <div class="container mx-auto flex justify-between items-center">
+                <h2 class="text-xl font-bold">Painel Administrativo</h2>
+                <div class="flex gap-4">
+                    <button onclick="showAddUser()" class="bg-success hover:bg-success/80 px-4 py-2 rounded-lg">
+                        + Novo Usuário
+                    </button>
+                    <button onclick="exportExcel()" class="bg-primary hover:bg-primary/80 px-4 py-2 rounded-lg">
+                        📊 Exportar Excel
+                    </button>
+                    <button onclick="logout()" class="bg-accent hover:bg-accent/80 px-4 py-2 rounded-lg">
+                        Sair
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="container mx-auto px-6 py-6">
+            <!-- Filters -->
+            <div class="bg-white rounded-xl shadow-lg p-6 mb-6">
+                <h3 class="text-lg font-semibold text-secondary mb-4">Filtros</h3>
+                <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
+                    <select class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary">
+                        <option>Todos os Meses</option>
+                        <option>Janeiro</option>
+                        <option>Fevereiro</option>
+                        <option>Março</option>
+                    </select>
+                    <select class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary">
+                        <option>Todas as Localidades</option>
+                        <option>Brasil</option>
+                        <option>Argentina</option>
+                        <option>Chile</option>
+                    </select>
+                    <select class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary">
+                        <option>Todos os Negócios</option>
+                        <option>Field Testing</option>
+                        <option>Pipeline Delivery</option>
+                        <option>Biotech</option>
+                    </select>
+                    <select class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary">
+                        <option>Todos os Anos</option>
+                        <option>2024</option>
+                        <option>2025</option>
+                    </select>
+                    <select class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary">
+                        <option>Todos os Usuários</option>
+                        <option>João Silva</option>
+                        <option>Maria Santos</option>
+                        <option>Carlos Rodriguez</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- User Responses Table -->
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <h3 class="text-lg font-semibold text-secondary mb-4">Respostas dos Usuários</h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-4 py-3 text-left font-semibold text-secondary">Usuário</th>
+                                <th class="px-4 py-3 text-left font-semibold text-secondary">Site</th>
+                                <th class="px-4 py-3 text-left font-semibold text-secondary">Mês</th>
+                                <th class="px-4 py-3 text-left font-semibold text-secondary">Status</th>
+                                <th class="px-4 py-3 text-left font-semibold text-secondary">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-200">
+                            <tr>
+                                <td class="px-4 py-3">João Silva</td>
+                                <td class="px-4 py-3">Petrolina</td>
+                                <td class="px-4 py-3">Novembro 2024</td>
+                                <td class="px-4 py-3"><span class="bg-success/20 text-success px-2 py-1 rounded-full text-xs">Completo</span></td>
+                                <td class="px-4 py-3">
+                                    <button onclick="editUserResponse('joao')" class="text-primary hover:text-primary/80 mr-2">Editar</button>
+                                    <button onclick="viewUserResponse('joao')" class="text-secondary hover:text-secondary/80">Ver</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-3">Maria Santos</td>
+                                <td class="px-4 py-3">Sorriso</td>
+                                <td class="px-4 py-3">Novembro 2024</td>
+                                <td class="px-4 py-3"><span class="bg-accent/20 text-accent px-2 py-1 rounded-full text-xs">Pendente</span></td>
+                                <td class="px-4 py-3">
+                                    <button onclick="editUserResponse('maria')" class="text-primary hover:text-primary/80 mr-2">Editar</button>
+                                    <button onclick="viewUserResponse('maria')" class="text-secondary hover:text-secondary/80">Ver</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- User Panel -->
+    <div id="userPanel" class="hidden">
+        <div class="bg-primary text-white p-4">
+            <div class="container mx-auto flex justify-between items-center">
+                <h2 class="text-xl font-bold">Painel do Usuário</h2>
+                <div class="flex gap-4">
+                    <button onclick="showHistory()" class="bg-secondary hover:bg-secondary/80 px-4 py-2 rounded-lg">
+                        📊 Histórico
+                    </button>
+                    <button onclick="logout()" class="bg-accent hover:bg-accent/80 px-4 py-2 rounded-lg">
+                        Sair
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="container mx-auto px-6 py-6">
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <h3 class="text-lg font-semibold text-secondary mb-6">Questionário - Indicadores Estratégicos</h3>
+                
+                <form id="indicatorsForm" class="space-y-8">
+                    <!-- Informação Geral -->
+                    <div class="border-b border-gray-200 pb-6">
+                        <h4 class="text-lg font-semibold text-secondary mb-4">INFORMAÇÃO GERAL</h4>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-secondary mb-2">1. Ano (selecione apenas um)</label>
+                                <div class="space-y-2">
+                                    <label class="flex items-center">
+                                        <input type="radio" name="year" value="2024" class="text-primary focus:ring-primary">
+                                        <span class="ml-2">2024</span>
+                                    </label>
+                                    <label class="flex items-center">
+                                        <input type="radio" name="year" value="2025" class="text-primary focus:ring-primary">
+                                        <span class="ml-2">2025</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-secondary mb-2">2. Mês (selecione apenas um)</label>
+                                <select name="month" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary">
+                                    <option value="">Selecione o mês</option>
+                                    <option value="janeiro">Janeiro</option>
+                                    <option value="fevereiro">Fevereiro</option>
+                                    <option value="marco">Março</option>
+                                    <option value="abril">Abril</option>
+                                    <option value="maio">Maio</option>
+                                    <option value="junho">Junho</option>
+                                    <option value="julho">Julho</option>
+                                    <option value="agosto">Agosto</option>
+                                    <option value="setembro">Setembro</option>
+                                    <option value="outubro">Outubro</option>
+                                    <option value="novembro">Novembro</option>
+                                    <option value="dezembro">Dezembro</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-secondary mb-2">3. Negócio Principal</label>
+                                <select name="business" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary">
+                                    <option value="">Selecione o negócio</option>
+                                    <option value="field-testing">Field Testing</option>
+                                    <option value="pipeline-delivery">Pipeline Delivery</option>
+                                    <option value="biotech">Biotech</option>
+                                    <option value="regulatory">Regulatory</option>
+                                    <option value="agronomic-service">Agronomic Service</option>
+                                    <option value="field-solutions">Field Solutions</option>
+                                    <option value="vegetables">Vegetables</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-secondary mb-2">4. País</label>
+                                <select name="country" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary">
+                                    <option value="">Selecione o país</option>
+                                    <option value="argentina">Argentina</option>
+                                    <option value="paraguai">Paraguai</option>
+                                    <option value="chile">Chile</option>
+                                    <option value="mexico">México</option>
+                                    <option value="guatemala">Guatemala</option>
+                                    <option value="el-salvador">El Salvador</option>
+                                    <option value="brasil">Brasil</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-secondary mb-2">5. Site</label>
+                                <select name="site" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary">
+                                    <option value="">Selecione o site</option>
+                                    <option value="petrolina">Petrolina</option>
+                                    <option value="porto-nacional">Porto Nacional</option>
+                                    <option value="sorriso">Sorriso - Hub Norte</option>
+                                    <option value="coxilha">Coxilha - Hub Sul</option>
+                                    <option value="rolandia">Rolândia - Hub Sul</option>
+                                    <option value="santa-rita">Santa Rita - Hub Sul</option>
+                                    <option value="uberlandia-centro">Uberlândia - Hub Centro Norte</option>
+                                    <option value="guatemala-salvador">Guatemala / El Salvador - Hub Norla</option>
+                                    <option value="uberlandia-ctb">Uberlândia CTB</option>
+                                    <option value="nao-me-toque">Não Me Toque</option>
+                                    <option value="santa-cruz">Santa Cruz das Palmeiras</option>
+                                    <option value="paulinia">Paulínia</option>
+                                    <option value="carandai">Carandaí</option>
+                                    <option value="luis-eduardo">Luís Eduardo Magalhães</option>
+                                    <option value="fontezuela">Fontezuela</option>
+                                    <option value="santa-julia">Santa Julia / Temuco</option>
+                                    <option value="el-tizate">El Tizate</option>
+                                    <option value="san-juan">San Juan de Abajo</option>
+                                    <option value="la-charca">La Charca</option>
+                                    <option value="tlajomulco">Tlajomulco</option>
+                                    <option value="rio-iv">Rio IV</option>
+                                    <option value="outro">Outro</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-secondary mb-2">6. Quantidade de FTE ativo do site</label>
+                                <input type="number" name="fte_count" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary" min="0">
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-secondary mb-2">7. Quantidade de safristas ativos do site</label>
+                                <input type="number" name="seasonal_count" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary" min="0">
+                            </div>
+
+                            <div class="md:col-span-2">
+                                <label class="block text-sm font-medium text-secondary mb-2">8. Observações</label>
+                                <textarea name="general_observations" rows="3" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary" placeholder="Deixar em branco se não há nada"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Licença Médica -->
+                    <div class="border-b border-gray-200 pb-6">
+                        <h4 class="text-lg font-semibold text-secondary mb-4">LICENÇA MÉDICA (apenas números)</h4>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-secondary mb-2">9. Dias de licença médica (todos os motivos) - FTE</label>
+                                <input type="number" name="medical_leave_fte_all" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary" min="0">
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-secondary mb-2">10. Dias de licença médica (todos os motivos) - Safristas</label>
+                                <input type="number" name="medical_leave_seasonal_all" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary" min="0">
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-secondary mb-2">11. Dias de licença médica por CID F - FTE</label>
+                                <input type="number" name="medical_leave_fte_cid_f" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary" min="0">
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-secondary mb-2">12. Dias de licença médica por CID F - Safristas</label>
+                                <input type="number" name="medical_leave_seasonal_cid_f" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary" min="0">
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-secondary mb-2">13. Dias de licença médica por CID M - FTE</label>
+                                <input type="number" name="medical_leave_fte_cid_m" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary" min="0">
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-secondary mb-2">14. Dias de licença médica por CID M - Safristas</label>
+                                <input type="number" name="medical_leave_seasonal_cid_m" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary" min="0">
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-secondary mb-2">15. Dias de licença médica por CID S - FTE</label>
+                                <input type="number" name="medical_leave_fte_cid_s" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary" min="0">
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-secondary mb-2">16. Dias de licença médica por CID S - Safristas</label>
+                                <input type="number" name="medical_leave_seasonal_cid_s" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary" min="0">
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-secondary mb-2">17. Dias de licença médica por CID Z - FTE</label>
+                                <input type="number" name="medical_leave_fte_cid_z" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary" min="0">
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-secondary mb-2">18. Dias de licença médica por CID Z - Safristas</label>
+                                <input type="number" name="medical_leave_seasonal_cid_z" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary" min="0">
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-secondary mb-2">19. Dias de licença médica por CID R - FTE</label>
+                                <input type="number" name="medical_leave_fte_cid_r" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary" min="0">
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-secondary mb-2">20. Dias de licença médica por CID R - Safristas</label>
+                                <input type="number" name="medical_leave_seasonal_cid_r" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary" min="0">
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-secondary mb-2">21. Dias de licença médica por CID O - FTE</label>
+                                <input type="number" name="medical_leave_fte_cid_o" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary" min="0">
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-secondary mb-2">22. Dias de licença médica por CID O - Safristas</label>
+                                <input type="number" name="medical_leave_seasonal_cid_o" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary" min="0">
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-secondary mb-2">23. Dias de licença médica por CID J - FTE</label>
+                                <input type="number" name="medical_leave_fte_cid_j" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary" min="0">
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-secondary mb-2">24. Dias de licença médica por CID J - Safristas</label>
+                                <input type="number" name="medical_leave_seasonal_cid_j" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary" min="0">
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-secondary mb-2">25. Dias de licença médica por CID A e B - FTE</label>
+                                <input type="number" name="medical_leave_fte_cid_ab" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary" min="0">
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-secondary mb-2">26. Dias de licença médica por CID A e B - Safristas</label>
+                                <input type="number" name="medical_leave_seasonal_cid_ab" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary" min="0">
+                            </div>
+
+                            <div class="md:col-span-2">
+                                <label class="block text-sm font-medium text-secondary mb-2">27. Observações</label>
+                                <textarea name="medical_observations" rows="3" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary" placeholder="Deixar em branco se não há nada"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Afastamentos Previdenciários -->
+                    <div class="border-b border-gray-200 pb-6">
+                        <h4 class="text-lg font-semibold text-secondary mb-4">AFASTAMENTOS PREVIDENCIÁRIOS / SEGURO SOCIAL (apenas números)</h4>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-secondary mb-2">28. Colaboradores com afastamento previdenciário (qualquer motivo) - FTE</label>
+                                <input type="number" name="social_security_leave_fte_all" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary" min="0">
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-secondary mb-2">29. Colaboradores com afastamento previdenciário (qualquer motivo) - Safristas</label>
+                                <input type="number" name="social_security_leave_seasonal_all" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary" min="0">
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-secondary mb-2">30. Afastamento por licença maternidade - FTE</label>
+                                <input type="number" name="maternity_leave_fte" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary" min="0">
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-secondary mb-2">31. Afastamento por licença maternidade - Safristas</label>
+                                <input type="number" name="maternity_leave_seasonal" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary" min="0">
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-secondary mb-2">32. Afastamento por aposentadoria por invalidez - FTE</label>
+                                <input type="number" name="disability_retirement_fte" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary" min="0">
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-secondary mb-2">33. Afastamento por aposentadoria por invalidez - Safristas</label>
+                                <input type="number" name="disability_retirement_seasonal" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary" min="0">
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-secondary mb-2">34. Afastamento por acidente de trabalho (espécie B91) - FTE</label>
+                                <input type="number" name="work_accident_fte" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary" min="0">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Note: Continuing with remaining questions would make this extremely long -->
+                    <!-- This is a sample showing the structure for the first 34 questions -->
+                    
+                    <div class="flex justify-between pt-6">
+                        <button type="button" onclick="saveDraft()" class="bg-gray-500 hover:bg-gray-600 text-white px-6 py-3 rounded-lg font-semibold">
+                            Salvar Rascunho
+                        </button>
+                        <button type="submit" class="bg-success hover:bg-success/80 text-white px-6 py-3 rounded-lg font-semibold">
+                            Enviar Respostas
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add User Modal -->
+    <div id="addUserModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-xl shadow-2xl p-8 w-full max-w-md mx-4">
+            <div class="text-center mb-6">
+                <h2 class="text-2xl font-bold text-secondary">Novo Usuário</h2>
+                <p class="text-gray-600">Adicionar novo usuário ao sistema</p>
+            </div>
+            
+            <form id="addUserForm" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-secondary mb-2">Nome Completo</label>
+                    <input type="text" id="newUserName" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary" required>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-secondary mb-2">Email</label>
+                    <input type="email" id="newUserEmail" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary" required>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-secondary mb-2">Site</label>
+                    <select id="newUserSite" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary" required>
+                        <option value="">Selecione o site</option>
+                        <option value="petrolina">Petrolina</option>
+                        <option value="sorriso">Sorriso - Hub Norte</option>
+                        <option value="uberlandia">Uberlândia - Hub Centro Norte</option>
+                    </select>
+                </div>
+                
+                <button type="submit" class="w-full bg-success hover:bg-success/80 text-white py-3 rounded-lg font-semibold transition-colors">
+                    Criar Usuário
+                </button>
+                
+                <button type="button" onclick="closeAddUserModal()" class="w-full text-gray-600 hover:text-gray-800 py-2">
+                    Cancelar
+                </button>
+            </form>
+            
+            <button onclick="closeAddUserModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        let currentUserType = '';
+        let currentUser = null;
+
+        // Initialize charts
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeCharts();
+        });
+
+        function initializeCharts() {
+            // Country Chart
+            const countryCtx = document.getElementById('countryChart').getContext('2d');
+            new Chart(countryCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Brasil', 'Argentina', 'Chile', 'México', 'Guatemala'],
+                    datasets: [{
+                        label: 'Dias de Licença Médica',
+                        data: [245, 189, 156, 203, 167],
+                        backgroundColor: '#879ACF',
+                        borderColor: '#0E334C',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+
+            // Month Chart
+            const monthCtx = document.getElementById('monthChart').getContext('2d');
+            new Chart(monthCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov'],
+                    datasets: [{
+                        label: 'Afastamentos',
+                        data: [12, 19, 15, 25, 22, 18, 20, 24, 16, 21, 18],
+                        borderColor: '#FA3268',
+                        backgroundColor: 'rgba(250, 50, 104, 0.1)',
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
+        function showLogin(type) {
+            currentUserType = type;
+            document.getElementById('loginModal').classList.remove('hidden');
+            document.getElementById('loginModal').classList.add('flex');
+            document.getElementById('loginTitle').textContent = type === 'admin' ? 'Login Administrador' : 'Login Usuário';
+        }
+
+        function closeModal() {
+            document.getElementById('loginModal').classList.add('hidden');
+            document.getElementById('loginModal').classList.remove('flex');
+        }
+
+        function showForgotPassword() {
+            document.getElementById('loginModal').classList.add('hidden');
+            document.getElementById('forgotModal').classList.remove('hidden');
+            document.getElementById('forgotModal').classList.add('flex');
+        }
+
+        function closeForgotModal() {
+            document.getElementById('forgotModal').classList.add('hidden');
+            document.getElementById('forgotModal').classList.remove('flex');
+            document.getElementById('loginModal').classList.remove('hidden');
+            document.getElementById('loginModal').classList.add('flex');
+        }
+
+        // Login form handler
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            // Demo authentication
+            if (currentUserType === 'admin' && email === 'admin@saude.com' && password === 'admin123') {
+                currentUser = { type: 'admin', email: email };
+                showAdminPanel();
+            } else if (currentUserType === 'user' && email === 'user@saude.com' && password === 'user123') {
+                currentUser = { type: 'user', email: email };
+                showUserPanel();
+            } else {
+                alert('Credenciais inválidas. Use:\nAdmin: admin@saude.com / admin123\nUser: user@saude.com / user123');
+            }
+        });
+
+        // Forgot password form handler
+        document.getElementById('forgotForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const email = document.getElementById('forgotEmail').value;
+            alert(`Email de recuperação enviado para: ${email}\n\nEste é um sistema demo - as instruções foram enviadas!`);
+            closeForgotModal();
+            closeModal();
+        });
+
+        function showAdminPanel() {
+            document.getElementById('dashboard').classList.add('hidden');
+            document.getElementById('userPanel').classList.add('hidden');
+            document.getElementById('adminPanel').classList.remove('hidden');
+            closeModal();
+        }
+
+        function showUserPanel() {
+            document.getElementById('dashboard').classList.add('hidden');
+            document.getElementById('adminPanel').classList.add('hidden');
+            document.getElementById('userPanel').classList.remove('hidden');
+            closeModal();
+        }
+
+        function logout() {
+            currentUser = null;
+            document.getElementById('adminPanel').classList.add('hidden');
+            document.getElementById('userPanel').classList.add('hidden');
+            document.getElementById('dashboard').classList.remove('hidden');
+        }
+
+        function showAddUser() {
+            document.getElementById('addUserModal').classList.remove('hidden');
+            document.getElementById('addUserModal').classList.add('flex');
+        }
+
+        function closeAddUserModal() {
+            document.getElementById('addUserModal').classList.add('hidden');
+            document.getElementById('addUserModal').classList.remove('flex');
+        }
+
+        // Add user form handler
+        document.getElementById('addUserForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const name = document.getElementById('newUserName').value;
+            const email = document.getElementById('newUserEmail').value;
+            const site = document.getElementById('newUserSite').value;
+            
+            alert(`Usuário criado com sucesso!\n\nNome: ${name}\nEmail: ${email}\nSite: ${site}\n\nUm email de pré-cadastro foi enviado para o usuário.`);
+            closeAddUserModal();
+            
+            // Reset form
+            document.getElementById('addUserForm').reset();
+        });
+
+        function exportExcel() {
+            alert('Exportando dados para Excel...\n\nEste é um sistema demo - o arquivo seria baixado automaticamente!');
+        }
+
+        function editUserResponse(userId) {
+            alert(`Editando respostas do usuário: ${userId}\n\nEste é um sistema demo - abriria o formulário de edição.`);
+        }
+
+        function viewUserResponse(userId) {
+            alert(`Visualizando respostas do usuário: ${userId}\n\nEste é um sistema demo - abriria a visualização detalhada.`);
+        }
+
+        function showHistory() {
+            alert('Histórico de Respostas\n\nNovembro 2024: Completo\nOutubro 2024: Completo\nSetembro 2024: Pendente\n\nEste é um sistema demo!');
+        }
+
+        function saveDraft() {
+            alert('Rascunho salvo com sucesso!\n\nVocê pode continuar preenchendo depois.');
+        }
+
+        // Form submission handler
+        document.getElementById('indicatorsForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Respostas enviadas com sucesso!\n\nObrigado por preencher os indicadores estratégicos.');
+        });
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'96c76abcf775dc3f',t:'MTc1NDc0NDIyMi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
