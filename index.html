@@ -24,27 +24,34 @@
 </head>
 <body class="bg-gradient-to-br from-primary/10 to-secondary/10 min-h-screen">
     <!-- Header -->
-    <header class="bg-secondary text-white shadow-lg">
-        <div class="container mx-auto px-6 py-4">
+    <header class="bg-gradient-to-r from-secondary via-secondary to-primary text-white shadow-2xl border-b-4 border-accent">
+        <div class="container mx-auto px-6 py-6">
             <div class="flex justify-between items-center">
-                <div>
-                    <h1 class="text-2xl font-bold">INDICADORES ESTRATÉGICOS</h1>
-                    <p class="text-primary">SAÚDE INTEGRAL / SALUD INTEGRAL R&D LATAM</p>
+                <div class="flex items-center space-x-4">
+                    <div class="bg-white/10 p-3 rounded-xl backdrop-blur-sm">
+                        <svg class="w-8 h-8 text-accent" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h1 class="text-3xl font-bold tracking-tight" data-translate="main_title">INDICADORES ESTRATÉGICOS</h1>
+                        <p class="text-primary/90 font-medium text-lg" data-translate="subtitle">SAÚDE INTEGRAL R&D LATAM</p>
+                    </div>
                 </div>
                 <div class="flex gap-4 items-center">
-                    <div class="flex gap-2">
-                        <button onclick="changeLanguage('pt')" id="btnPT" class="bg-white/20 hover:bg-white/30 px-3 py-1 rounded text-sm font-semibold transition-colors border border-white/30">
+                    <div class="flex gap-3">
+                        <button onclick="changeLanguage('pt')" id="btnPT" class="bg-white/20 hover:bg-white/30 px-4 py-2 rounded-xl text-sm font-bold transition-all duration-300 border border-white/30 shadow-lg hover:shadow-xl transform hover:scale-105">
                             🇧🇷 PT
                         </button>
-                        <button onclick="changeLanguage('es')" id="btnES" class="bg-white/10 hover:bg-white/20 px-3 py-1 rounded text-sm font-semibold transition-colors border border-white/20">
+                        <button onclick="changeLanguage('es')" id="btnES" class="bg-white/10 hover:bg-white/20 px-4 py-2 rounded-xl text-sm font-bold transition-all duration-300 border border-white/20 shadow-lg hover:shadow-xl transform hover:scale-105">
                             🇪🇸 ES
                         </button>
                     </div>
                     <div class="w-px h-6 bg-white/30"></div>
-                    <button onclick="showLogin('user')" class="bg-primary hover:bg-primary/80 px-6 py-2 rounded-lg font-semibold transition-colors">
+                    <button onclick="showLogin('user')" class="bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 px-6 py-3 rounded-xl font-bold transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 border border-white/20">
                         <span data-translate="user_button">Usuário</span>
                     </button>
-                    <button onclick="showLogin('admin')" class="bg-accent hover:bg-accent/80 px-6 py-2 rounded-lg font-semibold transition-colors">
+                    <button onclick="showLogin('admin')" class="bg-gradient-to-r from-accent to-accent/80 hover:from-accent/90 hover:to-accent/70 px-6 py-3 rounded-xl font-bold transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 border border-white/20">
                         <span data-translate="admin_button">Administrador</span>
                     </button>
                 </div>
@@ -53,122 +60,220 @@
     </header>
 
     <!-- Main Dashboard -->
-    <main id="dashboard" class="container mx-auto px-6 py-8">
+    <main id="dashboard" class="container mx-auto px-6 py-8 min-h-screen">
 
 
         <!-- Chart Filters -->
-        <div class="bg-white rounded-xl shadow-lg p-6 mb-6">
-            <h3 class="text-lg font-semibold text-secondary mb-4" data-translate="chart_filters">Filtros dos Gráficos</h3>
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <select id="chartFilterCountry" onchange="updateCharts()" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary">
-                    <option value="" data-translate="all_countries">Todos os Países</option>
-                    <option value="brasil">Brasil</option>
-                    <option value="argentina">Argentina</option>
-                    <option value="chile">Chile</option>
-                    <option value="mexico">México</option>
-                </select>
-                <select id="chartFilterSite" onchange="updateCharts()" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary">
-                    <option value="" data-translate="all_locations">Todas as Localidades</option>
-                    <option value="petrolina">Petrolina</option>
-                    <option value="sorriso">Sorriso</option>
-                    <option value="uberlandia">Uberlândia</option>
-                    <option value="rolandia">Rolândia</option>
-                </select>
-                <select id="chartFilterBusiness" onchange="updateCharts()" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary">
-                    <option value="" data-translate="all_businesses">Todos os Negócios</option>
-                    <option value="field-testing">Field Testing</option>
-                    <option value="pipeline-delivery">Pipeline Delivery</option>
-                    <option value="biotech">Biotech</option>
-                </select>
-                <select id="chartFilterYear" onchange="updateCharts()" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary">
-                    <option value="" data-translate="all_years">Todos os Anos</option>
-                    <option value="2024">2024</option>
-                    <option value="2025">2025</option>
-                </select>
+        <div class="bg-gradient-to-r from-white to-gray-50 rounded-2xl shadow-2xl p-8 mb-8 border border-gray-100">
+            <div class="flex items-center mb-6">
+                <div class="bg-gradient-to-r from-primary to-accent p-3 rounded-xl mr-4">
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/>
+                    </svg>
+                </div>
+                <h3 class="text-2xl font-bold text-secondary" data-translate="chart_filters">Filtros dos Gráficos</h3>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <div class="relative">
+                    <label class="block text-sm font-semibold text-secondary mb-2" data-translate="country_label">País</label>
+                    <select id="chartFilterCountry" onchange="updateCharts()" class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-primary/20 focus:border-primary transition-all duration-300 bg-white shadow-sm hover:shadow-md">
+                        <option value="" data-translate="all_countries">Todos os Países</option>
+                        <option value="brasil">Brasil</option>
+                        <option value="argentina">Argentina</option>
+                        <option value="chile">Chile</option>
+                        <option value="mexico">México</option>
+                    </select>
+                </div>
+                <div class="relative">
+                    <label class="block text-sm font-semibold text-secondary mb-2" data-translate="location_label">Localidade</label>
+                    <select id="chartFilterSite" onchange="updateCharts()" class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-primary/20 focus:border-primary transition-all duration-300 bg-white shadow-sm hover:shadow-md">
+                        <option value="" data-translate="all_locations">Todas as Localidades</option>
+                        <option value="petrolina">Petrolina</option>
+                        <option value="sorriso">Sorriso</option>
+                        <option value="uberlandia">Uberlândia</option>
+                        <option value="rolandia">Rolândia</option>
+                    </select>
+                </div>
+                <div class="relative">
+                    <label class="block text-sm font-semibold text-secondary mb-2" data-translate="business_label">Negócio</label>
+                    <select id="chartFilterBusiness" onchange="updateCharts()" class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-primary/20 focus:border-primary transition-all duration-300 bg-white shadow-sm hover:shadow-md">
+                        <option value="" data-translate="all_businesses">Todos os Negócios</option>
+                        <option value="field-testing">Field Testing</option>
+                        <option value="pipeline-delivery">Pipeline Delivery</option>
+                        <option value="biotech">Biotech</option>
+                    </select>
+                </div>
+                <div class="relative">
+                    <label class="block text-sm font-semibold text-secondary mb-2" data-translate="year_label">Ano</label>
+                    <select id="chartFilterYear" onchange="updateCharts()" class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-primary/20 focus:border-primary transition-all duration-300 bg-white shadow-sm hover:shadow-md">
+                        <option value="" data-translate="all_years">Todos os Anos</option>
+                        <option value="2024">2024</option>
+                        <option value="2025">2025</option>
+                    </select>
+                </div>
             </div>
         </div>
 
         <!-- Charts Section -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-            <div class="bg-white rounded-xl shadow-lg p-6">
-                <h3 class="text-lg font-semibold text-secondary mb-4" data-chart-title="absenteeism_general">Absenteísmo Geral (%)</h3>
-                <p class="text-sm text-gray-600 mb-4">Fórmula: (Dias perdidos / Dias contratados) × 100</p>
-                <canvas id="absenteeismGeneralChart" width="400" height="200"></canvas>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+            <div class="bg-gradient-to-br from-white to-gray-50 rounded-2xl shadow-2xl p-8 border border-gray-100 hover:shadow-3xl transition-all duration-300">
+                <div class="flex items-center mb-6">
+                    <div class="bg-gradient-to-r from-secondary to-primary p-3 rounded-xl mr-4">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold text-secondary" data-chart-title="absenteeism_general">Absenteísmo Geral (%)</h3>
+                        <p class="text-sm text-gray-600 font-medium" data-translate="formula_text">Fórmula: (Dias perdidos / Dias contratados) × 100</p>
+                    </div>
+                </div>
+                <div class="bg-white rounded-xl p-4 shadow-inner">
+                    <canvas id="absenteeismGeneralChart" width="400" height="200"></canvas>
+                </div>
             </div>
             
-            <div class="bg-white rounded-xl shadow-lg p-6">
-                <h3 class="text-lg font-semibold text-secondary mb-4" data-chart-title="absenteeism_location">Absenteísmo por Localidade (%)</h3>
-                <canvas id="absenteeismLocationChart" width="400" height="200"></canvas>
+            <div class="bg-gradient-to-br from-white to-gray-50 rounded-2xl shadow-2xl p-8 border border-gray-100 hover:shadow-3xl transition-all duration-300">
+                <div class="flex items-center mb-6">
+                    <div class="bg-gradient-to-r from-accent to-primary p-3 rounded-xl mr-4">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold text-secondary" data-chart-title="absenteeism_location">Absenteísmo por Localidade (%)</h3>
+                    </div>
+                </div>
+                <div class="bg-white rounded-xl p-4 shadow-inner">
+                    <canvas id="absenteeismLocationChart" width="400" height="200"></canvas>
+                </div>
             </div>
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-            <div class="bg-white rounded-xl shadow-lg p-6">
-                <h3 class="text-lg font-semibold text-secondary mb-4" data-chart-title="absenteeism_category">Absenteísmo por Categoria CID (%)</h3>
-                <canvas id="absenteeismCategoryChart" width="400" height="200"></canvas>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+            <div class="bg-gradient-to-br from-white to-gray-50 rounded-2xl shadow-2xl p-8 border border-gray-100 hover:shadow-3xl transition-all duration-300">
+                <div class="flex items-center mb-6">
+                    <div class="bg-gradient-to-r from-success to-accent p-3 rounded-xl mr-4">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold text-secondary" data-chart-title="absenteeism_category">Absenteísmo por Categoria CID (%)</h3>
+                    </div>
+                </div>
+                <div class="bg-white rounded-xl p-4 shadow-inner">
+                    <canvas id="absenteeismCategoryChart" width="400" height="200"></canvas>
+                </div>
             </div>
             
-            <div class="bg-white rounded-xl shadow-lg p-6">
-                <h3 class="text-lg font-semibold text-secondary mb-4" data-chart-title="absenteeism_trend">Tendência Mensal de Absenteísmo (%)</h3>
-                <canvas id="absenteeismTrendChart" width="400" height="200"></canvas>
+            <div class="bg-gradient-to-br from-white to-gray-50 rounded-2xl shadow-2xl p-8 border border-gray-100 hover:shadow-3xl transition-all duration-300">
+                <div class="flex items-center mb-6">
+                    <div class="bg-gradient-to-r from-primary to-secondary p-3 rounded-xl mr-4">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold text-secondary" data-chart-title="absenteeism_trend">Tendência Mensal de Absenteísmo (%)</h3>
+                    </div>
+                </div>
+                <div class="bg-white rounded-xl p-4 shadow-inner">
+                    <canvas id="absenteeismTrendChart" width="400" height="200"></canvas>
+                </div>
             </div>
         </div>
 
-        <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
-            <h3 class="text-lg font-semibold text-secondary mb-4" data-chart-title="absenteeism_comparison">Comparativo FTE vs Safristas - Absenteísmo (%)</h3>
-            <canvas id="absenteeismComparisonChart" width="800" height="300"></canvas>
+        <div class="bg-gradient-to-br from-white to-gray-50 rounded-2xl shadow-2xl p-8 mb-8 border border-gray-100 hover:shadow-3xl transition-all duration-300">
+            <div class="flex items-center mb-6">
+                <div class="bg-gradient-to-r from-accent to-success p-3 rounded-xl mr-4">
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                    </svg>
+                </div>
+                <div>
+                    <h3 class="text-2xl font-bold text-secondary" data-chart-title="absenteeism_comparison">Comparativo FTE vs Safristas - Absenteísmo (%)</h3>
+                </div>
+            </div>
+            <div class="bg-white rounded-xl p-6 shadow-inner">
+                <canvas id="absenteeismComparisonChart" width="800" height="300"></canvas>
+            </div>
         </div>
 
-        <div class="bg-white rounded-xl shadow-lg p-6">
-            <h3 class="text-lg font-semibold text-secondary mb-4" data-translate="sites_no_response">Sites sem Resposta no Mês</h3>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div class="bg-accent/10 border border-accent/20 rounded-lg p-4">
-                    <h4 class="font-semibold text-accent">Carandaí</h4>
-                    <p class="text-sm text-gray-600"><span data-translate="last_response">Última resposta</span>: Outubro</p>
+        <div class="bg-gradient-to-br from-white to-gray-50 rounded-2xl shadow-2xl p-8 border border-gray-100">
+            <div class="flex items-center mb-6">
+                <div class="bg-gradient-to-r from-accent to-secondary p-3 rounded-xl mr-4">
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                    </svg>
                 </div>
-                <div class="bg-accent/10 border border-accent/20 rounded-lg p-4">
-                    <h4 class="font-semibold text-accent">El Tizate</h4>
-                    <p class="text-sm text-gray-600"><span data-translate="last_response">Última resposta</span>: Setembro</p>
+                <div>
+                    <h3 class="text-2xl font-bold text-secondary" data-translate="sites_no_response">Sites sem Resposta no Mês</h3>
                 </div>
-                <div class="bg-accent/10 border border-accent/20 rounded-lg p-4">
-                    <h4 class="font-semibold text-accent">Rio IV</h4>
-                    <p class="text-sm text-gray-600"><span data-translate="last_response">Última resposta</span>: Outubro</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-gradient-to-r from-accent/10 to-accent/5 border-2 border-accent/20 rounded-xl p-6 hover:shadow-lg transition-all duration-300">
+                    <div class="flex items-center mb-3">
+                        <div class="w-3 h-3 bg-accent rounded-full mr-3 animate-pulse"></div>
+                        <h4 class="font-bold text-accent text-lg">Carandaí</h4>
+                    </div>
+                    <p class="text-sm text-gray-700 font-medium"><span data-translate="last_response">Última resposta</span>: <span class="text-accent font-bold">Outubro</span></p>
+                </div>
+                <div class="bg-gradient-to-r from-accent/10 to-accent/5 border-2 border-accent/20 rounded-xl p-6 hover:shadow-lg transition-all duration-300">
+                    <div class="flex items-center mb-3">
+                        <div class="w-3 h-3 bg-accent rounded-full mr-3 animate-pulse"></div>
+                        <h4 class="font-bold text-accent text-lg">El Tizate</h4>
+                    </div>
+                    <p class="text-sm text-gray-700 font-medium"><span data-translate="last_response">Última resposta</span>: <span class="text-accent font-bold">Setembro</span></p>
+                </div>
+                <div class="bg-gradient-to-r from-accent/10 to-accent/5 border-2 border-accent/20 rounded-xl p-6 hover:shadow-lg transition-all duration-300">
+                    <div class="flex items-center mb-3">
+                        <div class="w-3 h-3 bg-accent rounded-full mr-3 animate-pulse"></div>
+                        <h4 class="font-bold text-accent text-lg">Rio IV</h4>
+                    </div>
+                    <p class="text-sm text-gray-700 font-medium"><span data-translate="last_response">Última resposta</span>: <span class="text-accent font-bold">Outubro</span></p>
                 </div>
             </div>
         </div>
     </main>
 
     <!-- Login Modal -->
-    <div id="loginModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50">
-        <div class="bg-white rounded-xl shadow-2xl p-8 w-full max-w-md mx-4">
-            <div class="text-center mb-6">
-                <h2 id="loginTitle" class="text-2xl font-bold text-secondary">Login</h2>
-                <p class="text-gray-600">Acesse sua conta</p>
+    <div id="loginModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm hidden items-center justify-center z-50">
+        <div class="bg-gradient-to-br from-white to-gray-50 rounded-2xl shadow-2xl p-10 w-full max-w-md mx-4 border border-gray-200">
+            <div class="text-center mb-8">
+                <div class="bg-gradient-to-r from-primary to-accent p-4 rounded-2xl w-16 h-16 mx-auto mb-4">
+                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                    </svg>
+                </div>
+                <h2 id="loginTitle" class="text-3xl font-bold text-secondary" data-translate="login_title">Acesso ao Sistema</h2>
+                <p class="text-gray-600 font-medium" data-translate="login_subtitle">Digite suas credenciais</p>
             </div>
             
-            <form id="loginForm" class="space-y-4">
+            <form id="loginForm" class="space-y-6">
                 <div>
-                    <label class="block text-sm font-medium text-secondary mb-2">Email</label>
-                    <input type="email" id="loginEmail" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent" required>
+                    <label class="block text-sm font-bold text-secondary mb-3" data-translate="email_label">Email</label>
+                    <input type="email" id="loginEmail" class="w-full px-4 py-4 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-primary/20 focus:border-primary transition-all duration-300 bg-white shadow-sm" required>
                 </div>
                 
                 <div>
-                    <label class="block text-sm font-medium text-secondary mb-2">Senha</label>
-                    <input type="password" id="loginPassword" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent" required>
+                    <label class="block text-sm font-bold text-secondary mb-3" data-translate="password_label">Senha</label>
+                    <input type="password" id="loginPassword" class="w-full px-4 py-4 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-primary/20 focus:border-primary transition-all duration-300 bg-white shadow-sm" required>
                 </div>
                 
-                <button type="submit" class="w-full bg-primary hover:bg-primary/80 text-white py-3 rounded-lg font-semibold transition-colors">
+                <button type="submit" class="w-full bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-white py-4 rounded-xl font-bold transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105" data-translate="login_button">
                     Entrar
                 </button>
                 
                 <div class="text-center">
-                    <button type="button" onclick="showForgotPassword()" class="text-primary hover:text-primary/80 text-sm">
+                    <button type="button" onclick="showForgotPassword()" class="text-primary hover:text-accent font-semibold transition-colors duration-300" data-translate="forgot_password">
                         Esqueceu a senha?
                     </button>
                 </div>
             </form>
             
-            <button onclick="closeModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
+            <button onclick="closeModal()" class="absolute top-4 right-4 text-gray-400 hover:text-accent transition-colors duration-300 bg-white/80 rounded-full p-2 hover:bg-white">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                 </svg>
@@ -177,29 +282,34 @@
     </div>
 
     <!-- Forgot Password Modal -->
-    <div id="forgotModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50">
-        <div class="bg-white rounded-xl shadow-2xl p-8 w-full max-w-md mx-4">
-            <div class="text-center mb-6">
-                <h2 class="text-2xl font-bold text-secondary">Recuperar Senha</h2>
-                <p class="text-gray-600">Digite seu email para receber instruções</p>
+    <div id="forgotModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm hidden items-center justify-center z-50">
+        <div class="bg-gradient-to-br from-white to-gray-50 rounded-2xl shadow-2xl p-10 w-full max-w-md mx-4 border border-gray-200">
+            <div class="text-center mb-8">
+                <div class="bg-gradient-to-r from-accent to-secondary p-4 rounded-2xl w-16 h-16 mx-auto mb-4">
+                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/>
+                    </svg>
+                </div>
+                <h2 class="text-3xl font-bold text-secondary" data-translate="forgot_title">Recuperar Senha</h2>
+                <p class="text-gray-600 font-medium" data-translate="forgot_subtitle">Digite seu email para receber instruções</p>
             </div>
             
-            <form id="forgotForm" class="space-y-4">
+            <form id="forgotForm" class="space-y-6">
                 <div>
-                    <label class="block text-sm font-medium text-secondary mb-2">Email</label>
-                    <input type="email" id="forgotEmail" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent" required>
+                    <label class="block text-sm font-bold text-secondary mb-3" data-translate="email_label">Email</label>
+                    <input type="email" id="forgotEmail" class="w-full px-4 py-4 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-primary/20 focus:border-primary transition-all duration-300 bg-white shadow-sm" required>
                 </div>
                 
-                <button type="submit" class="w-full bg-accent hover:bg-accent/80 text-white py-3 rounded-lg font-semibold transition-colors">
+                <button type="submit" class="w-full bg-gradient-to-r from-accent to-secondary hover:from-accent/90 hover:to-secondary/90 text-white py-4 rounded-xl font-bold transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105" data-translate="send_email">
                     Enviar Email
                 </button>
                 
-                <button type="button" onclick="closeForgotModal()" class="w-full text-gray-600 hover:text-gray-800 py-2">
+                <button type="button" onclick="closeForgotModal()" class="w-full text-gray-600 hover:text-secondary font-semibold py-3 transition-colors duration-300" data-translate="back_to_login">
                     Voltar ao Login
                 </button>
             </form>
             
-            <button onclick="closeForgotModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
+            <button onclick="closeForgotModal()" class="absolute top-4 right-4 text-gray-400 hover:text-accent transition-colors duration-300 bg-white/80 rounded-full p-2 hover:bg-white">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                 </svg>
@@ -810,36 +920,70 @@
         // Translation dictionary
         const translations = {
             pt: {
+                main_title: 'INDICADORES ESTRATÉGICOS',
+                subtitle: 'SAÚDE INTEGRAL R&D LATAM',
                 user_button: 'Usuário',
                 admin_button: 'Administrador',
                 chart_filters: 'Filtros dos Gráficos',
+                country_label: 'País',
+                location_label: 'Localidade',
+                business_label: 'Negócio',
+                year_label: 'Ano',
                 all_countries: 'Todos os Países',
                 all_locations: 'Todas as Localidades',
                 all_businesses: 'Todos os Negócios',
                 all_years: 'Todos os Anos',
+                formula_text: 'Fórmula: (Dias perdidos / Dias contratados) × 100',
                 absenteeism_general: 'Absenteísmo Geral (%)',
                 absenteeism_location: 'Absenteísmo por Localidade (%)',
                 absenteeism_category: 'Absenteísmo por Categoria CID (%)',
                 absenteeism_trend: 'Tendência Mensal de Absenteísmo (%)',
                 absenteeism_comparison: 'Comparativo FTE vs Safristas - Absenteísmo (%)',
                 sites_no_response: 'Sites sem Resposta no Mês',
-                last_response: 'Última resposta'
+                last_response: 'Última resposta',
+                login_title: 'Acesso ao Sistema',
+                login_subtitle: 'Digite suas credenciais',
+                email_label: 'Email',
+                password_label: 'Senha',
+                login_button: 'Entrar',
+                forgot_password: 'Esqueceu a senha?',
+                forgot_title: 'Recuperar Senha',
+                forgot_subtitle: 'Digite seu email para receber instruções',
+                send_email: 'Enviar Email',
+                back_to_login: 'Voltar ao Login'
             },
             es: {
+                main_title: 'INDICADORES ESTRATÉGICOS',
+                subtitle: 'SALUD INTEGRAL R&D LATAM',
                 user_button: 'Usuario',
                 admin_button: 'Administrador',
                 chart_filters: 'Filtros de Gráficos',
+                country_label: 'País',
+                location_label: 'Localidad',
+                business_label: 'Negocio',
+                year_label: 'Año',
                 all_countries: 'Todos los Países',
                 all_locations: 'Todas las Localidades',
                 all_businesses: 'Todos los Negocios',
                 all_years: 'Todos los Años',
+                formula_text: 'Fórmula: (Días perdidos / Días contratados) × 100',
                 absenteeism_general: 'Ausentismo General (%)',
                 absenteeism_location: 'Ausentismo por Localidad (%)',
                 absenteeism_category: 'Ausentismo por Categoría CID (%)',
                 absenteeism_trend: 'Tendencia Mensual de Ausentismo (%)',
                 absenteeism_comparison: 'Comparativo FTE vs Zafreros - Ausentismo (%)',
                 sites_no_response: 'Sitios sin Respuesta en el Mes',
-                last_response: 'Última respuesta'
+                last_response: 'Última respuesta',
+                login_title: 'Acceso al Sistema',
+                login_subtitle: 'Ingrese sus credenciales',
+                email_label: 'Correo',
+                password_label: 'Contraseña',
+                login_button: 'Ingresar',
+                forgot_password: '¿Olvidó la contraseña?',
+                forgot_title: 'Recuperar Contraseña',
+                forgot_subtitle: 'Ingrese su correo para recibir instrucciones',
+                send_email: 'Enviar Correo',
+                back_to_login: 'Volver al Login'
             }
         };
 
@@ -849,12 +993,12 @@
             
             // Update button states
             document.getElementById('btnPT').className = lang === 'pt' ? 
-                'bg-white/20 hover:bg-white/30 px-3 py-1 rounded text-sm font-semibold transition-colors border border-white/30' :
-                'bg-white/10 hover:bg-white/20 px-3 py-1 rounded text-sm font-semibold transition-colors border border-white/20';
+                'bg-white/30 hover:bg-white/40 px-4 py-2 rounded-xl text-sm font-bold transition-all duration-300 border-2 border-white/50 shadow-lg hover:shadow-xl transform scale-105' :
+                'bg-white/10 hover:bg-white/20 px-4 py-2 rounded-xl text-sm font-bold transition-all duration-300 border border-white/20 shadow-lg hover:shadow-xl transform hover:scale-105';
             
             document.getElementById('btnES').className = lang === 'es' ? 
-                'bg-white/20 hover:bg-white/30 px-3 py-1 rounded text-sm font-semibold transition-colors border border-white/30' :
-                'bg-white/10 hover:bg-white/20 px-3 py-1 rounded text-sm font-semibold transition-colors border border-white/20';
+                'bg-white/30 hover:bg-white/40 px-4 py-2 rounded-xl text-sm font-bold transition-all duration-300 border-2 border-white/50 shadow-lg hover:shadow-xl transform scale-105' :
+                'bg-white/10 hover:bg-white/20 px-4 py-2 rounded-xl text-sm font-bold transition-all duration-300 border border-white/20 shadow-lg hover:shadow-xl transform hover:scale-105';
             
             // Update all translatable elements
             document.querySelectorAll('[data-translate]').forEach(element => {
@@ -1024,6 +1168,9 @@
             };
         }
 
+        // Default chart data for initial display
+        const absenteeismData = getDefaultChartData();
+
         // Initialize system
         document.addEventListener('DOMContentLoaded', function() {
             initializeStorage();
@@ -1161,20 +1308,20 @@
         function createAbsenteeismTrendChart() {
             const ctx = document.getElementById('absenteeismTrendChart').getContext('2d');
             chartInstances.trend = new Chart(ctx, {
-                type: 'line',
+                type: 'bar',
                 data: {
                     labels: absenteeismData.trend.labels,
                     datasets: [{
                         label: 'Tendência Mensal (%)',
                         data: absenteeismData.trend.data,
-                        borderColor: '#8CD000',
-                        backgroundColor: 'rgba(140, 208, 0, 0.1)',
-                        tension: 0.4,
-                        fill: true,
-                        pointBackgroundColor: '#8CD000',
-                        pointBorderColor: '#0E334C',
-                        pointBorderWidth: 2,
-                        pointRadius: 6
+                        backgroundColor: [
+                            '#879ACF', '#FA3268', '#8CD000', '#0E334C', '#879ACF',
+                            '#FA3268', '#8CD000', '#0E334C', '#879ACF', '#FA3268', '#8CD000'
+                        ],
+                        borderColor: '#0E334C',
+                        borderWidth: 2,
+                        borderRadius: 8,
+                        borderSkipped: false
                     }]
                 },
                 options: {
@@ -1182,6 +1329,13 @@
                     plugins: {
                         legend: {
                             display: true
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `${context.dataset.label}: ${context.parsed.y}%`;
+                                }
+                            }
                         }
                     },
                     scales: {
@@ -1812,6 +1966,6 @@ Os dados foram salvos e os gráficos serão atualizados automaticamente!
             updateCharts();
         });
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'96c78715d3e1f204',t:'MTc1NDc0NTM4My4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'96c799d0c3e188fb',t:'MTc1NDc0NjE1MC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
 
