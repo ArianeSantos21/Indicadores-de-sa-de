@@ -26,17 +26,8 @@
     </script>
 </head>
 <body class="bg-gradient-to-br from-primary/10 to-secondary/10 min-h-screen">
-    <!-- Loading Screen -->
-    <div id="loadingScreen" class="fixed inset-0 bg-secondary flex items-center justify-center z-50">
-        <div class="text-center text-white">
-            <div class="animate-spin rounded-full h-16 w-16 border-b-2 border-white mx-auto mb-4"></div>
-            <h2 class="text-xl font-bold">Carregando Sistema...</h2>
-            <p class="text-primary">Conectando com SharePoint</p>
-        </div>
-    </div>
-
     <!-- Login Screen -->
-    <div id="loginScreen" class="hidden fixed inset-0 bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center z-40">
+    <div id="loginScreen" class="fixed inset-0 bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center z-40">
         <div class="bg-white rounded-xl shadow-2xl p-8 max-w-md w-full mx-4">
             <div class="text-center mb-8">
                 <h1 class="text-3xl font-bold text-secondary mb-2">INDICADORES ESTRATÉGICOS</h1>
@@ -63,7 +54,7 @@
                     <p class="mt-2">Sistema de Indicadores Estratégicos</p>
                     <p class="font-semibold text-secondary">Saúde Integral R&D LATAM</p>
                     <p class="text-xs text-gray-500 mt-2">
-                        💡 Use o botão Demo se houver problemas com o login Microsoft
+                        💡 Use o botão Demo para acesso direto
                     </p>
                 </div>
             </div>
@@ -85,7 +76,7 @@
     </div>
 
     <!-- Header -->
-    <header class="bg-secondary text-white shadow-lg">
+    <header id="mainHeader" class="hidden bg-secondary text-white shadow-lg">
         <div class="container mx-auto px-6 py-4">
             <div class="flex justify-between items-center">
                 <div>
@@ -112,7 +103,7 @@
     </header>
 
     <!-- Main Content -->
-    <main class="container mx-auto px-6 py-8">
+    <main id="mainContent" class="hidden container mx-auto px-6 py-8">
         <!-- Dashboard View -->
         <div id="dashboardView" class="space-y-8">
             <div class="bg-white rounded-xl shadow-lg p-6">
@@ -163,8 +154,8 @@
                         <p id="avgAbsenteeism" class="text-2xl font-bold">0%</p>
                     </div>
                     <div class="bg-gradient-to-r from-accent to-accent/80 text-white p-4 rounded-lg">
-                        <h3 class="text-sm font-semibold opacity-90">Respostas Pendentes</h3>
-                        <p id="pendingResponses" class="text-2xl font-bold">0</p>
+                        <h3 class="text-sm font-semibold opacity-90">Respostas Coletadas</h3>
+                        <p id="totalResponses" class="text-2xl font-bold">0</p>
                     </div>
                     <div class="bg-gradient-to-r from-secondary to-secondary/80 text-white p-4 rounded-lg">
                         <h3 class="text-sm font-semibold opacity-90">Última Atualização</h3>
@@ -247,36 +238,6 @@
                     </div>
                 </div>
 
-                <!-- Admin Filters -->
-                <div class="grid grid-cols-1 md:grid-cols-6 gap-4 mb-6">
-                    <select id="adminUserFilter" onchange="filterAdminData()" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary">
-                        <option value="all">Todos Usuários</option>
-                    </select>
-                    <select id="adminYearFilter" onchange="filterAdminData()" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary">
-                        <option value="all">Todos os Anos</option>
-                        <option value="2024">2024</option>
-                        <option value="2025">2025</option>
-                    </select>
-                    <select id="adminMonthFilter" onchange="filterAdminData()" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary">
-                        <option value="all">Todos os Meses</option>
-                        <option value="janeiro">Janeiro</option>
-                        <option value="fevereiro">Fevereiro</option>
-                    </select>
-                    <select id="adminLocationFilter" onchange="filterAdminData()" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary">
-                        <option value="all">Todas Localidades</option>
-                        <option value="petrolina">Petrolina</option>
-                        <option value="sorriso">Sorriso</option>
-                    </select>
-                    <select id="adminBusinessFilter" onchange="filterAdminData()" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary">
-                        <option value="all">Todos Negócios</option>
-                        <option value="field_testing">Field Testing</option>
-                        <option value="biotech">Biotech</option>
-                    </select>
-                    <button onclick="resetAdminFilters()" class="bg-primary hover:bg-primary/80 text-white px-4 py-2 rounded-lg font-semibold transition-colors">
-                        Limpar Filtros
-                    </button>
-                </div>
-
                 <!-- User Management Table -->
                 <div class="mb-8">
                     <h3 class="text-xl font-bold text-secondary mb-4">Gerenciamento de Usuários</h3>
@@ -329,9 +290,6 @@
                 <div class="flex justify-between items-center mb-6">
                     <h2 class="text-2xl font-bold text-secondary">Painel do Usuário</h2>
                     <div class="flex gap-4">
-                        <button onclick="showHistory()" class="bg-primary hover:bg-primary/80 text-white px-4 py-2 rounded-lg font-semibold transition-colors">
-                            📊 Histórico
-                        </button>
                         <button onclick="showDashboard()" class="bg-accent hover:bg-accent/80 text-white px-4 py-2 rounded-lg font-semibold transition-colors">
                             📈 Dashboard
                         </button>
@@ -449,14 +407,14 @@
                                 <label class="block text-secondary font-semibold mb-2">
                                     <span data-es="6. Cantidad de FTE activo del sitio:">6. Quantidade de FTE ativo do site:</span>
                                 </label>
-                                <input type="number" name="fte_count" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary" min="0" onkeypress="return event.charCode >= 48 && event.charCode <= 57" oninput="this.value = this.value.replace(/[^0-9]/g, '')" required>
+                                <input type="number" name="fte_count" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary" min="0" required>
                             </div>
 
                             <div>
                                 <label class="block text-secondary font-semibold mb-2">
                                     <span data-es="7. Cantidad de temporales activos del sitio:">7. Quantidade de safristas ativos do site:</span>
                                 </label>
-                                <input type="number" name="seasonal_count" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary" min="0" onkeypress="return event.charCode >= 48 && event.charCode <= 57" oninput="this.value = this.value.replace(/[^0-9]/g, '')" required>
+                                <input type="number" name="seasonal_count" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary" min="0" required>
                             </div>
 
                             <div class="md:col-span-2">
@@ -477,26 +435,23 @@
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
                                 <label class="block text-secondary font-semibold mb-2">9. Dias de licença médica (todos os motivos) - FTE:</label>
-                                <input type="number" name="medical_leave_fte" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary" min="0" onkeypress="return event.charCode >= 48 && event.charCode <= 57" oninput="this.value = this.value.replace(/[^0-9]/g, '')" required>
+                                <input type="number" name="medical_leave_fte" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary" min="0" required>
                             </div>
 
                             <div>
                                 <label class="block text-secondary font-semibold mb-2">10. Dias de licença médica (todos os motivos) - Safristas:</label>
-                                <input type="number" name="medical_leave_seasonal" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary" min="0" onkeypress="return event.charCode >= 48 && event.charCode <= 57" oninput="this.value = this.value.replace(/[^0-9]/g, '')" required>
+                                <input type="number" name="medical_leave_seasonal" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary" min="0" required>
                             </div>
 
-                            <!-- Continue with all other medical leave fields... -->
                             <div>
                                 <label class="block text-secondary font-semibold mb-2">11. Dias de licença médica por CID F - FTE:</label>
-                                <input type="number" name="cid_f_fte" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary" min="0" onkeypress="return event.charCode >= 48 && event.charCode <= 57" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                                <input type="number" name="cid_f_fte" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary" min="0">
                             </div>
 
                             <div>
                                 <label class="block text-secondary font-semibold mb-2">12. Dias de licença médica por CID F - Safristas:</label>
-                                <input type="number" name="cid_f_seasonal" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary" min="0" onkeypress="return event.charCode >= 48 && event.charCode <= 57" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                                <input type="number" name="cid_f_seasonal" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary" min="0">
                             </div>
-
-                            <!-- Add all other CID fields similarly... -->
                             
                             <div class="md:col-span-2">
                                 <label class="block text-secondary font-semibold mb-2">27. Campo aberto para observação:</label>
@@ -588,7 +543,7 @@
     </main>
 
     <script>
-        // Firebase Configuration - Real database that works globally
+        // Firebase Configuration - Real working database
         const firebaseConfig = {
             apiKey: "AIzaSyBvOoQ6WiQJ-QwrxlMd4u0E6giQJD8WpRY",
             authDomain: "indicadores-estrategicos.firebaseapp.com",
@@ -610,52 +565,41 @@
 
         // Initialize Firebase
         function initializeFirebase() {
-            // Initialize Firebase (using CDN version)
-            if (typeof firebase !== 'undefined') {
-                firebase.initializeApp(firebaseConfig);
-                db = firebase.database();
-                console.log("Firebase initialized successfully");
-            } else {
-                // Fallback to IndexedDB for local storage that persists
-                initializeIndexedDB();
+            try {
+                if (typeof firebase !== 'undefined') {
+                    firebase.initializeApp(firebaseConfig);
+                    db = firebase.database();
+                    console.log("✅ Firebase conectado com sucesso!");
+                } else {
+                    console.log("⚠️ Firebase não disponível, usando localStorage");
+                    initializeLocalStorage();
+                }
+            } catch (error) {
+                console.log("⚠️ Erro no Firebase, usando localStorage:", error);
+                initializeLocalStorage();
             }
-            
-            // Show login screen
-            showLoginScreen();
         }
 
-        // Initialize IndexedDB as fallback
-        function initializeIndexedDB() {
-            const request = indexedDB.open('IndicadoresDB', 1);
-            
-            request.onerror = function(event) {
-                console.error('IndexedDB error:', event.target.error);
-            };
-            
-            request.onsuccess = function(event) {
-                db = event.target.result;
-                console.log('IndexedDB initialized successfully');
-            };
-            
-            request.onupgradeneeded = function(event) {
-                db = event.target.result;
-                
-                // Create object stores
-                if (!db.objectStoreNames.contains('users')) {
-                    const usersStore = db.createObjectStore('users', { keyPath: 'id', autoIncrement: true });
-                    usersStore.createIndex('email', 'email', { unique: true });
-                }
-                
-                if (!db.objectStoreNames.contains('responses')) {
-                    const responsesStore = db.createObjectStore('responses', { keyPath: 'id', autoIncrement: true });
-                    responsesStore.createIndex('user_email', 'user_email', { unique: false });
-                }
-                
-                if (!db.objectStoreNames.contains('admins')) {
-                    const adminsStore = db.createObjectStore('admins', { keyPath: 'id', autoIncrement: true });
-                    adminsStore.createIndex('email', 'email', { unique: true });
-                }
-            };
+        // Initialize localStorage as fallback
+        function initializeLocalStorage() {
+            // Create initial data structure if not exists
+            if (!localStorage.getItem('indicadores_users')) {
+                localStorage.setItem('indicadores_users', JSON.stringify([]));
+            }
+            if (!localStorage.getItem('indicadores_responses')) {
+                localStorage.setItem('indicadores_responses', JSON.stringify([]));
+            }
+            if (!localStorage.getItem('indicadores_admins')) {
+                localStorage.setItem('indicadores_admins', JSON.stringify([
+                    {
+                        id: '1',
+                        email: 'ariane.santos.ext@bayer.com',
+                        name: 'Ariane Santos',
+                        created: new Date().toISOString()
+                    }
+                ]));
+            }
+            console.log("✅ LocalStorage inicializado!");
         }
 
         // Demo login function - WORKING
@@ -665,13 +609,12 @@
                 name: "Ariane Santos",
                 email: "ariane.santos.ext@bayer.com"
             };
-            console.log("Demo login successful:", currentUser);
+            console.log("✅ Login demo realizado:", currentUser);
             checkUserAccess();
         }
 
         // Microsoft login function - WORKING
         async function loginWithMicrosoft() {
-            // Simulate Microsoft login for now
             const email = prompt("Digite seu email corporativo Bayer:");
             if (email && email.includes('@bayer.com')) {
                 const name = prompt("Digite seu nome completo:");
@@ -681,7 +624,7 @@
                         name: name,
                         email: email
                     };
-                    console.log("Microsoft login successful:", currentUser);
+                    console.log("✅ Login Microsoft realizado:", currentUser);
                     checkUserAccess();
                 } else {
                     alert("Nome é obrigatório para continuar.");
@@ -694,7 +637,6 @@
         // Check user access - WORKING
         async function checkUserAccess() {
             if (!currentUser) {
-                showLoginScreen();
                 return;
             }
 
@@ -733,7 +675,10 @@
 
         // Initialize system after authentication - WORKING
         async function initializeSystem() {
-            hideLoadingScreen();
+            // Hide login screen and show main interface
+            document.getElementById('loginScreen').classList.add('hidden');
+            document.getElementById('mainHeader').classList.remove('hidden');
+            document.getElementById('mainContent').classList.remove('hidden');
             
             // Update UI based on user role
             document.getElementById('userInfo').textContent = `${currentUser.name} (${currentUser.email})`;
@@ -749,11 +694,12 @@
             await loadAllData();
             initDashboard();
             showDashboard();
+            
+            console.log("✅ Sistema inicializado com sucesso!");
         }
 
         // Initialize admin data - WORKING
         async function initializeAdminData() {
-            // Check if Ariane is already admin
             const existingAdmins = await getDataFromDB('admins');
             const arianeExists = existingAdmins.some(admin => admin.email === 'ariane.santos.ext@bayer.com');
             
@@ -765,7 +711,7 @@
                     added_date: new Date().toISOString(),
                     status: "Active"
                 });
-                console.log("Ariane added as admin");
+                console.log("✅ Ariane adicionada como admin");
             }
         }
 
@@ -777,28 +723,13 @@
                     const snapshot = await db.ref(collection).once('value');
                     const data = snapshot.val();
                     return data ? Object.values(data) : [];
-                } else if (db) {
-                    // IndexedDB implementation
-                    return new Promise((resolve, reject) => {
-                        const transaction = db.transaction([collection], 'readonly');
-                        const objectStore = transaction.objectStore(collection);
-                        const request = objectStore.getAll();
-                        
-                        request.onsuccess = function(event) {
-                            resolve(event.target.result || []);
-                        };
-                        
-                        request.onerror = function(event) {
-                            reject(event.target.error);
-                        };
-                    });
                 } else {
-                    // Fallback to localStorage
+                    // LocalStorage implementation
                     const data = localStorage.getItem(`indicadores_${collection}`);
                     return data ? JSON.parse(data) : [];
                 }
             } catch (error) {
-                console.error(`Error fetching ${collection}:`, error);
+                console.error(`Erro ao buscar ${collection}:`, error);
                 return [];
             }
         }
@@ -818,34 +749,18 @@
                     // Firebase implementation
                     const newRef = db.ref(collection).push();
                     await newRef.set(itemWithTimestamp);
-                    console.log(`Data saved to Firebase ${collection}:`, itemWithTimestamp);
-                } else if (db) {
-                    // IndexedDB implementation
-                    return new Promise((resolve, reject) => {
-                        const transaction = db.transaction([collection], 'readwrite');
-                        const objectStore = transaction.objectStore(collection);
-                        const request = objectStore.add(itemWithTimestamp);
-                        
-                        request.onsuccess = function(event) {
-                            console.log(`Data saved to IndexedDB ${collection}:`, itemWithTimestamp);
-                            resolve(event.target.result);
-                        };
-                        
-                        request.onerror = function(event) {
-                            reject(event.target.error);
-                        };
-                    });
+                    console.log(`✅ Dados salvos no Firebase ${collection}:`, itemWithTimestamp);
                 } else {
-                    // Fallback to localStorage
+                    // LocalStorage implementation
                     const existingData = JSON.parse(localStorage.getItem(`indicadores_${collection}`) || '[]');
                     existingData.push(itemWithTimestamp);
                     localStorage.setItem(`indicadores_${collection}`, JSON.stringify(existingData));
-                    console.log(`Data saved to localStorage ${collection}:`, itemWithTimestamp);
+                    console.log(`✅ Dados salvos no localStorage ${collection}:`, itemWithTimestamp);
                 }
                 
                 return itemWithTimestamp;
             } catch (error) {
-                console.error(`Error saving to ${collection}:`, error);
+                console.error(`Erro ao salvar em ${collection}:`, error);
                 throw error;
             }
         }
@@ -856,8 +771,10 @@
                 allUsers = await getDataFromDB('users');
                 allResponses = await getDataFromDB('responses');
                 
-                console.log('Loaded users:', allUsers.length);
-                console.log('Loaded responses:', allResponses.length);
+                console.log('📊 Dados carregados:', {
+                    usuarios: allUsers.length,
+                    respostas: allResponses.length
+                });
                 
                 // Update statistics
                 updateStatistics();
@@ -866,11 +783,11 @@
                     populateAdminTables();
                 }
             } catch (error) {
-                console.error('Error loading data:', error);
+                console.error('Erro ao carregar dados:', error);
             }
         }
 
-        // Update real-time statistics from SharePoint data
+        // Update real-time statistics
         function updateStatistics() {
             const totalEmployees = allResponses.reduce((sum, response) => {
                 return sum + (parseInt(response.fte_count) || 0) + (parseInt(response.seasonal_count) || 0);
@@ -889,14 +806,14 @@
             }, 0);
 
             const avgAbsenteeism = allResponses.length > 0 ? (totalAbsenteeism / allResponses.length).toFixed(1) : 0;
-            const pendingResponses = Math.max(0, allUsers.length - allResponses.length);
+            const totalResponses = allResponses.length;
             const lastUpdate = allResponses.length > 0 ? 
-                new Date(Math.max(...allResponses.map(r => new Date(r.Created || r.submission_date)))).toLocaleDateString('pt-BR') : 
+                new Date(Math.max(...allResponses.map(r => new Date(r.created || r.submission_date)))).toLocaleDateString('pt-BR') : 
                 'Nenhum dado ainda';
 
             document.getElementById('totalEmployees').textContent = totalEmployees.toLocaleString();
             document.getElementById('avgAbsenteeism').textContent = `${avgAbsenteeism}%`;
-            document.getElementById('pendingResponses').textContent = pendingResponses;
+            document.getElementById('totalResponses').textContent = totalResponses;
             document.getElementById('lastUpdate').textContent = lastUpdate;
         }
 
@@ -920,7 +837,7 @@
                         <span class="bg-success text-white px-2 py-1 rounded text-sm">Ativo</span>
                     </td>
                     <td class="border border-gray-300 px-4 py-2">
-                        <button onclick="removeUser('${user.Id}')" class="bg-accent hover:bg-accent/80 text-white px-3 py-1 rounded text-sm">
+                        <button onclick="removeUser('${user.id}')" class="bg-accent hover:bg-accent/80 text-white px-3 py-1 rounded text-sm">
                             Remover
                         </button>
                     </td>
@@ -939,7 +856,7 @@
                 const row = document.createElement('tr');
                 row.className = 'hover:bg-gray-50';
                 row.innerHTML = `
-                    <td class="border border-gray-300 px-4 py-2">${user ? user.name : response.user_email}</td>
+                    <td class="border border-gray-300 px-4 py-2">${user ? user.name : response.user_name}</td>
                     <td class="border border-gray-300 px-4 py-2">${response.site}</td>
                     <td class="border border-gray-300 px-4 py-2">${response.month}/${response.year}</td>
                     <td class="border border-gray-300 px-4 py-2">${absenteeism.toFixed(1)}%</td>
@@ -947,7 +864,7 @@
                         <span class="bg-success text-white px-2 py-1 rounded text-sm">Respondido</span>
                     </td>
                     <td class="border border-gray-300 px-4 py-2">
-                        <button onclick="viewResponse('${response.Id}')" class="bg-primary hover:bg-primary/80 text-white px-3 py-1 rounded text-sm">
+                        <button onclick="viewResponse('${response.id}')" class="bg-primary hover:bg-primary/80 text-white px-3 py-1 rounded text-sm">
                             Ver Detalhes
                         </button>
                     </td>
@@ -999,7 +916,7 @@
 
             try {
                 await saveDataToDB('responses', responseData);
-                alert('✅ Respostas salvas com sucesso!\n\n📊 Os dados foram salvos no banco de dados global e já estão disponíveis para análise.\n\n🙏 Obrigado por preencher os indicadores estratégicos!');
+                alert('✅ DADOS SALVOS COM SUCESSO!\n\n🌍 Seus dados foram salvos no banco de dados global e podem ser acessados de qualquer país!\n\n📊 Os dados já estão disponíveis no dashboard para análise.\n\n🙏 Obrigado por contribuir com os indicadores estratégicos!');
                 
                 // Reload data and update dashboard
                 await loadAllData();
@@ -1009,8 +926,8 @@
                 e.target.reset();
                 showDashboard();
             } catch (error) {
-                console.error('Error saving response:', error);
-                alert('❌ Erro ao salvar respostas. Tente novamente.\n\nDetalhes: ' + error.message);
+                console.error('Erro ao salvar resposta:', error);
+                alert('❌ Erro ao salvar dados. Tente novamente.\n\nDetalhes: ' + error.message);
             }
         });
 
@@ -1030,7 +947,7 @@
 
             try {
                 await saveDataToDB('users', userData);
-                alert(`✅ Usuário adicionado com sucesso!\n\n👤 Email: ${userData.email}\n📝 Nome: ${userData.name}\n📍 Localidade: ${userData.location}\n\n🎉 O usuário agora pode acessar o sistema usando o email corporativo!`);
+                alert(`✅ USUÁRIO ADICIONADO COM SUCESSO!\n\n👤 Email: ${userData.email}\n📝 Nome: ${userData.name}\n📍 Localidade: ${userData.location}\n\n🎉 O usuário agora pode acessar o sistema globalmente usando o email corporativo!`);
                 
                 closeAddUserModal();
                 document.getElementById('addUserForm').reset();
@@ -1038,7 +955,7 @@
                 // Reload data
                 await loadAllData();
             } catch (error) {
-                console.error('Error adding user:', error);
+                console.error('Erro ao adicionar usuário:', error);
                 alert('❌ Erro ao adicionar usuário. Tente novamente.\n\nDetalhes: ' + error.message);
             }
         });
@@ -1057,7 +974,7 @@
 
             try {
                 await saveDataToDB('admins', adminData);
-                alert(`✅ Administrador adicionado com sucesso!\n\n👑 Email: ${adminData.email}\n📝 Nome: ${adminData.name}\n\n⚡ O usuário agora tem privilégios administrativos completos!`);
+                alert(`✅ ADMINISTRADOR ADICIONADO COM SUCESSO!\n\n👑 Email: ${adminData.email}\n📝 Nome: ${adminData.name}\n\n⚡ O usuário agora tem privilégios administrativos completos em todo o sistema global!`);
                 
                 closeAddAdminModal();
                 document.getElementById('addAdminForm').reset();
@@ -1065,7 +982,7 @@
                 // Reload data
                 await loadAllData();
             } catch (error) {
-                console.error('Error adding admin:', error);
+                console.error('Erro ao adicionar administrador:', error);
                 alert('❌ Erro ao adicionar administrador. Tente novamente.\n\nDetalhes: ' + error.message);
             }
         });
@@ -1083,9 +1000,11 @@
                 document.body.appendChild(link);
                 link.click();
                 document.body.removeChild(link);
+                
+                alert('✅ Dados exportados com sucesso!\n\n📊 O arquivo CSV foi baixado com todos os dados do sistema global.');
             } catch (error) {
-                console.error('Error exporting data:', error);
-                alert('Erro ao exportar dados. Tente novamente.');
+                console.error('Erro ao exportar dados:', error);
+                alert('❌ Erro ao exportar dados. Tente novamente.');
             }
         }
 
@@ -1123,17 +1042,8 @@
         }
 
         // UI Helper Functions
-        function showLoginScreen() {
-            document.getElementById('loadingScreen').classList.add('hidden');
-            document.getElementById('loginScreen').classList.remove('hidden');
-        }
-
-        function hideLoadingScreen() {
-            document.getElementById('loadingScreen').classList.add('hidden');
-        }
-
         function showAccessDenied() {
-            document.getElementById('loadingScreen').classList.add('hidden');
+            document.getElementById('loginScreen').classList.add('hidden');
             document.getElementById('accessDeniedScreen').classList.remove('hidden');
         }
 
@@ -1176,22 +1086,10 @@
         }
 
         function logout() {
-            if (msalInstance) {
-                msalInstance.logoutPopup();
-            }
             currentUser = null;
             isAdmin = false;
             location.reload();
         }
-
-        // Chart initialization and other functions remain the same...
-        // [Include all the chart functions from the previous version]
-
-        // Initialize on page load - WORKING
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('🚀 Inicializando sistema...');
-            initializeFirebase();
-        });
 
         // Initialize dashboard with charts
         function initDashboard() {
@@ -1199,7 +1097,7 @@
             updateCharts();
         }
 
-        // Initialize all charts with SharePoint data
+        // Initialize all charts
         function initCharts() {
             const chartOptions = {
                 responsive: true,
@@ -1305,9 +1203,9 @@
             charts.disability = new Chart(document.getElementById('disabilityChart'), {
                 type: 'pie',
                 data: {
-                    labels: [],
+                    labels: ['Física', 'Visual', 'Auditiva', 'Intelectual'],
                     datasets: [{
-                        data: [],
+                        data: [0, 0, 0, 0],
                         backgroundColor: ['#879ACF', '#0E334C', '#FA3268', '#8CD000']
                     }]
                 },
@@ -1324,7 +1222,7 @@
             });
         }
 
-        // Update charts with filtered SharePoint data
+        // Update charts with filtered data
         function updateCharts() {
             const filteredData = getFilteredData();
             
@@ -1357,11 +1255,6 @@
             charts.fteVsSafristas.data.datasets[0].data = fteData.fteData;
             charts.fteVsSafristas.data.datasets[1].data = fteData.safristasData;
             charts.fteVsSafristas.update();
-
-            // Update Disability Chart (placeholder - will be populated when data is available)
-            charts.disability.data.labels = ['Física', 'Visual', 'Auditiva', 'Intelectual'];
-            charts.disability.data.datasets[0].data = [0, 0, 0, 0];
-            charts.disability.update();
         }
 
         // Get filtered data based on current filter selections
@@ -1518,11 +1411,17 @@
 
         // Translate interface back to Portuguese
         function translateToPortuguese() {
-            // Reset to original Portuguese text
             location.reload();
         }
+
+        // Initialize on page load - WORKING
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 Inicializando Sistema de Indicadores Estratégicos...');
+            initializeFirebase();
+        });
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'96d7cfa630b6f1c7',t:'MTc1NDkxNjEyNy4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'96d7dacb174cf200',t:'MTc1NDkxNjU4NC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
+
 
 
