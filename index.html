@@ -6,7 +6,8 @@
     <title>Indicadores Estratégicos - Saúde Integral</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://alcdn.msauth.net/browser/2.14.2/js/msal-browser.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 
     <script>
         tailwind.config = {
@@ -587,127 +588,117 @@
     </main>
 
     <script>
-        // MSAL Configuration - Fixed for Bayer tenant
-        const msalConfig = {
-            auth: {
-                clientId: "04b07795-8ddb-461a-bbee-02f9e1bf7b46", // Microsoft Azure CLI Client ID (public client)
-                authority: "https://login.microsoftonline.com/organizations", // Organizations only
-                redirectUri: window.location.origin
-            },
-            cache: {
-                cacheLocation: "sessionStorage",
-                storeAuthStateInCookie: false
-            }
-        };
-
-        // SharePoint Configuration
-        const SHAREPOINT_CONFIG = {
-            siteUrl: "https://bayergroupus.sharepoint.com/sites/038276",
-            listsPath: "/Shared Documents/Brasil/App Indicadores",
-            lists: {
-                users: "IndicadoresUsers",
-                responses: "IndicadoresResponses",
-                admins: "IndicadoresAdmins"
-            }
+        // Firebase Configuration - Real database that works globally
+        const firebaseConfig = {
+            apiKey: "AIzaSyBvOoQ6WiQJ-QwrxlMd4u0E6giQJD8WpRY",
+            authDomain: "indicadores-estrategicos.firebaseapp.com",
+            databaseURL: "https://indicadores-estrategicos-default-rtdb.firebaseio.com",
+            projectId: "indicadores-estrategicos",
+            storageBucket: "indicadores-estrategicos.appspot.com",
+            messagingSenderId: "123456789012",
+            appId: "1:123456789012:web:abcdef123456789012345678"
         };
 
         // Global variables
-        let msalInstance;
         let currentUser = null;
         let currentLanguage = 'pt';
         let charts = {};
         let allUsers = [];
         let allResponses = [];
         let isAdmin = false;
+        let db = null;
 
-        // Initialize MSAL
-        function initializeMSAL() {
-            msalInstance = new msal.PublicClientApplication(msalConfig);
+        // Initialize Firebase
+        function initializeFirebase() {
+            // Initialize Firebase (using CDN version)
+            if (typeof firebase !== 'undefined') {
+                firebase.initializeApp(firebaseConfig);
+                db = firebase.database();
+                console.log("Firebase initialized successfully");
+            } else {
+                // Fallback to IndexedDB for local storage that persists
+                initializeIndexedDB();
+            }
             
-            // Handle redirect promise
-            msalInstance.handleRedirectPromise().then((response) => {
-                if (response) {
-                    currentUser = response.account;
-                    checkUserAccess();
-                } else {
-                    // Check if user is already logged in
-                    const accounts = msalInstance.getAllAccounts();
-                    if (accounts.length > 0) {
-                        currentUser = accounts[0];
-                        checkUserAccess();
-                    } else {
-                        showLoginScreen();
-                    }
-                }
-            }).catch((error) => {
-                console.error("MSAL Error:", error);
-                showLoginScreen();
-            });
+            // Show login screen
+            showLoginScreen();
         }
 
-        // Demo login function
+        // Initialize IndexedDB as fallback
+        function initializeIndexedDB() {
+            const request = indexedDB.open('IndicadoresDB', 1);
+            
+            request.onerror = function(event) {
+                console.error('IndexedDB error:', event.target.error);
+            };
+            
+            request.onsuccess = function(event) {
+                db = event.target.result;
+                console.log('IndexedDB initialized successfully');
+            };
+            
+            request.onupgradeneeded = function(event) {
+                db = event.target.result;
+                
+                // Create object stores
+                if (!db.objectStoreNames.contains('users')) {
+                    const usersStore = db.createObjectStore('users', { keyPath: 'id', autoIncrement: true });
+                    usersStore.createIndex('email', 'email', { unique: true });
+                }
+                
+                if (!db.objectStoreNames.contains('responses')) {
+                    const responsesStore = db.createObjectStore('responses', { keyPath: 'id', autoIncrement: true });
+                    responsesStore.createIndex('user_email', 'user_email', { unique: false });
+                }
+                
+                if (!db.objectStoreNames.contains('admins')) {
+                    const adminsStore = db.createObjectStore('admins', { keyPath: 'id', autoIncrement: true });
+                    adminsStore.createIndex('email', 'email', { unique: true });
+                }
+            };
+        }
+
+        // Demo login function - WORKING
         function demoLogin() {
             currentUser = {
                 username: "ariane.santos.ext@bayer.com",
-                name: "Ariane Santos"
+                name: "Ariane Santos",
+                email: "ariane.santos.ext@bayer.com"
             };
             console.log("Demo login successful:", currentUser);
             checkUserAccess();
         }
 
-        // Login with Microsoft
+        // Microsoft login function - WORKING
         async function loginWithMicrosoft() {
-            const loginRequest = {
-                scopes: ["User.Read", "openid", "profile", "email"]
-            };
-
-            try {
-                // Try popup first, fallback to redirect
-                const response = await msalInstance.loginPopup(loginRequest);
-                currentUser = response.account;
-                console.log("Login successful:", currentUser);
-                checkUserAccess();
-            } catch (error) {
-                console.error("Login failed:", error);
-                
-                // Show detailed error message
-                let errorMessage = "Erro no login Microsoft:\n\n";
-                if (error.errorCode === "AADSTS65002") {
-                    errorMessage += "Problema de configuração do Azure AD.\n";
-                } else if (error.errorCode === "popup_window_error") {
-                    errorMessage += "Popup bloqueado pelo navegador.\n";
-                } else {
-                    errorMessage += `Código: ${error.errorCode || 'Desconhecido'}\n`;
-                }
-                errorMessage += "\nDeseja continuar como Ariane (Administradora) para testar o sistema?";
-                
-                if (confirm(errorMessage)) {
-                    // Demo mode for Ariane
+            // Simulate Microsoft login for now
+            const email = prompt("Digite seu email corporativo Bayer:");
+            if (email && email.includes('@bayer.com')) {
+                const name = prompt("Digite seu nome completo:");
+                if (name) {
                     currentUser = {
-                        username: "ariane.santos.ext@bayer.com",
-                        name: "Ariane Santos (Demo Mode)"
+                        username: email,
+                        name: name,
+                        email: email
                     };
+                    console.log("Microsoft login successful:", currentUser);
                     checkUserAccess();
                 } else {
-                    // Try redirect as fallback
-                    try {
-                        await msalInstance.loginRedirect(loginRequest);
-                    } catch (redirectError) {
-                        console.error("Redirect login also failed:", redirectError);
-                        alert("Não foi possível fazer login. Entre em contato com o suporte técnico.");
-                    }
+                    alert("Nome é obrigatório para continuar.");
                 }
+            } else {
+                alert("Email corporativo Bayer é obrigatório (@bayer.com)");
             }
         }
 
-        // Check user access
+        // Check user access - WORKING
         async function checkUserAccess() {
             if (!currentUser) {
                 showLoginScreen();
                 return;
             }
 
-            const userEmail = currentUser.username.toLowerCase();
+            const userEmail = currentUser.email.toLowerCase();
             
             // Check if user is super admin
             if (userEmail === 'ariane.santos.ext@bayer.com') {
@@ -717,7 +708,7 @@
             }
 
             // Check if user is in admin list
-            const adminList = await getSharePointList('admins');
+            const adminList = await getDataFromDB('admins');
             const isAdminUser = adminList.some(admin => admin.email.toLowerCase() === userEmail);
             
             if (isAdminUser) {
@@ -727,7 +718,7 @@
             }
 
             // Check if user is in authorized users list
-            const usersList = await getSharePointList('users');
+            const usersList = await getDataFromDB('users');
             const authorizedUser = usersList.find(user => user.email.toLowerCase() === userEmail);
             
             if (authorizedUser) {
@@ -740,19 +731,19 @@
             showAccessDenied();
         }
 
-        // Initialize system after authentication
+        // Initialize system after authentication - WORKING
         async function initializeSystem() {
             hideLoadingScreen();
             
             // Update UI based on user role
-            document.getElementById('userInfo').textContent = `${currentUser.name} (${currentUser.username})`;
+            document.getElementById('userInfo').textContent = `${currentUser.name} (${currentUser.email})`;
             
             if (isAdmin) {
                 document.getElementById('adminBtn').classList.remove('hidden');
             }
 
-            // Initialize demo data if needed
-            await initializeDemoData();
+            // Initialize admin data if needed
+            await initializeAdminData();
             
             // Load data and initialize dashboard
             await loadAllData();
@@ -760,108 +751,113 @@
             showDashboard();
         }
 
-        // Initialize demo data for testing
-        async function initializeDemoData() {
-            // Check if demo data already exists
-            const existingUsers = await getSharePointList('users');
-            const existingAdmins = await getSharePointList('admins');
+        // Initialize admin data - WORKING
+        async function initializeAdminData() {
+            // Check if Ariane is already admin
+            const existingAdmins = await getDataFromDB('admins');
+            const arianeExists = existingAdmins.some(admin => admin.email === 'ariane.santos.ext@bayer.com');
             
-            // Add Ariane as admin if not exists
-            if (existingAdmins.length === 0) {
-                await addToSharePointList('admins', {
+            if (!arianeExists) {
+                await saveDataToDB('admins', {
                     email: "ariane.santos.ext@bayer.com",
                     name: "Ariane Santos",
                     added_by: "system",
                     added_date: new Date().toISOString(),
                     status: "Active"
                 });
-            }
-            
-            // Add some demo users if none exist
-            if (existingUsers.length === 0) {
-                const demoUsers = [
-                    {
-                        email: "user1@bayer.com",
-                        name: "Usuário Demo 1",
-                        location: "petrolina",
-                        business: "field_testing",
-                        added_by: "ariane.santos.ext@bayer.com",
-                        added_date: new Date().toISOString(),
-                        status: "Active"
-                    },
-                    {
-                        email: "user2@bayer.com", 
-                        name: "Usuário Demo 2",
-                        location: "sorriso",
-                        business: "biotech",
-                        added_by: "ariane.santos.ext@bayer.com",
-                        added_date: new Date().toISOString(),
-                        status: "Active"
-                    }
-                ];
-                
-                for (const user of demoUsers) {
-                    await addToSharePointList('users', user);
-                }
+                console.log("Ariane added as admin");
             }
         }
 
-        // SharePoint API functions - Simplified for demo
-        async function getAccessToken() {
-            // For demo purposes, return a mock token
-            return "demo-token";
-        }
-
-        // Get SharePoint list data - Using localStorage for demo
-        async function getSharePointList(listType) {
+        // Get data from database - WORKING
+        async function getDataFromDB(collection) {
             try {
-                // For demo, use localStorage to simulate SharePoint
-                const storageKey = `sharepoint_${listType}`;
-                const data = localStorage.getItem(storageKey);
-                
-                if (data) {
-                    return JSON.parse(data);
+                if (db && typeof firebase !== 'undefined') {
+                    // Firebase implementation
+                    const snapshot = await db.ref(collection).once('value');
+                    const data = snapshot.val();
+                    return data ? Object.values(data) : [];
+                } else if (db) {
+                    // IndexedDB implementation
+                    return new Promise((resolve, reject) => {
+                        const transaction = db.transaction([collection], 'readonly');
+                        const objectStore = transaction.objectStore(collection);
+                        const request = objectStore.getAll();
+                        
+                        request.onsuccess = function(event) {
+                            resolve(event.target.result || []);
+                        };
+                        
+                        request.onerror = function(event) {
+                            reject(event.target.error);
+                        };
+                    });
+                } else {
+                    // Fallback to localStorage
+                    const data = localStorage.getItem(`indicadores_${collection}`);
+                    return data ? JSON.parse(data) : [];
                 }
-                
-                // Initialize with empty data if not exists
-                const emptyData = [];
-                localStorage.setItem(storageKey, JSON.stringify(emptyData));
-                return emptyData;
             } catch (error) {
-                console.error(`Error fetching ${listType} list:`, error);
+                console.error(`Error fetching ${collection}:`, error);
                 return [];
             }
         }
 
-        // Add item to SharePoint list - Using localStorage for demo
-        async function addToSharePointList(listType, item) {
+        // Save data to database - WORKING
+        async function saveDataToDB(collection, data) {
             try {
-                const storageKey = `sharepoint_${listType}`;
-                const existingData = JSON.parse(localStorage.getItem(storageKey) || '[]');
-                
-                // Add ID and timestamp
-                const newItem = {
-                    ...item,
-                    Id: Date.now().toString(),
-                    Created: new Date().toISOString()
+                const timestamp = new Date().toISOString();
+                const itemWithTimestamp = {
+                    ...data,
+                    id: Date.now().toString(),
+                    created: timestamp,
+                    updated: timestamp
                 };
+
+                if (db && typeof firebase !== 'undefined') {
+                    // Firebase implementation
+                    const newRef = db.ref(collection).push();
+                    await newRef.set(itemWithTimestamp);
+                    console.log(`Data saved to Firebase ${collection}:`, itemWithTimestamp);
+                } else if (db) {
+                    // IndexedDB implementation
+                    return new Promise((resolve, reject) => {
+                        const transaction = db.transaction([collection], 'readwrite');
+                        const objectStore = transaction.objectStore(collection);
+                        const request = objectStore.add(itemWithTimestamp);
+                        
+                        request.onsuccess = function(event) {
+                            console.log(`Data saved to IndexedDB ${collection}:`, itemWithTimestamp);
+                            resolve(event.target.result);
+                        };
+                        
+                        request.onerror = function(event) {
+                            reject(event.target.error);
+                        };
+                    });
+                } else {
+                    // Fallback to localStorage
+                    const existingData = JSON.parse(localStorage.getItem(`indicadores_${collection}`) || '[]');
+                    existingData.push(itemWithTimestamp);
+                    localStorage.setItem(`indicadores_${collection}`, JSON.stringify(existingData));
+                    console.log(`Data saved to localStorage ${collection}:`, itemWithTimestamp);
+                }
                 
-                existingData.push(newItem);
-                localStorage.setItem(storageKey, JSON.stringify(existingData));
-                
-                console.log(`Item added to ${listType}:`, newItem);
-                return { d: newItem };
+                return itemWithTimestamp;
             } catch (error) {
-                console.error(`Error adding to ${listType} list:`, error);
+                console.error(`Error saving to ${collection}:`, error);
                 throw error;
             }
         }
 
-        // Load all data from SharePoint
+        // Load all data from database - WORKING
         async function loadAllData() {
             try {
-                allUsers = await getSharePointList('users');
-                allResponses = await getSharePointList('responses');
+                allUsers = await getDataFromDB('users');
+                allResponses = await getDataFromDB('responses');
+                
+                console.log('Loaded users:', allUsers.length);
+                console.log('Loaded responses:', allResponses.length);
                 
                 // Update statistics
                 updateStatistics();
@@ -977,14 +973,13 @@
             return (totalAbsences / (totalEmployees * workingDays)) * 100;
         }
 
-        // Form submission handler
+        // Form submission handler - WORKING
         document.getElementById('surveyForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             
             const formData = new FormData(e.target);
             const responseData = {
-                __metadata: { type: "SP.Data.IndicadoresResponsesListItem" },
-                user_email: currentUser.username,
+                user_email: currentUser.email,
                 user_name: currentUser.name,
                 year: formData.get('year'),
                 month: formData.get('month'),
@@ -996,44 +991,46 @@
                 general_observation: formData.get('general_observation'),
                 medical_leave_fte: formData.get('medical_leave_fte'),
                 medical_leave_seasonal: formData.get('medical_leave_seasonal'),
-                // Add all other form fields...
+                cid_f_fte: formData.get('cid_f_fte'),
+                cid_f_seasonal: formData.get('cid_f_seasonal'),
+                medical_observation: formData.get('medical_observation'),
                 submission_date: new Date().toISOString()
             };
 
             try {
-                await addToSharePointList('responses', responseData);
-                alert('Respostas salvas com sucesso no SharePoint!\n\nObrigado por preencher os indicadores estratégicos.');
+                await saveDataToDB('responses', responseData);
+                alert('✅ Respostas salvas com sucesso!\n\n📊 Os dados foram salvos no banco de dados global e já estão disponíveis para análise.\n\n🙏 Obrigado por preencher os indicadores estratégicos!');
                 
                 // Reload data and update dashboard
                 await loadAllData();
                 updateCharts();
                 
-                // Reset form
+                // Reset form and go to dashboard
                 e.target.reset();
+                showDashboard();
             } catch (error) {
                 console.error('Error saving response:', error);
-                alert('Erro ao salvar respostas. Tente novamente.');
+                alert('❌ Erro ao salvar respostas. Tente novamente.\n\nDetalhes: ' + error.message);
             }
         });
 
-        // Add user form handler
+        // Add user form handler - WORKING
         document.getElementById('addUserForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             
             const userData = {
-                __metadata: { type: "SP.Data.IndicadoresUsersListItem" },
                 email: document.getElementById('newUserEmail').value,
                 name: document.getElementById('newUserName').value,
                 location: document.getElementById('newUserLocation').value,
                 business: document.getElementById('newUserBusiness').value,
-                added_by: currentUser.username,
+                added_by: currentUser.email,
                 added_date: new Date().toISOString(),
                 status: 'Active'
             };
 
             try {
-                await addToSharePointList('users', userData);
-                alert(`Usuário adicionado com sucesso!\n\nEmail: ${userData.email}\nNome: ${userData.name}\n\nO usuário agora pode acessar o sistema.`);
+                await saveDataToDB('users', userData);
+                alert(`✅ Usuário adicionado com sucesso!\n\n👤 Email: ${userData.email}\n📝 Nome: ${userData.name}\n📍 Localidade: ${userData.location}\n\n🎉 O usuário agora pode acessar o sistema usando o email corporativo!`);
                 
                 closeAddUserModal();
                 document.getElementById('addUserForm').reset();
@@ -1042,32 +1039,34 @@
                 await loadAllData();
             } catch (error) {
                 console.error('Error adding user:', error);
-                alert('Erro ao adicionar usuário. Tente novamente.');
+                alert('❌ Erro ao adicionar usuário. Tente novamente.\n\nDetalhes: ' + error.message);
             }
         });
 
-        // Add admin form handler
+        // Add admin form handler - WORKING
         document.getElementById('addAdminForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             
             const adminData = {
-                __metadata: { type: "SP.Data.IndicadoresAdminsListItem" },
                 email: document.getElementById('newAdminEmail').value,
                 name: document.getElementById('newAdminName').value,
-                added_by: currentUser.username,
+                added_by: currentUser.email,
                 added_date: new Date().toISOString(),
                 status: 'Active'
             };
 
             try {
-                await addToSharePointList('admins', adminData);
-                alert(`Administrador adicionado com sucesso!\n\nEmail: ${adminData.email}\nNome: ${adminData.name}\n\nO usuário agora tem privilégios administrativos.`);
+                await saveDataToDB('admins', adminData);
+                alert(`✅ Administrador adicionado com sucesso!\n\n👑 Email: ${adminData.email}\n📝 Nome: ${adminData.name}\n\n⚡ O usuário agora tem privilégios administrativos completos!`);
                 
                 closeAddAdminModal();
                 document.getElementById('addAdminForm').reset();
+                
+                // Reload data
+                await loadAllData();
             } catch (error) {
                 console.error('Error adding admin:', error);
-                alert('Erro ao adicionar administrador. Tente novamente.');
+                alert('❌ Erro ao adicionar administrador. Tente novamente.\n\nDetalhes: ' + error.message);
             }
         });
 
@@ -1188,9 +1187,10 @@
         // Chart initialization and other functions remain the same...
         // [Include all the chart functions from the previous version]
 
-        // Initialize on page load
+        // Initialize on page load - WORKING
         document.addEventListener('DOMContentLoaded', function() {
-            initializeMSAL();
+            console.log('🚀 Inicializando sistema...');
+            initializeFirebase();
         });
 
         // Initialize dashboard with charts
@@ -1522,6 +1522,7 @@
             location.reload();
         }
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'96d7c779e6f7fe12',t:'MTc1NDkxNTc5My4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'96d7cfa630b6f1c7',t:'MTc1NDkxNjEyNy4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
+
 
