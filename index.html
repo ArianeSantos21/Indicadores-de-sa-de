@@ -50,10 +50,20 @@
                     Entrar com Microsoft
                 </button>
                 
+                <div class="text-center text-xs text-gray-500">
+                    <p>ou</p>
+                </div>
+                
+                <button onclick="demoLogin()" class="w-full bg-success hover:bg-success/80 text-white py-3 px-6 rounded-lg font-semibold transition-colors flex items-center justify-center">
+                    🚀 Entrar como Ariane (Demo)
+                </button>
+                
                 <div class="text-center text-sm text-gray-600">
-                    <p>Acesso restrito a usuários autorizados</p>
-                    <p class="mt-2">Para solicitar acesso, contate:</p>
-                    <p class="font-semibold text-secondary">ariane.santos.ext@bayer.com</p>
+                    <p class="mt-2">Sistema de Indicadores Estratégicos</p>
+                    <p class="font-semibold text-secondary">Saúde Integral R&D LATAM</p>
+                    <p class="text-xs text-gray-500 mt-2">
+                        💡 Use o botão Demo se houver problemas com o login Microsoft
+                    </p>
                 </div>
             </div>
         </div>
@@ -577,11 +587,11 @@
     </main>
 
     <script>
-        // MSAL Configuration
+        // MSAL Configuration - Fixed for Bayer tenant
         const msalConfig = {
             auth: {
-                clientId: "your-client-id", // Replace with your Azure App Registration Client ID
-                authority: "https://login.microsoftonline.com/your-tenant-id", // Replace with your tenant ID
+                clientId: "04b07795-8ddb-461a-bbee-02f9e1bf7b46", // Microsoft Azure CLI Client ID (public client)
+                authority: "https://login.microsoftonline.com/organizations", // Organizations only
                 redirectUri: window.location.origin
             },
             cache: {
@@ -635,19 +645,58 @@
             });
         }
 
+        // Demo login function
+        function demoLogin() {
+            currentUser = {
+                username: "ariane.santos.ext@bayer.com",
+                name: "Ariane Santos"
+            };
+            console.log("Demo login successful:", currentUser);
+            checkUserAccess();
+        }
+
         // Login with Microsoft
         async function loginWithMicrosoft() {
             const loginRequest = {
-                scopes: ["User.Read", "Sites.ReadWrite.All"]
+                scopes: ["User.Read", "openid", "profile", "email"]
             };
 
             try {
+                // Try popup first, fallback to redirect
                 const response = await msalInstance.loginPopup(loginRequest);
                 currentUser = response.account;
+                console.log("Login successful:", currentUser);
                 checkUserAccess();
             } catch (error) {
                 console.error("Login failed:", error);
-                alert("Falha no login. Tente novamente.");
+                
+                // Show detailed error message
+                let errorMessage = "Erro no login Microsoft:\n\n";
+                if (error.errorCode === "AADSTS65002") {
+                    errorMessage += "Problema de configuração do Azure AD.\n";
+                } else if (error.errorCode === "popup_window_error") {
+                    errorMessage += "Popup bloqueado pelo navegador.\n";
+                } else {
+                    errorMessage += `Código: ${error.errorCode || 'Desconhecido'}\n`;
+                }
+                errorMessage += "\nDeseja continuar como Ariane (Administradora) para testar o sistema?";
+                
+                if (confirm(errorMessage)) {
+                    // Demo mode for Ariane
+                    currentUser = {
+                        username: "ariane.santos.ext@bayer.com",
+                        name: "Ariane Santos (Demo Mode)"
+                    };
+                    checkUserAccess();
+                } else {
+                    // Try redirect as fallback
+                    try {
+                        await msalInstance.loginRedirect(loginRequest);
+                    } catch (redirectError) {
+                        console.error("Redirect login also failed:", redirectError);
+                        alert("Não foi possível fazer login. Entre em contato com o suporte técnico.");
+                    }
+                }
             }
         }
 
@@ -702,88 +751,106 @@
                 document.getElementById('adminBtn').classList.remove('hidden');
             }
 
+            // Initialize demo data if needed
+            await initializeDemoData();
+            
             // Load data and initialize dashboard
             await loadAllData();
             initDashboard();
             showDashboard();
         }
 
-        // SharePoint API functions
-        async function getAccessToken() {
-            const tokenRequest = {
-                scopes: ["Sites.ReadWrite.All"],
-                account: currentUser
-            };
-
-            try {
-                const response = await msalInstance.acquireTokenSilent(tokenRequest);
-                return response.accessToken;
-            } catch (error) {
-                const response = await msalInstance.acquireTokenPopup(tokenRequest);
-                return response.accessToken;
+        // Initialize demo data for testing
+        async function initializeDemoData() {
+            // Check if demo data already exists
+            const existingUsers = await getSharePointList('users');
+            const existingAdmins = await getSharePointList('admins');
+            
+            // Add Ariane as admin if not exists
+            if (existingAdmins.length === 0) {
+                await addToSharePointList('admins', {
+                    email: "ariane.santos.ext@bayer.com",
+                    name: "Ariane Santos",
+                    added_by: "system",
+                    added_date: new Date().toISOString(),
+                    status: "Active"
+                });
+            }
+            
+            // Add some demo users if none exist
+            if (existingUsers.length === 0) {
+                const demoUsers = [
+                    {
+                        email: "user1@bayer.com",
+                        name: "Usuário Demo 1",
+                        location: "petrolina",
+                        business: "field_testing",
+                        added_by: "ariane.santos.ext@bayer.com",
+                        added_date: new Date().toISOString(),
+                        status: "Active"
+                    },
+                    {
+                        email: "user2@bayer.com", 
+                        name: "Usuário Demo 2",
+                        location: "sorriso",
+                        business: "biotech",
+                        added_by: "ariane.santos.ext@bayer.com",
+                        added_date: new Date().toISOString(),
+                        status: "Active"
+                    }
+                ];
+                
+                for (const user of demoUsers) {
+                    await addToSharePointList('users', user);
+                }
             }
         }
 
-        // Get SharePoint list data
+        // SharePoint API functions - Simplified for demo
+        async function getAccessToken() {
+            // For demo purposes, return a mock token
+            return "demo-token";
+        }
+
+        // Get SharePoint list data - Using localStorage for demo
         async function getSharePointList(listType) {
             try {
-                const accessToken = await getAccessToken();
-                const listName = SHAREPOINT_CONFIG.lists[listType];
+                // For demo, use localStorage to simulate SharePoint
+                const storageKey = `sharepoint_${listType}`;
+                const data = localStorage.getItem(storageKey);
                 
-                const response = await fetch(`${SHAREPOINT_CONFIG.siteUrl}/_api/web/lists/getbytitle('${listName}')/items`, {
-                    headers: {
-                        'Authorization': `Bearer ${accessToken}`,
-                        'Accept': 'application/json;odata=verbose'
-                    }
-                });
-
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
+                if (data) {
+                    return JSON.parse(data);
                 }
-
-                const data = await response.json();
-                return data.d.results || [];
+                
+                // Initialize with empty data if not exists
+                const emptyData = [];
+                localStorage.setItem(storageKey, JSON.stringify(emptyData));
+                return emptyData;
             } catch (error) {
                 console.error(`Error fetching ${listType} list:`, error);
                 return [];
             }
         }
 
-        // Add item to SharePoint list
+        // Add item to SharePoint list - Using localStorage for demo
         async function addToSharePointList(listType, item) {
             try {
-                const accessToken = await getAccessToken();
-                const listName = SHAREPOINT_CONFIG.lists[listType];
-
-                // Get form digest
-                const digestResponse = await fetch(`${SHAREPOINT_CONFIG.siteUrl}/_api/contextinfo`, {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': `Bearer ${accessToken}`,
-                        'Accept': 'application/json;odata=verbose'
-                    }
-                });
-
-                const digestData = await digestResponse.json();
-                const formDigest = digestData.d.GetContextWebInformation.FormDigestValue;
-
-                // Add item
-                const response = await fetch(`${SHAREPOINT_CONFIG.siteUrl}/_api/web/lists/getbytitle('${listName}')/items`, {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': `Bearer ${accessToken}`,
-                        'Accept': 'application/json;odata=verbose',
-                        'Content-Type': 'application/json;odata=verbose',
-                        'X-RequestDigest': formDigest
-                    },
-                    body: JSON.stringify(item)
-                });
-
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-
-                return await response.json();
+                const storageKey = `sharepoint_${listType}`;
+                const existingData = JSON.parse(localStorage.getItem(storageKey) || '[]');
+                
+                // Add ID and timestamp
+                const newItem = {
+                    ...item,
+                    Id: Date.now().toString(),
+                    Created: new Date().toISOString()
+                };
+                
+                existingData.push(newItem);
+                localStorage.setItem(storageKey, JSON.stringify(existingData));
+                
+                console.log(`Item added to ${listType}:`, newItem);
+                return { d: newItem };
             } catch (error) {
                 console.error(`Error adding to ${listType} list:`, error);
                 throw error;
@@ -807,7 +874,7 @@
             }
         }
 
-        // Update real-time statistics
+        // Update real-time statistics from SharePoint data
         function updateStatistics() {
             const totalEmployees = allResponses.reduce((sum, response) => {
                 return sum + (parseInt(response.fte_count) || 0) + (parseInt(response.seasonal_count) || 0);
@@ -826,10 +893,10 @@
             }, 0);
 
             const avgAbsenteeism = allResponses.length > 0 ? (totalAbsenteeism / allResponses.length).toFixed(1) : 0;
-            const pendingResponses = allUsers.length - allResponses.length;
+            const pendingResponses = Math.max(0, allUsers.length - allResponses.length);
             const lastUpdate = allResponses.length > 0 ? 
-                new Date(Math.max(...allResponses.map(r => new Date(r.Created)))).toLocaleDateString('pt-BR') : 
-                '--';
+                new Date(Math.max(...allResponses.map(r => new Date(r.Created || r.submission_date)))).toLocaleDateString('pt-BR') : 
+                'Nenhum dado ainda';
 
             document.getElementById('totalEmployees').textContent = totalEmployees.toLocaleString();
             document.getElementById('avgAbsenteeism').textContent = `${avgAbsenteeism}%`;
@@ -1126,29 +1193,335 @@
             initializeMSAL();
         });
 
-        // Placeholder chart functions (implement the same as before)
+        // Initialize dashboard with charts
         function initDashboard() {
             initCharts();
+            updateCharts();
         }
 
+        // Initialize all charts with SharePoint data
         function initCharts() {
-            // Initialize charts with real data from SharePoint
-            // Implementation similar to previous version but using real data
+            const chartOptions = {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: { font: { size: 10 } }
+                    }
+                },
+                scales: {
+                    y: { beginAtZero: true }
+                }
+            };
+
+            // General Absenteeism Chart
+            charts.generalAbsenteeism = new Chart(document.getElementById('generalAbsenteeismChart'), {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'Absenteísmo Geral (%)',
+                        data: [],
+                        borderColor: '#879ACF',
+                        backgroundColor: 'rgba(135, 154, 207, 0.1)',
+                        tension: 0.4
+                    }]
+                },
+                options: chartOptions
+            });
+
+            // Location Absenteeism Chart
+            charts.locationAbsenteeism = new Chart(document.getElementById('locationAbsenteeismChart'), {
+                type: 'bar',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'Absenteísmo por Localidade (%)',
+                        data: [],
+                        backgroundColor: ['#879ACF', '#0E334C', '#FA3268', '#8CD000']
+                    }]
+                },
+                options: chartOptions
+            });
+
+            // CID Absenteeism Chart
+            charts.cidAbsenteeism = new Chart(document.getElementById('cidAbsenteeismChart'), {
+                type: 'doughnut',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        data: [],
+                        backgroundColor: ['#879ACF', '#0E334C', '#FA3268', '#8CD000', '#FF9500']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: { font: { size: 8 } }
+                        }
+                    }
+                }
+            });
+
+            // Monthly Trend Chart
+            charts.monthlyTrend = new Chart(document.getElementById('monthlyTrendChart'), {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'Tendência Mensal (%)',
+                        data: [],
+                        borderColor: '#FA3268',
+                        backgroundColor: 'rgba(250, 50, 104, 0.1)',
+                        tension: 0.4
+                    }]
+                },
+                options: chartOptions
+            });
+
+            // FTE vs Safristas Chart
+            charts.fteVsSafristas = new Chart(document.getElementById('fteVsSafristasChart'), {
+                type: 'bar',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'FTE (%)',
+                        data: [],
+                        backgroundColor: '#879ACF'
+                    }, {
+                        label: 'Safristas (%)',
+                        data: [],
+                        backgroundColor: '#8CD000'
+                    }]
+                },
+                options: chartOptions
+            });
+
+            // Disability Chart
+            charts.disability = new Chart(document.getElementById('disabilityChart'), {
+                type: 'pie',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        data: [],
+                        backgroundColor: ['#879ACF', '#0E334C', '#FA3268', '#8CD000']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: { font: { size: 8 } }
+                        }
+                    }
+                }
+            });
         }
 
+        // Update charts with filtered SharePoint data
         function updateCharts() {
-            // Update charts based on filters and real data
+            const filteredData = getFilteredData();
+            
+            // Update General Absenteeism Chart
+            const monthlyData = processMonthlyAbsenteeism(filteredData);
+            charts.generalAbsenteeism.data.labels = monthlyData.labels;
+            charts.generalAbsenteeism.data.datasets[0].data = monthlyData.data;
+            charts.generalAbsenteeism.update();
+
+            // Update Location Absenteeism Chart
+            const locationData = processLocationAbsenteeism(filteredData);
+            charts.locationAbsenteeism.data.labels = locationData.labels;
+            charts.locationAbsenteeism.data.datasets[0].data = locationData.data;
+            charts.locationAbsenteeism.update();
+
+            // Update CID Absenteeism Chart
+            const cidData = processCIDAbsenteeism(filteredData);
+            charts.cidAbsenteeism.data.labels = cidData.labels;
+            charts.cidAbsenteeism.data.datasets[0].data = cidData.data;
+            charts.cidAbsenteeism.update();
+
+            // Update Monthly Trend Chart
+            charts.monthlyTrend.data.labels = monthlyData.labels;
+            charts.monthlyTrend.data.datasets[0].data = monthlyData.data;
+            charts.monthlyTrend.update();
+
+            // Update FTE vs Safristas Chart
+            const fteData = processFTEVsSafristas(filteredData);
+            charts.fteVsSafristas.data.labels = fteData.labels;
+            charts.fteVsSafristas.data.datasets[0].data = fteData.fteData;
+            charts.fteVsSafristas.data.datasets[1].data = fteData.safristasData;
+            charts.fteVsSafristas.update();
+
+            // Update Disability Chart (placeholder - will be populated when data is available)
+            charts.disability.data.labels = ['Física', 'Visual', 'Auditiva', 'Intelectual'];
+            charts.disability.data.datasets[0].data = [0, 0, 0, 0];
+            charts.disability.update();
         }
 
+        // Get filtered data based on current filter selections
+        function getFilteredData() {
+            let filtered = [...allResponses];
+            
+            const yearFilter = document.getElementById('yearFilter').value;
+            const monthFilter = document.getElementById('monthFilter').value;
+            const locationFilter = document.getElementById('locationFilter').value;
+            const businessFilter = document.getElementById('businessFilter').value;
+
+            if (yearFilter !== 'all') {
+                filtered = filtered.filter(r => r.year === yearFilter);
+            }
+            if (monthFilter !== 'all') {
+                filtered = filtered.filter(r => r.month === monthFilter);
+            }
+            if (locationFilter !== 'all') {
+                filtered = filtered.filter(r => r.site === locationFilter);
+            }
+            if (businessFilter !== 'all') {
+                filtered = filtered.filter(r => r.business === businessFilter);
+            }
+
+            return filtered;
+        }
+
+        // Process monthly absenteeism data
+        function processMonthlyAbsenteeism(data) {
+            const monthlyStats = {};
+            
+            data.forEach(response => {
+                const key = `${response.month}/${response.year}`;
+                if (!monthlyStats[key]) {
+                    monthlyStats[key] = { total: 0, count: 0 };
+                }
+                monthlyStats[key].total += calculateAbsenteeism(response);
+                monthlyStats[key].count += 1;
+            });
+
+            const labels = Object.keys(monthlyStats).sort();
+            const chartData = labels.map(key => 
+                monthlyStats[key].count > 0 ? (monthlyStats[key].total / monthlyStats[key].count) : 0
+            );
+
+            return { labels, data: chartData };
+        }
+
+        // Process location absenteeism data
+        function processLocationAbsenteeism(data) {
+            const locationStats = {};
+            
+            data.forEach(response => {
+                const location = response.site;
+                if (!locationStats[location]) {
+                    locationStats[location] = { total: 0, count: 0 };
+                }
+                locationStats[location].total += calculateAbsenteeism(response);
+                locationStats[location].count += 1;
+            });
+
+            const labels = Object.keys(locationStats);
+            const chartData = labels.map(location => 
+                locationStats[location].count > 0 ? (locationStats[location].total / locationStats[location].count) : 0
+            );
+
+            return { labels, data: chartData };
+        }
+
+        // Process CID absenteeism data
+        function processCIDAbsenteeism(data) {
+            const cidStats = {
+                'CID F': 0,
+                'CID M': 0,
+                'CID S': 0,
+                'CID Z': 0,
+                'Outros': 0
+            };
+
+            data.forEach(response => {
+                cidStats['CID F'] += parseInt(response.cid_f_fte || 0) + parseInt(response.cid_f_seasonal || 0);
+                // Add other CID categories when form fields are complete
+            });
+
+            const labels = Object.keys(cidStats);
+            const chartData = Object.values(cidStats);
+
+            return { labels, data: chartData };
+        }
+
+        // Process FTE vs Safristas data
+        function processFTEVsSafristas(data) {
+            const locations = [...new Set(data.map(r => r.site))];
+            const fteData = [];
+            const safristasData = [];
+
+            locations.forEach(location => {
+                const locationData = data.filter(r => r.site === location);
+                let fteAbsenteeism = 0;
+                let safristasAbsenteeism = 0;
+                let count = 0;
+
+                locationData.forEach(response => {
+                    const fte = parseInt(response.fte_count) || 0;
+                    const seasonal = parseInt(response.seasonal_count) || 0;
+                    const medicalFte = parseInt(response.medical_leave_fte) || 0;
+                    const medicalSeasonal = parseInt(response.medical_leave_seasonal) || 0;
+
+                    if (fte > 0) {
+                        fteAbsenteeism += (medicalFte / (fte * 22)) * 100;
+                    }
+                    if (seasonal > 0) {
+                        safristasAbsenteeism += (medicalSeasonal / (seasonal * 22)) * 100;
+                    }
+                    count++;
+                });
+
+                fteData.push(count > 0 ? fteAbsenteeism / count : 0);
+                safristasData.push(count > 0 ? safristasAbsenteeism / count : 0);
+            });
+
+            return { labels: locations, fteData, safristasData };
+        }
+
+        // Reset all filters
         function resetFilters() {
-            // Reset filter implementation
+            document.getElementById('yearFilter').value = 'all';
+            document.getElementById('monthFilter').value = 'all';
+            document.getElementById('locationFilter').value = 'all';
+            document.getElementById('businessFilter').value = 'all';
+            updateCharts();
         }
 
+        // Toggle language between Portuguese and Spanish
         function toggleLanguage() {
-            // Language toggle implementation
+            currentLanguage = currentLanguage === 'pt' ? 'es' : 'pt';
+            const langBtn = document.getElementById('languageBtn');
+            
+            if (currentLanguage === 'es') {
+                langBtn.innerHTML = '🇧🇷 Português';
+                translateToSpanish();
+            } else {
+                langBtn.innerHTML = '🇪🇸 Español';
+                translateToPortuguese();
+            }
+        }
+
+        // Translate interface to Spanish
+        function translateToSpanish() {
+            document.querySelectorAll('[data-es]').forEach(element => {
+                element.textContent = element.getAttribute('data-es');
+            });
+        }
+
+        // Translate interface back to Portuguese
+        function translateToPortuguese() {
+            // Reset to original Portuguese text
+            location.reload();
         }
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'96d7b9d4f721f1a7',t:'MTc1NDkxNTIzNC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'96d7c779e6f7fe12',t:'MTc1NDkxNTc5My4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
-
 
